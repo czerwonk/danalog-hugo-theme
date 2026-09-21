@@ -46,10 +46,9 @@ title = "Gallery"
 [imaging]
   quality = 75
   resampleFilter = "CatmullRom"
-  [imaging.exif]
-    disableDate = false
-    disableLatLong = true
-    includeFields = "ImageDescription|Orientation"
+  [imaging.meta]
+    sources = ["exif"]
+    fields = ["DateTimeOriginal", "ImageDescription", "Make", "Model", "UserComment", "LensMake", "LensModel", "FocalLength"]
 
 [module]
   [module.hugoVersion]
