@@ -7,7 +7,12 @@
     {{ $image := . }}
     {{ $key := "" }}
     {{ if eq $type "camera" }}
-      {{ with $image.Meta }}{{ with .Exif.Model }}{{ $key = . }}{{ end }}{{ end }}
+      {{ with $image.Meta }}
+        {{ $cameraParts := slice }}
+        {{ with .Exif.Make }}{{ $cameraParts = $cameraParts | append . }}{{ end }}
+        {{ with .Exif.Model }}{{ $cameraParts = $cameraParts | append . }}{{ end }}
+        {{ with delimit $cameraParts " " }}{{ $key = . }}{{ end }}
+      {{ end }}
       {{ if not $key }}{{ with $image.Params.camera }}{{ $key = . }}{{ end }}{{ end }}
     {{ else if eq $type "film" }}
       {{ with $image.Meta }}{{ with .Exif.UserComment }}{{ $key = . }}{{ end }}{{ end }}

@@ -14,7 +14,10 @@
 {{ $captionFilm := "" }}
 {{ $captionLens := "" }}
 {{ with $image.Meta }}
-  {{ with .Exif.Model }}{{ $captionCamera = print "📷 " . }}{{ end }}
+  {{ $cameraParts := slice }}
+  {{ with .Exif.Make }}{{ $cameraParts = $cameraParts | append . }}{{ end }}
+  {{ with .Exif.Model }}{{ $cameraParts = $cameraParts | append . }}{{ end }}
+  {{ with delimit $cameraParts " " }}{{ $captionCamera = print "📷 " . }}{{ end }}
   {{ with .Exif.UserComment }}{{ $captionFilm = print "🎞️ " . }}{{ end }}
   {{ $lensParts := slice }}
   {{ with .Exif.LensMake }}{{ $lensParts = $lensParts | append . }}{{ end }}
