@@ -143,7 +143,7 @@ if (gallery) {
     captionContent: (slide) => {
       const el = slide.data.element;
       return buildCaption({
-        title: el.title,
+        title: el.dataset.title,
         camera: el.dataset.captionCamera,
         film: el.dataset.captionFilm,
         lens: el.dataset.captionLens,

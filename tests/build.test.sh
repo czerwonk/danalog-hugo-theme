@@ -187,6 +187,10 @@ assert_contains "$CSS" 'hgroup\{[^}]*gap:1rem' "M4: smaller gap between banner a
 assert_contains "$CSS" '\.gallery-item\{[^}]*cursor:zoom-in' "M5: gallery photos show a zoom cursor"
 assert_contains "$CSS" '\.gallery-item:hover img\{filter:brightness\(1\.08\)\}' "M5: gallery photos brighten on hover"
 
+# Photo titles are passed to the lightbox via data-title; a title attribute would show a native tooltip on hover
+assert_not_contains "$ALBUM_A" '<a class="gallery-item"[^>]* title=' "gallery photos have no title attribute (native tooltip)"
+assert_contains "$ALBUM_A" '<a class="gallery-item"[^>]* data-title="Harbour &lt;at&gt; night"' "gallery photos carry their title for the lightbox caption"
+
 # N3: featured album as a print with a caption below, no gradient overlay
 assert_contains "$HOME_PAGE" '<a class="featured-card" href="/album-c/">' "N3: featured block links to the album"
 sed -n '/<section class="featured">/,/<\/section>/p' "$HOME_PAGE" | grep -q '<img' || fail "N3: featured image must be an img element"
