@@ -173,6 +173,20 @@ assert_contains "$CSS" '\.gallery-filter \.gallery-filter-reset\[hidden\]\{displ
 assert_contains "$CSS" '\.gallery-filter-static\{' "filter: shared gear is styled as static info"
 assert_contains "$CSS" '\.visually-hidden\{' "screen reader labels have a visually-hidden utility"
 
+# M2: lightbox on the dark page surface instead of pure black (also in light mode, the UI is white)
+assert_contains "$CSS" '\.pswp\{[^}]*--pswp-bg:var\(--surface-1-dark\)' "M2: lightbox background uses the dark page surface"
+
+# M3: consistent keyboard focus
+assert_contains "$CSS" ':focus-visible\{outline:1px solid var\(--text-1\)' "M3: keyboard focus has a consistent outline"
+
+# M4: less space above the content (header and title spacing)
+assert_contains "$CSS" 'body>header\{[^}]*margin-bottom:1rem' "M4: smaller gap below the header"
+assert_contains "$CSS" 'hgroup\{[^}]*gap:1rem' "M4: smaller gap between banner and title"
+
+# M5: gallery photos react on hover like the album cards
+assert_contains "$CSS" '\.gallery-item\{[^}]*cursor:zoom-in' "M5: gallery photos show a zoom cursor"
+assert_contains "$CSS" '\.gallery-item:hover img\{filter:brightness\(1\.08\)\}' "M5: gallery photos brighten on hover"
+
 # N3: featured album as a print with a caption below, no gradient overlay
 assert_contains "$HOME_PAGE" '<a class="featured-card" href="/album-c/">' "N3: featured block links to the album"
 sed -n '/<section class="featured">/,/<\/section>/p' "$HOME_PAGE" | grep -q '<img' || fail "N3: featured image must be an img element"

@@ -11,6 +11,12 @@ html {
   height: 100%;
 }
 
+// Keyboard focus: one thin outline in the text color everywhere (not shown for mouse clicks)
+:focus-visible {
+  outline: 1px solid var(--text-1);
+  outline-offset: 3px;
+}
+
 // Cross-document view transitions: pages cross-fade, the header stays,
 // card titles morph into the page title (see partials/transition-name.html)
 @view-transition {
@@ -53,7 +59,7 @@ body > header {
   justify-content: space-between;
   align-items: center;
   backdrop-filter: blur(12px);
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   background-color: color-mix(in srgb, var(--surface-1) 85%, transparent);
   padding: 0.5rem;
   width: 100%;
@@ -61,7 +67,7 @@ body > header {
   view-transition-name: site-header;
 
   @media (min-width: 640px) {
-    margin-bottom: 3rem;
+    margin-bottom: 1.5rem;
   }
 
   .btn {
@@ -251,8 +257,8 @@ hgroup {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.5rem;
-  margin: 0 auto 3rem;
+  gap: 1rem;
+  margin: 0 auto 2rem;
   padding-right: 1.5rem;
   padding-left: 1.5rem;
   max-width: 1024px;
@@ -283,7 +289,7 @@ hgroup {
 
   @media (min-width: 640px) {
     width: 83.3333%;
-    margin-bottom: 4rem;
+    margin-bottom: 2.5rem;
   }
 }
 
@@ -310,7 +316,7 @@ section.galleries {
   justify-content: center;
   align-items: flex-end;
   gap: 1rem 2rem;
-  margin: 0 auto 2rem;
+  margin: 0 auto 1.5rem;
 
   // Phones: two even columns instead of unevenly wrapping fields
   @media (max-width: 639px) {
@@ -614,11 +620,23 @@ section.gallery {
   }
 }
 
+// Gallery photos open in the lightbox; they brighten slightly on hover like the album cards
 .gallery-item {
-  cursor: pointer;
+  cursor: zoom-in;
 
   & > figure {
     background-color: var(--placeholder);
+  }
+
+  // Includes the fade-in transition from main.scss, which this more specific rule would override
+  & > figure > img {
+    transition:
+      filter 200ms,
+      opacity 300ms;
+  }
+
+  &:hover img {
+    filter: brightness(1.08);
   }
 }
 

@@ -44,6 +44,8 @@ if (gallery) {
     gallery.style.position = "relative";
     gallery.style.height = layout.containerHeight + "px";
     gallery.style.visibility = "";
+    // The inline overflow: hidden only hides the unlaid-out gallery; afterwards it would clip focus outlines
+    gallery.style.overflow = "visible";
   }
 
   window.addEventListener("resize", () => updateGallery());

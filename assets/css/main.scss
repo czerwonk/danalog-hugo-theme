@@ -5,6 +5,12 @@
 @use "photoswipe/photoswipe-dynamic-caption-plugin";
 @use "custom";
 
+// Lightbox on the dark page surface instead of pure black. It stays dark in light mode, as the
+// PhotoSwipe UI is white. Placed after the PhotoSwipe CSS, which sets --pswp-bg: #000.
+.pswp {
+  --pswp-bg: var(--surface-1-dark);
+}
+
 // Lazily loaded images fade in once loaded (assets/js/fade-in.js); they are only hidden
 // while scripts run, so without JS images show up without the fade
 @media (scripting: enabled) {
