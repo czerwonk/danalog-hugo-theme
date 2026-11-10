@@ -110,6 +110,15 @@ assert_count "$HOME_PAGE" 'view-transition-name: title-album-c' 1 "M1: transitio
 # N4: card caption on one line, title left and count right
 assert_contains "$CSS" '\.card>div\{[^}]*justify-content:space-between' "N4: card caption puts title and count on one line"
 
+# L1: card print box uses the cover's aspect ratio so the caption is flush with the print
+assert_contains "$HOME_PAGE" '<a class="card" href="/album-a/" title="Album A" style="--ratio: 78 / 58; --ratio-inv: 58 / 78">' "L1: card carries the cover's aspect ratio and its inverse (bordered thumbnail 78x58)"
+assert_contains "$CSS" 'container-type:inline-size' "L1: card width is measured with container units"
+assert_not_contains "$CSS" 'grid-template-rows:subgrid' "L1: no subgrid (row sizing collapses with container-unit print sizes)"
+assert_contains "$CSS" '\.card>figure\{[^}]*margin:calc\(66\.6+7cqw - var\(--print-height\)\)' "L1: print stands at the bottom of a fixed 3:2 frame so captions in a row start at the same height"
+
+# Lightbox title uses the display font like other titles
+assert_contains "$CSS" '\.caption-title\{[^}]*font-family:var\(--font-display\)' "Lightbox caption title must use the display font"
+
 # N3: featured album as a print with a caption below, no gradient overlay
 assert_contains "$HOME_PAGE" '<a class="featured-card" href="/album-c/">' "N3: featured block links to the album"
 sed -n '/<section class="featured">/,/<\/section>/p' "$HOME_PAGE" | grep -q '<img' || fail "N3: featured image must be an img element"

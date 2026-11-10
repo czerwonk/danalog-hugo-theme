@@ -1,6 +1,6 @@
 {{ $gallery := partial "get-gallery.html" . }}
 {{ with $gallery }}
-  <a class="card" href="{{ .page.RelPermalink }}" title="{{ .page.Title }}">
+  <a class="card" href="{{ .page.RelPermalink }}" title="{{ .page.Title }}" style="--ratio: {{ .thumbnail.Width }} / {{ .thumbnail.Height }}; --ratio-inv: {{ .thumbnail.Height }} / {{ .thumbnail.Width }}">
     {{ $count := len .previews }}
     {{ $title := .page.Title }}
     {{ if gt $count 1 }}

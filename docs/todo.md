@@ -6,7 +6,6 @@ Modernization: keep the minimalism, lean into an analog / darkroom / contact she
 
 ### Phase 2: layout and motion
 
-- [ ] (low) V2: Try left-aligned editorial headers; compare with centered (may conflict with the banner). Screenshots shown 2026-11-10, waiting for decision.
 
 ### Phase 3: color and cleanup
 
@@ -17,6 +16,13 @@ Modernization: keep the minimalism, lean into an analog / darkroom / contact she
 - [ ] (low) N2: Categories as plain text links instead of bordered pills.
 
 ## Done
+
+### Phase 2 follow-ups (2026-11-10)
+
+- [x] V2: decided to keep page headers centered (matches the symmetric banner and the centered grid); navigation stays right.
+- [x] L1: card captions flush with the print. Cards get `--ratio`/`--ratio-inv` from the bordered cover; the print stands at the bottom of an invisible 3:2 frame (container units), so captions in a grid row start at the same height. Subgrid was tried and dropped: grid row sizing collapses with container-unit print sizes.
+- [x] Lightbox caption title uses `--font-display`.
+- [x] Nav panel class names were glued together by prettier (see recurring issues).
 
 ### Phase 2 (2026-11-10)
 
