@@ -303,9 +303,15 @@ section.galleries {
   }
 }
 
+// Prints keep a margin to the window edges: the box spacing on phones, the page margin above
 section.gallery {
-  padding-right: 0;
-  padding-left: 0;
+  padding-right: 0.5rem;
+  padding-left: 0.5rem;
+
+  @media (min-width: 640px) {
+    padding-right: 1.5rem;
+    padding-left: 1.5rem;
+  }
 }
 
 .prose {

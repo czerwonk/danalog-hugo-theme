@@ -159,6 +159,10 @@ assert_contains "$HOME_PAGE" 'srcset="/album-d/album-d-001_hu_[0-9a-f]+\.jpg 1x,
 assert_contains "$ALBUM_D" 'data-pswp-srcset="/album-d/album-d-001_hu_[0-9a-f]+\.jpg 1318w, /album-d/album-d-001_hu_[0-9a-f]+\.jpg 810w"' "P2: lightbox offers full and half size with proportional mats"
 assert_not_contains "$ALBUM_A" ' 2x"' "P2: no 2x candidate when the original is too small to provide one"
 
+# Gallery keeps a margin to the window edges: box spacing on phones, the page margin from 640px
+assert_contains "$CSS" 'section\.gallery\{padding-right:\.5rem;padding-left:\.5rem\}' "gallery has a small edge margin on phones"
+assert_contains "$CSS" 'section\.gallery\{padding-right:1\.5rem;padding-left:1\.5rem\}' "gallery aligns with the 1.5rem page margin on larger screens"
+
 # N3: featured album as a print with a caption below, no gradient overlay
 assert_contains "$HOME_PAGE" '<a class="featured-card" href="/album-c/">' "N3: featured block links to the album"
 sed -n '/<section class="featured">/,/<\/section>/p' "$HOME_PAGE" | grep -q '<img' || fail "N3: featured image must be an img element"
