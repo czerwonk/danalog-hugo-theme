@@ -6,11 +6,7 @@ Modernization: keep the minimalism, lean into an analog / darkroom / contact she
 
 ### Phase 2: layout and motion
 
-- [ ] (high) N1: Header with wordmark/banner left, menu inline on desktop, hamburger only on mobile.
-- [ ] (medium) N3: Featured album as one large print: no gradient overlay, title in meta font as a caption below.
-- [ ] (medium) N4: Album card caption on one line: title left, count right in meta font. Optional "frames" wording via i18n/param; default stays "photos".
-- [ ] (medium) M1: Cross-document View Transitions (`@view-transition { navigation: auto; }`) with a shared `view-transition-name` from album cover to gallery. Respect `prefers-reduced-motion`.
-- [ ] (low) V2: Try left-aligned editorial headers; compare with centered (may conflict with the banner).
+- [ ] (low) V2: Try left-aligned editorial headers; compare with centered (may conflict with the banner). Screenshots shown 2026-11-10, waiting for decision.
 
 ### Phase 3: color and cleanup
 
@@ -21,6 +17,17 @@ Modernization: keep the minimalism, lean into an analog / darkroom / contact she
 - [ ] (low) N2: Categories as plain text links instead of bordered pills.
 
 ## Done
+
+### Phase 2 (2026-11-10)
+
+- [x] (high) N1: Header with wordmark/banner left, menu inline on desktop, hamburger only on mobile.
+  - Groups with more than 8 entries get a multi-column panel; hamburger menu below 768px lives in the sticky header. `IsMenuCurrent` does not match `url` menu entries, so `partials/menu-current.html` also compares URLs.
+- [x] (medium) N3: Featured album as one large print: no gradient overlay, title in meta font as a caption below.
+- [x] (medium) N4: Album card caption on one line: title left, count right in meta font. Optional "frames" wording via i18n/param; default stays "photos".
+  - "Frames" wording via the site's own `i18n/en.yaml` (documented in README), no theme param.
+- [x] (medium) M1: Cross-document View Transitions (`@view-transition { navigation: auto; }`) with a shared `view-transition-name` from album cover to gallery. Respect `prefers-reduced-motion`.
+  - Card titles morph into the page title (`partials/transition-name.html`). The cover image itself does not morph: the gallery is laid out by JS after first render, so the target position is unknown when the transition snapshots the new page. The featured block has no name (duplicate names abort the transition).
+- [x] stylelint kept on 17: `stylelint-config-standard-scss` 17.0.0 (latest) requires stylelint ^17.
 
 ### Dependency monitoring (2026-11-10)
 

@@ -1,0 +1,4 @@
+{{/* Input: page. Returns the view-transition-name shared by a page's title and the cards linking to it,
+  so card titles morph into the page heading. Must be unique per page: render it once per target.
+*/}}
+{{ return printf "title-%s" (.RelPermalink | strings.TrimPrefix "/" | strings.TrimSuffix "/" | replaceRE `[^a-zA-Z0-9_-]+` "-") }}

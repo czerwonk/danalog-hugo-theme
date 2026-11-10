@@ -25,3 +25,23 @@ disableKinds = ["taxonomy"]
   home = ["HTML"]
   page = ["HTML"]
   section = ["HTML"]
+
+[menus]
+  [[menus.main]]
+    name = "Home"
+    url = "/"
+    weight = 1
+  [[menus.main]]
+    name = "Galleries"
+    identifier = "galleries"
+    weight = 2
+  [[menus.main]]
+    name = "Album A"
+    parent = "galleries"
+    pageRef = "/album-a"
+    weight = 1
+  [[menus.main]]
+    name = "Album B"
+    parent = "galleries"
+    pageRef = "/album-b"
+    weight = 2

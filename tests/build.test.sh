@@ -89,6 +89,32 @@ assert_contains "$CSS" '--font-display:' "V3: --font-display variable must be de
 assert_contains "$CSS" '--font-meta:' "V3: --font-meta variable must be defined"
 assert_contains "$CSS" 'font-family:var\(--font-meta\)' "V3: metadata must use the meta font"
 
+# N1: inline navigation on desktop, groups open a panel, mobile menu lives in the sticky header
+assert_contains "$HOME_PAGE" '<nav class="site-nav"' "N1: header must contain the inline navigation"
+assert_contains "$HOME_PAGE" '<a class="site-nav-link" href="/" aria-current="page">Home</a>' "N1: top-level links are rendered inline, current page marked"
+assert_contains "$ALBUM_A" '<a class="site-nav-link" href="/" aria-current="false">Home</a>' "N1: top-level link is not current on other pages"
+assert_contains "$HOME_PAGE" '<button class="site-nav-group" type="button" aria-expanded="false" aria-controls="nav-galleries">' "N1: menu groups are disclosure buttons"
+assert_contains "$HOME_PAGE" '<div class="site-nav-panel" id="nav-galleries" hidden>' "N1: group panels are hidden by default"
+assert_contains "$ALBUM_A" 'href="/album-a/" aria-current="page"' "N1: current page is marked with aria-current=page"
+assert_not_contains "$HOME_PAGE" 'href="/album-a/" aria-current="page"' "N1: other pages are not marked current"
+sed -n '/<header/,/<\/header>/p' "$HOME_PAGE" | grep -q 'id="menu"' || fail "N1: mobile menu must be inside the sticky header"
+assert_contains "$CSS" 'position:sticky' "N1: header must be sticky"
+
+# M1: cross-document view transitions; card titles morph into the page title
+assert_contains "$CSS" '@view-transition\{navigation: ?auto' "M1: cross-document view transitions must be enabled"
+assert_contains "$HOME_PAGE" '<h2 style="view-transition-name: title-album-a">Album A</h2>' "M1: album card title must carry the target page's transition name"
+assert_contains "$ALBUM_A" '<h1 style="view-transition-name: title-album-a">Album A</h1>' "M1: page title must carry its transition name"
+assert_count "$HOME_PAGE" 'view-transition-name: title-album-c' 1 "M1: transition names must be unique per page (featured album also has a card)"
+
+# N4: card caption on one line, title left and count right
+assert_contains "$CSS" '\.card>div\{[^}]*justify-content:space-between' "N4: card caption puts title and count on one line"
+
+# N3: featured album as a print with a caption below, no gradient overlay
+assert_contains "$HOME_PAGE" '<a class="featured-card" href="/album-c/">' "N3: featured block links to the album"
+sed -n '/<section class="featured">/,/<\/section>/p' "$HOME_PAGE" | grep -q '<img' || fail "N3: featured image must be an img element"
+assert_not_contains "$HOME_PAGE" 'background-image: url' "N3: featured image must not be a CSS background"
+assert_not_contains "$CSS" 'linear-gradient' "N3: no gradient overlay"
+
 if [ "$FAILURES" -gt 0 ]; then
   echo "$FAILURES check(s) failed"
   exit 1

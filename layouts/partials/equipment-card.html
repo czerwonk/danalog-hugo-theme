@@ -11,7 +11,7 @@
       <img class="lazyload" width="{{ $thumbnail.Width }}" height="{{ $thumbnail.Height }}" data-src="{{ $thumbnail.RelPermalink }}" alt="{{ $equipPage.Title }}" />
     </figure>
     <div>
-      <h2>{{ $equipPage.Title }}</h2>
+      <h2 style="view-transition-name: {{ partial "transition-name.html" $equipPage }}">{{ $equipPage.Title }}</h2>
       <p>{{ T "photoCount" (len $entries | lang.FormatNumber 0) }}</p>
     </div>
   </a>

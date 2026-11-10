@@ -1,0 +1,5 @@
+{{/* Input: {page, entry}. Returns "page" if the menu entry points to the page, otherwise "false" (aria-current values).
+  IsMenuCurrent only matches entries defined via a page (pageRef or front matter), so URL entries are compared directly.
+*/}}
+{{ $current := or (.page.IsMenuCurrent "main" .entry) (eq .entry.URL .page.RelPermalink) }}
+{{ return cond $current "page" "false" }}

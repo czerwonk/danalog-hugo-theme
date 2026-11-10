@@ -321,6 +321,14 @@ The theme exposes these CSS variables:
 
 If images get a border (`borderSize > 0`), the border color is used as loading placeholder, otherwise the image's dominant color.
 
+Texts like the photo count come from `i18n/`; a site can override them with its own `i18n/en.yaml`, e.g. to count frames instead of photos:
+
+```yaml
+photoCount:
+  one: 1 frame
+  other: "{{ . }} frames"
+```
+
 ### Caption Icons
 
 The lightbox shows camera, film (`UserComment`) and lens EXIF values with icons from `assets/icons/camera.svg`, `film.svg` and `lens.svg`. To replace an icon, put an SVG with the same name into your site's `assets/icons/`. Use `currentColor` for strokes or fills so the icon follows the caption color.
