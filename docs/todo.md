@@ -4,10 +4,6 @@ Modernization: keep the minimalism, lean into an analog / darkroom / contact she
 
 ## Open
 
-### Found during phase 1
-
-- [ ] (low) Hugo warns that libsass is deprecated (since v0.153.0); switch `toCSS` to Dart Sass. Blocked: Dart Sass is not installed on the dev machine, in CI (`.github/workflows/hugo.yml`) or in the danalog.pics build; needs a decision on how to provide it.
-
 ### Phase 2: layout and motion
 
 - [ ] (high) N1: Header with wordmark/banner left, menu inline on desktop, hamburger only on mobile.
@@ -25,6 +21,10 @@ Modernization: keep the minimalism, lean into an analog / darkroom / contact she
 - [ ] (low) N2: Categories as plain text links instead of bordered pills.
 
 ## Done
+
+### Dart Sass (2026-11-10)
+
+- [x] (low) Switched from deprecated libsass to Dart Sass (`css.Sass` with `transpiler: dartsass`, `@use` instead of `@import`). Requires the `sass` executable (nixpkgs `dart-sass`, CI via snap). Minimum Hugo is now 0.128.0 (`css.Sass`); CI pinned to 0.168.0. Compiled CSS is identical apart from Dart Sass dropping redundant `calc()` inside `clamp()`. The build check fails on libsass or Sass deprecation warnings.
 
 ### Phase 1 (2026-11-10)
 
@@ -52,7 +52,5 @@ Modernization: keep the minimalism, lean into an analog / darkroom / contact she
 ## Recurring issues
 
 - `prettier-plugin-go-template` can change output: it removed the whitespace between optional attributes (`{{ with }}attr{{ end }}`). Keep separating spaces outside the `with` blocks and check generated HTML after formatting.
-
-- libsass does not support modern color syntax (`rgb(255 255 255 / 0.75)` fails with "missing argument $green"); use `rgba()` until switching to Dart Sass.
-- `hugo --quiet` also hides build errors; the build checks use `--logLevel error` with stdout discarded instead.
+- `hugo --quiet` also hides build errors; the build checks use `--logLevel warn` and capture the log, printing it on failure.
 - Lint and format via podman when `node_modules` are not installed: `podman run --rm -v "$PWD":/work -w /work docker.io/library/node:lts sh -c "npm install && npm run lint && npx prettier --check ."`

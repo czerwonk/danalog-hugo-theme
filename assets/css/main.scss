@@ -1,9 +1,9 @@
-@import "normalize";
-@import "colors";
-@import "styles";
-@import "photoswipe/photoswipe";
-@import "photoswipe/photoswipe-dynamic-caption-plugin";
-@import "custom";
+@use "normalize";
+@use "colors";
+@use "styles";
+@use "photoswipe/photoswipe";
+@use "photoswipe/photoswipe-dynamic-caption-plugin";
+@use "custom";
 
 .lazyload,
 .lazyloading {

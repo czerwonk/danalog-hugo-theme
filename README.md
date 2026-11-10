@@ -39,7 +39,7 @@ This is a fork of [nicokaiser/hugo-theme-gallery](https://github.com/nicokaiser/
 
 ## Installation
 
-This theme requires Hugo Extended >= 0.123.0. Dependencies are bundled, so no Node.js/NPM and PostCSS is needed.
+This theme requires Hugo >= 0.128.0 and [Dart Sass](https://gohugo.io/functions/css/sass/#dart-sass) (the `sass` executable in your `PATH`, e.g. `dart-sass` in nixpkgs or `snap install dart-sass`). Other dependencies are bundled, so no Node.js/NPM and PostCSS is needed.
 
 ### As a Hugo Module
 
@@ -331,7 +331,7 @@ You can add additional JavaScript in `assets/js/custom.js`.
 
 ## Development
 
-`npm test` (or `tests/run.sh`) runs the JavaScript unit tests and builds the fixture site in `tests/site` to check the generated HTML and CSS. Requires Hugo extended and Node.js.
+`npm test` (or `tests/run.sh`) runs the JavaScript unit tests and builds the fixture site in `tests/site` to check the generated HTML and CSS. Requires Hugo, Dart Sass and Node.js.
 
 ## Author
 

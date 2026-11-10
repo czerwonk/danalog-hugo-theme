@@ -10,7 +10,11 @@ mkdir -p "$WORK_DIR/themes"
 ln -s "$THEME_DIR" "$WORK_DIR/themes/gallery"
 OUT="$WORK_DIR/public"
 
-hugo --logLevel error --source "$THEME_DIR/tests/site" --themesDir "$WORK_DIR/themes" --cacheDir "$WORK_DIR/cache" --destination "$OUT" >/dev/null
+LOG="$WORK_DIR/hugo.log"
+if ! hugo --logLevel warn --source "$THEME_DIR/tests/site" --themesDir "$WORK_DIR/themes" --cacheDir "$WORK_DIR/cache" --destination "$OUT" >"$LOG" 2>&1; then
+  cat "$LOG"
+  exit 1
+fi
 
 FAILURES=0
 
@@ -18,6 +22,12 @@ fail() {
   echo "FAIL: $1"
   FAILURES=$((FAILURES + 1))
 }
+
+# D1: CSS is compiled with Dart Sass without deprecated syntax
+if grep -qiE 'libsass|deprecat' "$LOG"; then
+  fail "D1: build must not use libsass or deprecated Sass features"
+  grep -iE 'libsass|deprecat' "$LOG" | sed 's/^/  /'
+fi
 
 assert_contains() {
   local file="$1" pattern="$2" message="$3"
