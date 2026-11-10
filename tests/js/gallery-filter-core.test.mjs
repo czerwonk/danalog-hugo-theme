@@ -25,6 +25,13 @@ test("matches combines dimensions with AND and ignores empty filters", () => {
 test("only dimensions with at least two distinct values are filterable", () => {
   assert.deepEqual(filterableDimensions(items), ["camera", "film", "orientation"], "lens has a single non-empty value");
   assert.deepEqual(filterableDimensions(items.slice(0, 1)), [], "a single photo offers nothing to filter");
+  const sameGear = [
+    { camera: "Leica M2", film: "HP5+", orientation: "landscape" },
+    { camera: "Leica M2", film: "HP5+", orientation: "portrait" },
+  ];
+  assert.deepEqual(filterableDimensions(sameGear), [], "orientation alone is not worth a filter bar");
+  const twoFilms = [...sameGear, { camera: "Leica M2", film: "Portra 400", orientation: "landscape" }];
+  assert.deepEqual(filterableDimensions(twoFilms), ["film", "orientation"], "orientation joins once camera, lens or film varies");
 });
 
 test("options count photos matching the other active filters", () => {

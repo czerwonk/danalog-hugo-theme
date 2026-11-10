@@ -38,8 +38,14 @@ export const matches = (item, filters) => DIMENSIONS.every((dimension) => !filte
 
 const distinctValues = (items, dimension) => [...new Set(items.map((item) => item[dimension]).filter(Boolean))];
 
-/** Dimensions worth a filter: at least two different values in the gallery. */
-export const filterableDimensions = (items) => DIMENSIONS.filter((dimension) => distinctValues(items, dimension).length >= 2);
+/**
+ * Dimensions worth a filter: at least two different values in the gallery. Orientation only
+ * counts as an addition; on its own (same camera, lens and film throughout) no filter is offered.
+ */
+export function filterableDimensions(items) {
+  const dimensions = DIMENSIONS.filter((dimension) => distinctValues(items, dimension).length >= 2);
+  return dimensions.some((dimension) => dimension !== "orientation") ? dimensions : [];
+}
 
 const sortValues = (dimension, values) => (dimension === "orientation" ? ORIENTATION_ORDER.filter((value) => values.includes(value)) : [...values].sort((a, b) => a.localeCompare(b)));
 
