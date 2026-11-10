@@ -1,5 +1,6 @@
 {{/* Input: slice of {image, page} dicts from collect-equipment.html */}}
 <section class="gallery">
+  {{ partial "icon-sprite.html" . }}
   <div id="gallery" style="visibility: hidden; height: 1px; overflow: hidden">
     {{ range . }}
       {{ $image := .image }}
@@ -15,7 +16,8 @@
         "title" $title
         "pswpTarget" (print .page.File.TranslationBaseName "-" ($image.Name | urlize))
         "publishResources" true
-      ) }}
+        )
+      }}
     {{ end }}
   </div>
 </section>

@@ -3,7 +3,7 @@
 {{ $fullSize := site.Params.gallery.fullSize | default 1600 | int }}
 {{ $thumbnail := $image.Filter (slice images.AutoOrient (images.Process "fit 600x600")) }}
 {{ $full := $image.Filter (slice images.AutoOrient (images.Process (printf "fit %dx%d" $fullSize $fullSize))) }}
-{{ $color := index $thumbnail.Colors 0 | default "transparent" }}
+{{ $color := partial "placeholder-color.html" $thumbnail }}
 {{ $thumbnail = partial "apply-border.html" (dict "image" $thumbnail) }}
 {{ $full = partial "apply-border.html" (dict "image" $full "full" true) }}
 
@@ -17,16 +17,17 @@
   {{ $cameraParts := slice }}
   {{ with .Exif.Make }}{{ $cameraParts = $cameraParts | append . }}{{ end }}
   {{ with .Exif.Model }}{{ $cameraParts = $cameraParts | append . }}{{ end }}
-  {{ with delimit $cameraParts " " }}{{ $captionCamera = print "📷 " . }}{{ end }}
-  {{ with .Exif.UserComment }}{{ $captionFilm = print "🎞️ " . }}{{ end }}
+  {{ $captionCamera = delimit $cameraParts " " }}
+  {{ with .Exif.UserComment }}{{ $captionFilm = . }}{{ end }}
   {{ $lensParts := slice }}
   {{ with .Exif.LensMake }}{{ $lensParts = $lensParts | append . }}{{ end }}
   {{ with .Exif.LensModel }}{{ $lensParts = $lensParts | append . }}{{ end }}
-  {{ with delimit $lensParts " " }}{{ $captionLens = print "🔘 " . }}{{ end }}
+  {{ $captionLens = delimit $lensParts " " }}
 {{ end }}
 
+
 <a class="gallery-item" href="{{ $href }}" data-pswp-src="{{ $full.RelPermalink }}" data-pswp-width="{{ $full.Width }}" data-pswp-height="{{ $full.Height }}" data-pswp-target="{{ .pswpTarget }}" title="{{ .title }}" data-caption-camera="{{ $captionCamera }}" data-caption-film="{{ $captionFilm }}" data-caption-lens="{{ $captionLens }}" itemscope itemtype="https://schema.org/ImageObject" style="aspect-ratio: {{ $thumbnail.Width }} / {{ $thumbnail.Height }}">
-  <figure style="background-color: {{ $color }}; aspect-ratio: {{ $thumbnail.Width }} / {{ $thumbnail.Height }}">
+  <figure style="--placeholder: {{ $color }}; aspect-ratio: {{ $thumbnail.Width }} / {{ $thumbnail.Height }}">
     <img class="lazyload" width="{{ $thumbnail.Width }}" height="{{ $thumbnail.Height }}" data-src="{{ $thumbnail.RelPermalink }}" alt="{{ .title }}" />
   </figure>
   <meta itemprop="contentUrl" content="{{ $href }}" />

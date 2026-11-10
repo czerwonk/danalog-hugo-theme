@@ -17,7 +17,9 @@
   {{ end }}
   {{ $allImages = sort $allImages "date" "desc" | first $count }}
 
+
   <section class="gallery">
+    {{ partial "icon-sprite.html" . }}
     <div id="gallery" style="visibility: hidden; height: 1px; overflow: hidden">
       {{ range $allImages }}
         {{ partial "gallery-render.html" (dict
@@ -25,7 +27,8 @@
           "title" .title
           "pswpTarget" (print .page.File.TranslationBaseName "-" (.image.Name | urlize))
           "publishResources" $publishResources
-        ) }}
+          )
+        }}
       {{ end }}
     </div>
   </section>

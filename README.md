@@ -301,9 +301,37 @@ cascade:
 
 CSS is generated with Hugo Pipes, so you can add additional CSS in `assets/css/custom.css` (see example in `exampleSite`).
 
+The theme exposes these CSS variables:
+
+| Variable             | Default                 | Purpose                                                              |
+| -------------------- | ----------------------- | -------------------------------------------------------------------- |
+| `--radius`           | `0`                     | Corner radius of photos                                              |
+| `--card-fit`         | `cover`                 | `object-fit` of album card images; `contain` keeps borders uncropped |
+| `--card-placeholder` | the image's placeholder | Card background while loading; set `transparent` with `contain`      |
+| `--font-display`     | system sans-serif       | Page, album and featured titles                                      |
+| `--font-meta`        | system monospace        | Metadata labels (photo counts, EXIF captions)                        |
+
+```css
+:root {
+  --card-fit: contain;
+  --card-placeholder: transparent;
+  --font-meta: "Courier Prime", monospace;
+}
+```
+
+If images get a border (`borderSize > 0`), the border color is used as loading placeholder, otherwise the image's dominant color.
+
+### Caption Icons
+
+The lightbox shows camera, film (`UserComment`) and lens EXIF values with icons from `assets/icons/camera.svg`, `film.svg` and `lens.svg`. To replace an icon, put an SVG with the same name into your site's `assets/icons/`. Use `currentColor` for strokes or fills so the icon follows the caption color.
+
 ### Custom JavaScript
 
 You can add additional JavaScript in `assets/js/custom.js`.
+
+## Development
+
+`npm test` (or `tests/run.sh`) runs the JavaScript unit tests and builds the fixture site in `tests/site` to check the generated HTML and CSS. Requires Hugo extended and Node.js.
 
 ## Author
 

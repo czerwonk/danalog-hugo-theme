@@ -10,7 +10,8 @@
   "private": "true",
   "scripts": {
     "prettier": "prettier . --write",
-    "lint": "stylelint assets/css/*.{css,scss}"
+    "lint": "stylelint assets/css/*.{css,scss}",
+    "test": "tests/run.sh"
   },
   "version": "4.9.3"
 }

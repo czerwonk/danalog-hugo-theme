@@ -4,3 +4,5 @@ assets/js/photoswipe/
 assets/css/photoswipe/
 exampleSite/resources/
 exampleSite/public/
+# RSS (XML) fragment; the go-template HTML parser cannot handle it
+layouts/partials/rss-image-items.html

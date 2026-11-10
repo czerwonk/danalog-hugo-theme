@@ -1,4 +1,5 @@
 <section class="gallery">
+  {{ partial "icon-sprite.html" . }}
   <div id="gallery" style="visibility: hidden; height: 1px; overflow: hidden">
     {{ $images := slice }}
     {{ range $image := where (.Resources.ByType "image") "Params.hidden" "ne" true }}
@@ -35,7 +36,8 @@
         "title" .Title
         "pswpTarget" (.image.Name | urlize)
         "publishResources" $publishResources
-      ) }}
+        )
+      }}
     {{ end }}
   </div>
 </section>

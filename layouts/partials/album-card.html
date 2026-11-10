@@ -4,14 +4,14 @@
     {{ $count := len .previews }}
     {{ $title := .page.Title }}
     {{ if gt $count 1 }}
-      <figure class="card-slides-{{ $count }}" style="background-color: {{ .color }}">
+      <figure class="card-slides-{{ $count }}" style="--placeholder: {{ .color }}">
         {{ range $i, $img := .previews }}
           {{ $slot := cond (eq $i 0) (sub $count 1) (sub $i 1) }}
           <img class="lazyload card-slide" style="--i: {{ $slot }}" width="{{ $img.Width }}" height="{{ $img.Height }}" data-src="{{ $img.RelPermalink }}" alt="{{ $title }}" />
         {{ end }}
       </figure>
     {{ else }}
-      <figure style="background-color: {{ .color }}">
+      <figure style="--placeholder: {{ .color }}">
         <img class="lazyload" width="{{ .thumbnail.Width }}" height="{{ .thumbnail.Height }}" data-src="{{ .thumbnail.RelPermalink }}" alt="{{ .page.Title }}" />
       </figure>
     {{ end }}

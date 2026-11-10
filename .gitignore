@@ -3,3 +3,5 @@ package-lock.json
 .hugo_build.lock
 exampleSite/assets/jsconfig.json
 .DS_Store
+tests/site/resources/
+tests/site/public/

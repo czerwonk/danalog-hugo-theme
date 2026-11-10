@@ -4,7 +4,8 @@
   {{ $featured := "" }}
   {{ $featuredImages := slice }}
 
-  {{ if .Params.featured }}
+  {{/* featured is either a list of image names (album previews) or true (album shown on the home page) */}}
+  {{ if reflect.IsSlice .Params.featured }}
     {{ range .Params.featured }}
       {{ $img := $.Resources.GetMatch . }}
       {{ if $img }}
@@ -18,14 +19,14 @@
   {{ else }}
     {{ $covers := where (.Resources.ByType "image") "Params.cover" "eq" true }}
     {{ $cover := "" }}
-    {{ if ge (len $covers) 0 }}
+    {{ if gt (len $covers) 0 }}
       {{ $cover = index $covers 0 }}
     {{ end }}
     {{ $featured = $cover | default ((.Resources.ByType "image").GetMatch (.Params.featured_image | default "*feature*")) | default (index $images 0) }}
   {{ end }}
 
   {{ $thumbnail := $featured.Filter (slice images.AutoOrient (images.Process "fit 600x600")) }}
-  {{ $color := index $thumbnail.Colors 0 | default "transparent" }}
+  {{ $color := partial "placeholder-color.html" $thumbnail }}
   {{ $thumbnail = partial "apply-border.html" (dict "image" $thumbnail) }}
 
   {{ $previews := slice $thumbnail }}

@@ -1,4 +1,5 @@
 import justifiedLayout from "./justified-layout.js";
+import { layoutOptions } from "./gallery-options.js";
 import * as params from "@params";
 
 const gallery = document.getElementById("gallery");
@@ -20,9 +21,7 @@ if (gallery) {
 
     const layout = justifiedLayout(aspectRatios, {
       rowWidth: containerWidth,
-      spacing: Number.isInteger(params.boxSpacing) ? params.boxSpacing : 8,
-      rowHeight: params.targetRowHeight || 288,
-      heightTolerance: Number.isInteger(params.targetRowHeightTolerance) ? params.targetRowHeightTolerance : 0.25,
+      ...layoutOptions(params),
     });
 
     items.forEach((item, i) => {

@@ -2,6 +2,7 @@ import PhotoSwipeLightbox from "./photoswipe/photoswipe-lightbox.esm.js";
 import PhotoSwipe from "./photoswipe/photoswipe.esm.js";
 import PhotoSwipeDynamicCaption from "./photoswipe/photoswipe-dynamic-caption-plugin.esm.min.js";
 import * as params from "@params";
+import { buildCaption } from "./caption.js";
 
 const gallery = document.getElementById("gallery");
 
@@ -92,9 +93,12 @@ if (gallery) {
     mobileCaptionOverlapRatio: 1,
     captionContent: (slide) => {
       const el = slide.data.element;
-      const title = el.title;
-      const meta = [el.dataset.captionCamera, el.dataset.captionFilm, el.dataset.captionLens].filter(Boolean);
-      return (title ? `<p><strong>${title}</strong></p>` : "") + meta.map((line) => `<p>${line}</p>`).join("");
+      return buildCaption({
+        title: el.title,
+        camera: el.dataset.captionCamera,
+        film: el.dataset.captionFilm,
+        lens: el.dataset.captionLens,
+      });
     },
   });
 

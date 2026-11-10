@@ -1,5 +1,6 @@
 {{/* Input: {image, full?}. Returns image with stroke and border applied.
-     full=true uses strokeSizeFull/borderSizeFull params (absolute pixels for full-size images). */}}
+  full=true uses strokeSizeFull/borderSizeFull params (absolute pixels for full-size images).
+*/}}
 {{ $image := .image }}
 {{ $strokeSize := site.Params.gallery.strokeSize | default 0 | int }}
 {{ $borderSize := site.Params.gallery.borderSize | default 0 | int }}
