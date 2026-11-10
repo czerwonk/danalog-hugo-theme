@@ -13,3 +13,4 @@ photoCount:
   other: "{{ . }} 张照片"
 albumCount:
   other: "{{ .count }} 个相册，共计 {{ .photoCount }}"
+copyCaptionTitle: "复制相机、胶片和镜头"

@@ -333,6 +333,16 @@ photoCount:
 
 The lightbox shows camera, film (`UserComment`) and lens EXIF values with icons from `assets/icons/camera.svg`, `film.svg` and `lens.svg`. To replace an icon, put an SVG with the same name into your site's `assets/icons/`. Use `currentColor` for strokes or fills so the icon follows the caption color.
 
+The lightbox toolbar has a copy button that puts camera, film and lens on the clipboard as plain text with emojis, ready to paste into social media posts:
+
+```text
+📷 Leica M2
+🎞️ Kodak Portra 400
+🔘 Leica Summicron 50mm f/2
+```
+
+The button is hidden for photos without this information and on sites served without HTTPS (the Clipboard API requires a secure context; `localhost` works).
+
 ### Custom JavaScript
 
 You can add additional JavaScript in `assets/js/custom.js`.

@@ -20,3 +20,18 @@ export function buildCaption({ title = "", camera = "", film = "", lens = "" } =
   const list = meta ? `<ul class="caption-meta">${meta}</ul>` : "";
   return heading + list;
 }
+
+const COPY_EMOJIS = { camera: "📷", film: "🎞️", lens: "🔘" };
+
+/**
+ * Builds plain text for pasting into social media posts: one emoji line per EXIF value.
+ * The title is left out, since posts usually have their own text.
+ * @param {{camera?: string, film?: string, lens?: string}} caption
+ * @returns {string} text, or an empty string if there is nothing to copy
+ */
+export function buildCaptionText({ camera = "", film = "", lens = "" } = {}) {
+  return Object.entries({ camera, film, lens })
+    .filter(([, value]) => value)
+    .map(([key, value]) => `${COPY_EMOJIS[key]} ${value}`)
+    .join("\n");
+}

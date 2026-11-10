@@ -13,3 +13,4 @@ photoCount:
   other: "写真{{ . }}枚"
 albumCount:
   other: "{{ .count }}枚のアルバムに{{ .photoCount }}"
+copyCaptionTitle: "カメラ・フィルム・レンズをコピー"

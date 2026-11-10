@@ -2,7 +2,7 @@ import PhotoSwipeLightbox from "./photoswipe/photoswipe-lightbox.esm.js";
 import PhotoSwipe from "./photoswipe/photoswipe.esm.js";
 import PhotoSwipeDynamicCaption from "./photoswipe/photoswipe-dynamic-caption-plugin.esm.min.js";
 import * as params from "@params";
-import { buildCaption } from "./caption.js";
+import { buildCaption, buildCaptionText } from "./caption.js";
 
 const gallery = document.getElementById("gallery");
 
@@ -77,6 +77,52 @@ if (gallery) {
       });
     });
   }
+
+  // Copies camera, film and lens as emoji lines, e.g. for social media posts
+  const COPY_ICON = "M11 8h11v2h-9v12h-2zm4 4h11v13H15zm2 2v9h7v-9z";
+  const COPIED_ICON = "M13.5 21.2 9.4 17.1 8 18.5l5.5 5.5L25 12.5l-1.4-1.4z";
+  const captionTextFor = (slide) => {
+    const { captionCamera, captionFilm, captionLens } = slide.data.element.dataset;
+    return buildCaptionText({ camera: captionCamera, film: captionFilm, lens: captionLens });
+  };
+
+  lightbox.on("uiRegister", () => {
+    lightbox.pswp.ui.registerElement({
+      name: "copy-caption-button",
+      order: 9,
+      isButton: true,
+      title: params.copyCaptionTitle || "Copy camera, film and lens",
+      html: {
+        isCustomSVG: true,
+        inner: `<path fill-rule="evenodd" d="${COPY_ICON}" id="pswp__icn-copy"/>`,
+        outlineID: "pswp__icn-copy",
+      },
+      onInit: (el, pswp) => {
+        // The Clipboard API is only available in secure contexts (https, localhost)
+        if (!navigator.clipboard) {
+          el.hidden = true;
+          return;
+        }
+        const icon = el.querySelector("#pswp__icn-copy");
+        let resetTimer;
+        pswp.on("change", () => {
+          el.hidden = !captionTextFor(pswp.currSlide);
+        });
+        el.addEventListener("click", async () => {
+          const text = captionTextFor(pswp.currSlide);
+          if (!text) return;
+          try {
+            await navigator.clipboard.writeText(text);
+            icon.setAttribute("d", COPIED_ICON);
+            clearTimeout(resetTimer);
+            resetTimer = setTimeout(() => icon.setAttribute("d", COPY_ICON), 1500);
+          } catch (error) {
+            console.warn("Copying the caption failed", error);
+          }
+        });
+      },
+    });
+  });
 
   lightbox.on("change", () => {
     const target = lightbox.pswp.currSlide?.data?.element?.dataset["pswpTarget"];

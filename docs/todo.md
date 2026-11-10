@@ -6,7 +6,6 @@ Modernization: keep the minimalism, lean into an analog / darkroom / contact she
 
 ### Phase 2: layout and motion
 
-
 ### Phase 3: color and cleanup
 
 - [ ] (medium) V4: Softer surfaces: dark around `#141414`–`#1b1b1b`, light off-white (`#f2f1ee`) so white mats stay visible in light mode.
@@ -16,6 +15,10 @@ Modernization: keep the minimalism, lean into an analog / darkroom / contact she
 - [ ] (low) N2: Categories as plain text links instead of bordered pills.
 
 ## Done
+
+### Copy caption (2026-11-10)
+
+- [x] Lightbox copy button: camera, film and lens as emoji lines (📷 🎞️ 🔘) for social media posts; title excluded. Hidden without EXIF data or without Clipboard API (non-HTTPS).
 
 ### Phase 2 follow-ups (2026-11-10)
 

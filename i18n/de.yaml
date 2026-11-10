@@ -15,3 +15,4 @@ photoCount:
 albumCount:
   one: "{{ .photoCount }} in {{ .count }} Album"
   other: "{{ .photoCount }} in {{ .count }} Alben"
+copyCaptionTitle: "Kamera, Film und Objektiv kopieren"
