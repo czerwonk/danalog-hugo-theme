@@ -95,6 +95,7 @@ assert_contains "$HOME_PAGE" '<a class="site-nav-link" href="/" aria-current="pa
 assert_contains "$ALBUM_A" '<a class="site-nav-link" href="/" aria-current="false">Home</a>' "N1: top-level link is not current on other pages"
 assert_contains "$HOME_PAGE" '<button class="site-nav-group" type="button" aria-expanded="false" aria-controls="nav-galleries">' "N1: menu groups are disclosure buttons"
 assert_contains "$HOME_PAGE" '<div class="site-nav-panel" id="nav-galleries" hidden>' "N1: group panels are hidden by default"
+assert_contains "$HOME_PAGE" '<div class="site-nav-panel site-nav-panel-wide" id="nav-archive" hidden>' "N1: groups with more than 8 entries get a separate wide class (prettier once glued the class names together)"
 assert_contains "$ALBUM_A" 'href="/album-a/" aria-current="page"' "N1: current page is marked with aria-current=page"
 assert_not_contains "$HOME_PAGE" 'href="/album-a/" aria-current="page"' "N1: other pages are not marked current"
 sed -n '/<header/,/<\/header>/p' "$HOME_PAGE" | grep -q 'id="menu"' || fail "N1: mobile menu must be inside the sticky header"

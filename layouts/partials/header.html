@@ -22,7 +22,8 @@
                 {{ .Name }}
                 <svg class="icon" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" /></svg>
               </button>
-              <div class="site-nav-panel{{ if gt (len .Children) 8 }}site-nav-panel-wide{{ end }}" id="{{ $panelID }}" hidden>
+              {{ $panelClass := cond (gt (len .Children) 8) "site-nav-panel site-nav-panel-wide" "site-nav-panel" }}
+              <div class="{{ $panelClass }}" id="{{ $panelID }}" hidden>
                 <ul>
                   {{ with .URL }}
                     <li><a href="{{ . }}" aria-current="{{ partial "menu-current.html" (dict "page" $ "entry" $item) }}">{{ $item.Name }}</a></li>

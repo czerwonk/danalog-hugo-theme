@@ -63,6 +63,6 @@ Modernization: keep the minimalism, lean into an analog / darkroom / contact she
 
 ## Recurring issues
 
-- `prettier-plugin-go-template` can change output: it removed the whitespace between optional attributes (`{{ with }}attr{{ end }}`). Keep separating spaces outside the `with` blocks and check generated HTML after formatting.
+- `prettier-plugin-go-template` can change output: it removed the whitespace between optional attributes (`{{ with }}attr{{ end }}`). Keep separating spaces outside the `with` blocks and check generated HTML after formatting. It also turned `class="a{{ if }} b{{ end }}"` into `class="ab"` (phase 2 nav panel); compute such attribute values in a variable (`cond`) instead of inline conditionals.
 - `hugo --quiet` also hides build errors; the build checks use `--logLevel warn` and capture the log, printing it on failure.
 - Lint and format via podman when `node_modules` are not installed: `podman run --rm -v "$PWD":/work -w /work docker.io/library/node:lts sh -c "npm install && npm run lint && npx prettier --check ."`
