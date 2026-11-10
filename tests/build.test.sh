@@ -119,6 +119,14 @@ assert_contains "$CSS" '\.card>figure\{[^}]*margin:calc\(66\.6+7cqw - var\(--pri
 # Lightbox title uses the display font like other titles
 assert_contains "$CSS" '\.caption-title\{[^}]*font-family:var\(--font-display\)' "Lightbox caption title must use the display font"
 
+# Typography: titles share --font-display/--font-display-weight; lightbox details keep their original case
+assert_contains "$CSS" '--font-display-weight:' "--font-display-weight variable must be defined"
+assert_not_contains "$CSS" '\.card>div>h2\{[^}]*font-weight:600' "card titles must use --font-display-weight instead of a fixed weight"
+assert_contains "$CSS" '\.card>div>h2\{[^}]*font-weight:var\(--font-display-weight\)' "card titles use --font-display-weight"
+assert_contains "$CSS" '\.caption-title\{[^}]*font-weight:var\(--font-display-weight\)' "lightbox title uses --font-display-weight"
+assert_contains "$CSS" '\.caption-meta\{[^}]*text-transform:none' "lightbox details keep their original case (f/2, 35mm)"
+assert_contains "$CSS" '\.site-nav-panel a\{[^}]*font-family:var\(--font-display\)' "album names in the nav panel use the display font like the card titles"
+
 # N3: featured album as a print with a caption below, no gradient overlay
 assert_contains "$HOME_PAGE" '<a class="featured-card" href="/album-c/">' "N3: featured block links to the album"
 sed -n '/<section class="featured">/,/<\/section>/p' "$HOME_PAGE" | grep -q '<img' || fail "N3: featured image must be an img element"

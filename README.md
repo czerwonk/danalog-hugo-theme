@@ -303,13 +303,14 @@ CSS is generated with Hugo Pipes, so you can add additional CSS in `assets/css/c
 
 The theme exposes these CSS variables:
 
-| Variable             | Default                 | Purpose                                                              |
-| -------------------- | ----------------------- | -------------------------------------------------------------------- |
-| `--radius`           | `0`                     | Corner radius of photos                                              |
-| `--card-fit`         | `cover`                 | `object-fit` of album card images; `contain` keeps borders uncropped |
-| `--card-placeholder` | the image's placeholder | Card background while loading; set `transparent` with `contain`      |
-| `--font-display`     | system sans-serif       | Page, album and featured titles                                      |
-| `--font-meta`        | system monospace        | Metadata labels (photo counts, EXIF captions)                        |
+| Variable                | Default                 | Purpose                                                              |
+| ----------------------- | ----------------------- | -------------------------------------------------------------------- |
+| `--radius`              | `0`                     | Corner radius of photos                                              |
+| `--card-fit`            | `cover`                 | `object-fit` of album card images; `contain` keeps borders uncropped |
+| `--card-placeholder`    | the image's placeholder | Card background while loading; set `transparent` with `contain`      |
+| `--font-display`        | system sans-serif       | Page, album, featured and lightbox titles, menu entries              |
+| `--font-display-weight` | `600`                   | Weight of those titles; match a weight your font files provide       |
+| `--font-meta`           | system monospace        | Metadata labels (photo counts, EXIF captions)                        |
 
 ```css
 :root {
