@@ -333,6 +333,8 @@ You can add additional JavaScript in `assets/js/custom.js`.
 
 `npm test` (or `tests/run.sh`) runs the JavaScript unit tests and builds the fixture site in `tests/site` to check the generated HTML and CSS. Requires Hugo, Dart Sass and Node.js.
 
+Third-party libraries (PhotoSwipe, its dynamic caption plugin, lazysizes) are vendored into `assets/`, so sites build without Node.js. Their versions are pinned in `package.json` (`dependencies`), which Dependabot monitors. After changing a version, run `npm install && npm run vendor` and commit the updated files; CI (`npm run vendor -- --check`) fails while they differ.
+
 ## Author
 
 - [Nico Kaiser](https://kaiser.me/) (original [hugo-theme-gallery](https://github.com/nicokaiser/hugo-theme-gallery))

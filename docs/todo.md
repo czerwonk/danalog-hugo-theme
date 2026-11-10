@@ -22,6 +22,10 @@ Modernization: keep the minimalism, lean into an analog / darkroom / contact she
 
 ## Done
 
+### Dependency monitoring (2026-11-10)
+
+- [x] Vendored libraries pinned in `package.json` (`photoswipe` 5.4.4, `photoswipe-dynamic-caption-plugin` 1.2.7, `lazysizes` 5.3.2; verified identical to the npm releases apart from line endings/formatting). `npm run vendor` copies them from `node_modules`, `--check` runs in CI. Dependabot configured for npm and GitHub Actions.
+
 ### Dart Sass (2026-11-10)
 
 - [x] (low) Switched from deprecated libsass to Dart Sass (`css.Sass` with `transpiler: dartsass`, `@use` instead of `@import`). Requires the `sass` executable (nixpkgs `dart-sass`, CI via snap). Minimum Hugo is now 0.128.0 (`css.Sass`); CI pinned to 0.168.0. Compiled CSS is identical apart from Dart Sass dropping redundant `calc()` inside `clamp()`. The build check fails on libsass or Sass deprecation warnings.
@@ -45,6 +49,7 @@ Modernization: keep the minimalism, lean into an analog / darkroom / contact she
 
 ## Decisions
 
+- Vendored files stay in `assets/` instead of being resolved from `node_modules` at build time: sites (git submodule) build with Hugo alone. `package.json` exists for Dependabot and tooling only. `justified-layout.ts` is a modified fork and maintained as theme code.
 - Direction is analog/darkroom rather than generic editorial, matching the main consumer (danalog.pics): dark default, film-strip banner, monospace type, matted prints.
 - No bundled web fonts and no icon library: fonts come from the site via CSS variables, icons are drawn in-house as SVG files that sites can override.
 - No WebP/AVIF conversion in the theme: danalog.pics needs JPEG derivatives for other platforms.
