@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { slugify, matches, filterableDimensions, availableOptions, filtersFromQuery, filtersToQuery, toItem, validFilterValue } from "../../assets/js/gallery-filter-core.js";
+import { slugify, matches, filterBar, availableOptions, filtersFromQuery, filtersToQuery, toItem, validFilterValue } from "../../assets/js/gallery-filter-core.js";
 
 const items = [
   { camera: "Leica M2", lens: "Summicron 50mm f/2", film: "Kodak Portra 400", orientation: "landscape" },
@@ -22,16 +22,31 @@ test("matches combines dimensions with AND and ignores empty filters", () => {
   assert.ok(matches(items[2], { camera: "Nikon F3", lens: "" }), "empty filter value means any");
 });
 
-test("only dimensions with at least two distinct values are filterable", () => {
-  assert.deepEqual(filterableDimensions(items), ["camera", "film", "orientation"], "lens has a single non-empty value");
-  assert.deepEqual(filterableDimensions(items.slice(0, 1)), [], "a single photo offers nothing to filter");
+test("filter bar: varying dimensions become dropdowns, shared gear is shown as static info", () => {
+  assert.deepEqual(filterBar(items), { statics: [{ dimension: "lens", value: "Summicron 50mm f/2" }], dropdowns: ["camera", "film", "orientation"] }, "lens has one value (photos without a lens value are ignored), the rest varies");
   const sameGear = [
-    { camera: "Leica M2", film: "HP5+", orientation: "landscape" },
-    { camera: "Leica M2", film: "HP5+", orientation: "portrait" },
+    { camera: "Leica M2", lens: "", film: "HP5+", orientation: "landscape" },
+    { camera: "Leica M2", lens: "", film: "HP5+", orientation: "portrait" },
   ];
-  assert.deepEqual(filterableDimensions(sameGear), [], "orientation alone is not worth a filter bar");
-  const twoFilms = [...sameGear, { camera: "Leica M2", film: "Portra 400", orientation: "landscape" }];
-  assert.deepEqual(filterableDimensions(twoFilms), ["film", "orientation"], "orientation joins once camera, lens or film varies");
+  assert.deepEqual(
+    filterBar(sameGear),
+    {
+      statics: [
+        { dimension: "camera", value: "Leica M2" },
+        { dimension: "film", value: "HP5+" },
+      ],
+      dropdowns: ["orientation"],
+    },
+    "orientation is accompanied by the shared camera and film",
+  );
+  assert.deepEqual(filterBar([{ orientation: "landscape" }, { orientation: "portrait" }]), { statics: [], dropdowns: [] }, "without any gear info, orientation never stands alone");
+  const allLandscape = [
+    { camera: "Leica M2", film: "HP5+", orientation: "landscape" },
+    { camera: "Leica M2", film: "Portra 400", orientation: "landscape" },
+  ];
+  assert.deepEqual(filterBar(allLandscape).dropdowns, ["film"], "no orientation dropdown when all photos share one orientation");
+  assert.deepEqual(filterBar(items.slice(0, 1)).dropdowns, [], "a single photo offers nothing to filter");
+  assert.equal(filterBar(items.slice(0, 1)).statics.length, 3, "but its camera, lens and film are shown");
 });
 
 test("options count photos matching the other active filters", () => {

@@ -38,13 +38,22 @@ export const matches = (item, filters) => DIMENSIONS.every((dimension) => !filte
 
 const distinctValues = (items, dimension) => [...new Set(items.map((item) => item[dimension]).filter(Boolean))];
 
+// Gear dimensions can be shown as static info (with an icon) when all photos share one value
+const GEAR = ["camera", "lens", "film"];
+
 /**
- * Dimensions worth a filter: at least two different values in the gallery. Orientation only
- * counts as an addition; on its own (same camera, lens and film throughout) no filter is offered.
+ * Splits the dimensions into static info and dropdowns:
+ *   statics    camera, lens or film with exactly one value in the gallery (photos without a value are ignored)
+ *   dropdowns  dimensions with at least two values
+ * Without any gear info both are empty, so orientation never stands alone.
  */
-export function filterableDimensions(items) {
-  const dimensions = DIMENSIONS.filter((dimension) => distinctValues(items, dimension).length >= 2);
-  return dimensions.some((dimension) => dimension !== "orientation") ? dimensions : [];
+export function filterBar(items) {
+  const statics = GEAR.map((dimension) => ({ dimension, values: distinctValues(items, dimension) }))
+    .filter(({ values }) => values.length === 1)
+    .map(({ dimension, values }) => ({ dimension, value: values[0] }));
+  const dropdowns = DIMENSIONS.filter((dimension) => distinctValues(items, dimension).length >= 2);
+  const hasGear = statics.length > 0 || dropdowns.some((dimension) => GEAR.includes(dimension));
+  return hasGear ? { statics, dropdowns } : { statics: [], dropdowns: [] };
 }
 
 const sortValues = (dimension, values) => (dimension === "orientation" ? ORIENTATION_ORDER.filter((value) => values.includes(value)) : [...values].sort((a, b) => a.localeCompare(b)));

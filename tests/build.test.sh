@@ -170,6 +170,8 @@ assert_contains "$ALBUM_A" '<form class="gallery-filter" role="search" aria-labe
 assert_not_contains "$HOME_PAGE" 'class="gallery-filter"' "filter: pages without a gallery have no filter"
 assert_contains "$CSS" '\.gallery-filter\[hidden\]\{display:none\}' "filter: the form stays hidden until JS fills it (display would override the hidden attribute)"
 assert_contains "$CSS" '\.gallery-filter \.gallery-filter-reset\[hidden\]\{display:none\}' "filter: reset button is hidden without active filters"
+assert_contains "$CSS" '\.gallery-filter-static\{' "filter: shared gear is styled as static info"
+assert_contains "$CSS" '\.visually-hidden\{' "screen reader labels have a visually-hidden utility"
 
 # N3: featured album as a print with a caption below, no gradient overlay
 assert_contains "$HOME_PAGE" '<a class="featured-card" href="/album-c/">' "N3: featured block links to the album"

@@ -1,8 +1,9 @@
-// Filter form above a gallery: one select per dimension with at least two values.
+// Filter bar above a gallery: shared camera/lens/film as static info with icons, one select per
+// dimension with at least two values (orientation only alongside gear info).
 // Filters combine (AND), options show the remaining photo count and are disabled at 0,
 // the state lives in the query string. Hidden items are skipped by gallery.js and the lightbox.
 import * as params from "@params";
-import { DIMENSIONS, availableOptions, filterableDimensions, filtersFromQuery, filtersToQuery, matches, toItem, validFilterValue } from "./gallery-filter-core.js";
+import { DIMENSIONS, availableOptions, filterBar, filtersFromQuery, filtersToQuery, matches, toItem, validFilterValue } from "./gallery-filter-core.js";
 
 const gallery = document.getElementById("gallery");
 const form = document.querySelector(".gallery-filter");
@@ -72,25 +73,56 @@ export function resetFilters() {
   apply();
 }
 
-function init() {
-  const dimensions = filterableDimensions(entries);
-  if (dimensions.length === 0) return;
+function iconFor(dimension) {
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("class", "icon");
+  svg.setAttribute("width", "16");
+  svg.setAttribute("height", "16");
+  svg.setAttribute("aria-hidden", "true");
+  const use = document.createElementNS("http://www.w3.org/2000/svg", "use");
+  use.setAttribute("href", `#icon-${dimension}`);
+  svg.append(use);
+  return svg;
+}
 
-  dimensions.forEach((dimension) => {
-    const label = document.createElement("label");
-    const caption = document.createElement("span");
-    caption.textContent = LABELS[dimension];
-    const select = document.createElement("select");
-    select.name = dimension;
-    select.addEventListener("change", () => {
-      // Options can be altered in the browser; only values present in the gallery are accepted
-      filters = { ...filters, [dimension]: validFilterValue(entries, dimension, select.value) };
-      apply();
-    });
-    selects[dimension] = select;
-    label.append(caption, select);
-    form.append(label);
+// Gear shared by all photos (e.g. one camera): icon + value instead of a dropdown
+function renderStatic({ dimension, value }) {
+  const item = document.createElement("p");
+  item.className = "gallery-filter-static";
+  item.title = LABELS[dimension];
+  const label = document.createElement("span");
+  label.className = "visually-hidden";
+  label.textContent = `${LABELS[dimension]}: `;
+  const text = document.createElement("span");
+  text.textContent = value;
+  item.append(iconFor(dimension), label, text);
+  form.append(item);
+}
+
+function renderDropdown(dimension) {
+  const label = document.createElement("label");
+  const caption = document.createElement("span");
+  caption.textContent = LABELS[dimension];
+  const select = document.createElement("select");
+  select.name = dimension;
+  select.addEventListener("change", () => {
+    // Options can be altered in the browser; only values present in the gallery are accepted
+    filters = { ...filters, [dimension]: validFilterValue(entries, dimension, select.value) };
+    apply();
   });
+  selects[dimension] = select;
+  label.append(caption, select);
+  form.append(label);
+}
+
+function init() {
+  const { statics, dropdowns } = filterBar(entries);
+  if (statics.length === 0 && dropdowns.length === 0) return;
+
+  statics.forEach(renderStatic);
+  dropdowns.forEach(renderDropdown);
+  form.hidden = false;
+  if (dropdowns.length === 0) return;
 
   const reset = document.createElement("button");
   reset.type = "reset";
@@ -103,8 +135,9 @@ function init() {
   });
   form.addEventListener("submit", (event) => event.preventDefault());
 
-  filters = filtersFromQuery(location.search, entries);
-  form.hidden = false;
+  // Only dropdown dimensions can be filtered; a query value for static gear is ignored
+  const fromQuery = filtersFromQuery(location.search, entries);
+  filters = Object.fromEntries(dropdowns.filter((dimension) => fromQuery[dimension]).map((dimension) => [dimension, fromQuery[dimension]]));
   apply();
 }
 

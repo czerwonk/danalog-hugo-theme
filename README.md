@@ -332,7 +332,7 @@ photoCount:
 
 ### Gallery Filter
 
-Galleries (albums, the recent page and equipment pages) get a filter bar with one dropdown per camera, lens, film (`UserComment`) and orientation, built from the photos' EXIF data. A dropdown only appears if the gallery has at least two different values, so a camera page offers no camera filter. Orientation alone does not show the filter bar; it is offered alongside camera, lens or film. Filters combine; each option shows how many photos remain and is disabled if none would. The active filter is kept in the URL (e.g. `?film=kodak-portra-400`), so filtered views can be shared; the lightbox only steps through the filtered photos. Without JavaScript the filter bar stays hidden.
+Galleries (albums, the recent page and equipment pages) get a filter bar with one dropdown per camera, lens, film (`UserComment`) and orientation, built from the photos' EXIF data. Camera, lens or film shared by all photos are shown as static info with their icons instead; a dropdown only appears for values that differ, so a camera page shows its camera and offers filters for the rest. Orientation is offered alongside this gear info, never on its own; galleries without camera, lens or film data show no filter bar. Filters combine; each option shows how many photos remain and is disabled if none would. The active filter is kept in the URL (e.g. `?film=kodak-portra-400`), so filtered views can be shared; the lightbox only steps through the filtered photos. Without JavaScript the filter bar stays hidden.
 
 ### Caption Icons
 

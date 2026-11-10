@@ -326,6 +326,12 @@ section.galleries {
     .gallery-filter-reset {
       justify-self: start;
     }
+
+    // Shared gear as a short list, one line each, above the dropdowns
+    .gallery-filter-static {
+      grid-column: 1 / -1;
+      padding: 0;
+    }
   }
 
   &[hidden] {
@@ -352,6 +358,7 @@ section.galleries {
     max-width: 16rem;
     color: var(--text-1);
     font-family: var(--font-display);
+    font-size: 0.875rem;
   }
 
   option {
@@ -374,6 +381,33 @@ section.galleries {
       display: none;
     }
   }
+}
+
+// Gear shared by all photos of a gallery, shown next to the filter dropdowns.
+// The transparent bottom border keeps it level with the underlined selects.
+.gallery-filter-static {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-bottom: 1px solid transparent;
+  padding: 0.25rem 0;
+  color: var(--text-1);
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+
+  .icon {
+    flex: none;
+    color: var(--text-2);
+  }
+}
+
+.visually-hidden {
+  position: absolute;
+  clip-path: inset(50%);
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 // Prints keep a margin to the window edges: the box spacing on phones, the page margin above
