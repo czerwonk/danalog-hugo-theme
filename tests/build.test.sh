@@ -163,6 +163,14 @@ assert_not_contains "$ALBUM_A" ' 2x"' "P2: no 2x candidate when the original is 
 assert_contains "$CSS" 'section\.gallery\{padding-right:\.5rem;padding-left:\.5rem\}' "gallery has a small edge margin on phones"
 assert_contains "$CSS" 'section\.gallery\{padding-right:1\.5rem;padding-left:1\.5rem\}' "gallery aligns with the 1.5rem page margin on larger screens"
 
+# Gallery filter: photos carry their orientation; gallery pages get a filter form that JS fills in
+assert_contains "$ALBUM_A" 'data-orientation="landscape"' "filter: landscape photos are marked"
+assert_contains "$ALBUM_A" 'data-orientation="portrait"' "filter: portrait photos are marked"
+assert_contains "$ALBUM_A" '<form class="gallery-filter" role="search" aria-label="Filter photos" hidden>' "filter: gallery pages contain the (initially hidden) filter form"
+assert_not_contains "$HOME_PAGE" 'class="gallery-filter"' "filter: pages without a gallery have no filter"
+assert_contains "$CSS" '\.gallery-filter\[hidden\]\{display:none\}' "filter: the form stays hidden until JS fills it (display would override the hidden attribute)"
+assert_contains "$CSS" '\.gallery-filter \.gallery-filter-reset\[hidden\]\{display:none\}' "filter: reset button is hidden without active filters"
+
 # N3: featured album as a print with a caption below, no gradient overlay
 assert_contains "$HOME_PAGE" '<a class="featured-card" href="/album-c/">' "N3: featured block links to the album"
 sed -n '/<section class="featured">/,/<\/section>/p' "$HOME_PAGE" | grep -q '<img' || fail "N3: featured image must be an img element"

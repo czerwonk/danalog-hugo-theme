@@ -14,3 +14,13 @@ photoCount:
 albumCount:
   other: "{{ .count }}枚のアルバムに{{ .photoCount }}"
 copyCaptionTitle: "カメラ・フィルム・レンズをコピー"
+filterLabel: "写真を絞り込む"
+filterCamera: "カメラ"
+filterLens: "レンズ"
+filterFilm: "フィルム"
+filterOrientation: "向き"
+filterAll: "すべて"
+orientationLandscape: "横"
+orientationPortrait: "縦"
+orientationSquare: "正方形"
+filterReset: "リセット"

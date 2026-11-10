@@ -330,6 +330,10 @@ photoCount:
   other: "{{ . }} frames"
 ```
 
+### Gallery Filter
+
+Galleries (albums, the recent page and equipment pages) get a filter bar with one dropdown per camera, lens, film (`UserComment`) and orientation, built from the photos' EXIF data. A dropdown only appears if the gallery has at least two different values, so a camera page offers no camera filter. Filters combine; each option shows how many photos remain and is disabled if none would. The active filter is kept in the URL (e.g. `?film=kodak-portra-400`), so filtered views can be shared; the lightbox only steps through the filtered photos. Without JavaScript the filter bar stays hidden.
+
 ### Caption Icons
 
 The lightbox shows camera, film (`UserComment`) and lens EXIF values with icons from `assets/icons/camera.svg`, `film.svg` and `lens.svg`. To replace an icon, put an SVG with the same name into your site's `assets/icons/`. Use `currentColor` for strokes or fills so the icon follows the caption color.

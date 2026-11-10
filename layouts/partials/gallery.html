@@ -1,5 +1,6 @@
 <section class="gallery">
   {{ partial "icon-sprite.html" . }}
+  {{ partial "gallery-filter.html" . }}
   <div id="gallery" style="visibility: hidden; height: 1px; overflow: hidden">
     {{ $images := slice }}
     {{ range $image := where (.Resources.ByType "image") "Params.hidden" "ne" true }}

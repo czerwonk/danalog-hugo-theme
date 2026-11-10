@@ -17,6 +17,13 @@
   {{ $pswpSrcset = printf "%s, %s %dw" $pswpSrcset $halfWithBorder.RelPermalink $halfWithBorder.Width }}
 {{ end }}
 
+{{ $orientation := "square" }}
+{{ if gt $thumbnail.Width $thumbnail.Height }}
+  {{ $orientation = "landscape" }}
+{{ else if lt $thumbnail.Width $thumbnail.Height }}
+  {{ $orientation = "portrait" }}
+{{ end }}
+
 {{ $href := $image.RelPermalink }}
 {{ if not .publishResources }}{{ $href = $full.RelPermalink }}{{ end }}
 
@@ -36,7 +43,7 @@
 {{ end }}
 
 
-<a class="gallery-item" href="{{ $href }}" data-pswp-src="{{ $full.RelPermalink }}" data-pswp-width="{{ $full.Width }}" data-pswp-height="{{ $full.Height }}" {{ printf "data-pswp-srcset=%q" $pswpSrcset | safeHTMLAttr }} data-pswp-target="{{ .pswpTarget }}" title="{{ .title }}" data-caption-camera="{{ $captionCamera }}" data-caption-film="{{ $captionFilm }}" data-caption-lens="{{ $captionLens }}" itemscope itemtype="https://schema.org/ImageObject" style="aspect-ratio: {{ $thumbnail.Width }} / {{ $thumbnail.Height }}">
+<a class="gallery-item" href="{{ $href }}" data-pswp-src="{{ $full.RelPermalink }}" data-pswp-width="{{ $full.Width }}" data-pswp-height="{{ $full.Height }}" {{ printf "data-pswp-srcset=%q" $pswpSrcset | safeHTMLAttr }} data-pswp-target="{{ .pswpTarget }}" title="{{ .title }}" data-caption-camera="{{ $captionCamera }}" data-caption-film="{{ $captionFilm }}" data-caption-lens="{{ $captionLens }}" data-orientation="{{ $orientation }}" itemscope itemtype="https://schema.org/ImageObject" style="aspect-ratio: {{ $thumbnail.Width }} / {{ $thumbnail.Height }}">
   <figure style="--placeholder: {{ $color }}; aspect-ratio: {{ $thumbnail.Width }} / {{ $thumbnail.Height }}">
     <img loading="lazy" decoding="async" width="{{ $thumbnail.Width }}" height="{{ $thumbnail.Height }}" src="{{ $thumbnail.RelPermalink }}" srcset="{{ $thumb.srcset }}" alt="{{ .title }}" />
   </figure>

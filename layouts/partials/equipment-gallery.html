@@ -1,6 +1,7 @@
 {{/* Input: slice of {image, page} dicts from collect-equipment.html */}}
 <section class="gallery">
   {{ partial "icon-sprite.html" . }}
+  {{ partial "gallery-filter.html" . }}
   <div id="gallery" style="visibility: hidden; height: 1px; overflow: hidden">
     {{ range . }}
       {{ $image := .image }}

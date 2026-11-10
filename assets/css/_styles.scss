@@ -303,6 +303,79 @@ section.galleries {
   }
 }
 
+// Filter form above a gallery, filled by assets/js/gallery-filter.js
+.gallery-filter {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 1rem 2rem;
+  margin: 0 auto 2rem;
+
+  // Phones: two even columns instead of unevenly wrapping fields
+  @media (max-width: 639px) {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+
+    select {
+      width: 100%;
+      max-width: none;
+    }
+
+    .gallery-filter-reset {
+      justify-self: start;
+    }
+  }
+
+  &[hidden] {
+    display: none;
+  }
+
+  label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+
+  label > span {
+    @extend %meta-label;
+
+    color: var(--text-2);
+  }
+
+  select {
+    border: 0;
+    border-bottom: 1px solid var(--border);
+    background-color: transparent;
+    padding: 0.25rem 0;
+    max-width: 16rem;
+    color: var(--text-1);
+    font-family: var(--font-display);
+  }
+
+  option {
+    background-color: var(--surface-1);
+    color: var(--text-1);
+  }
+
+  .gallery-filter-reset {
+    @extend %meta-label;
+
+    cursor: pointer;
+    padding: 0.25rem 0;
+    color: var(--text-2);
+
+    &:hover {
+      color: var(--text-1);
+    }
+
+    &[hidden] {
+      display: none;
+    }
+  }
+}
+
 // Prints keep a margin to the window edges: the box spacing on phones, the page margin above
 section.gallery {
   padding-right: 0.5rem;

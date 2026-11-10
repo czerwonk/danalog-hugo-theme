@@ -6,25 +6,32 @@ const gallery = document.getElementById("gallery");
 
 if (gallery) {
   let containerWidth = 0;
-  const items = gallery.querySelectorAll(".gallery-item");
+  const items = Array.from(gallery.querySelectorAll(".gallery-item"));
 
-  const aspectRatios = Array.from(items).map((item) => {
-    const img = item.querySelector("img");
-    img.style.width = "100%";
-    img.style.height = "auto";
-    return parseFloat(img.getAttribute("width")) / parseFloat(img.getAttribute("height"));
-  });
+  const aspectRatios = new Map(
+    items.map((item) => {
+      const img = item.querySelector("img");
+      img.style.width = "100%";
+      img.style.height = "auto";
+      return [item, parseFloat(img.getAttribute("width")) / parseFloat(img.getAttribute("height"))];
+    }),
+  );
 
-  function updateGallery() {
-    if (containerWidth === gallery.getBoundingClientRect().width) return;
+  // Lays out the visible items; hidden ones (gallery filter) are skipped
+  function updateGallery({ force = false } = {}) {
+    if (!force && containerWidth === gallery.getBoundingClientRect().width) return;
     containerWidth = gallery.getBoundingClientRect().width;
 
-    const layout = justifiedLayout(aspectRatios, {
-      rowWidth: containerWidth,
-      ...layoutOptions(params),
-    });
+    const visible = items.filter((item) => !item.hidden);
+    const layout = justifiedLayout(
+      visible.map((item) => aspectRatios.get(item)),
+      {
+        rowWidth: containerWidth,
+        ...layoutOptions(params),
+      },
+    );
 
-    items.forEach((item, i) => {
+    visible.forEach((item, i) => {
       const { width, height, top, left } = layout.boxes[i];
       item.style.position = "absolute";
       item.style.width = width + "px";
@@ -39,8 +46,9 @@ if (gallery) {
     gallery.style.visibility = "";
   }
 
-  window.addEventListener("resize", updateGallery);
-  window.addEventListener("orientationchange", updateGallery);
+  window.addEventListener("resize", () => updateGallery());
+  window.addEventListener("orientationchange", () => updateGallery());
+  gallery.addEventListener("gallery:filtered", () => updateGallery({ force: true }));
 
   // Call twice to adjust for scrollbars appearing after first call
   updateGallery();

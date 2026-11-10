@@ -10,6 +10,10 @@ Modernization: keep the minimalism, lean into an analog / darkroom / contact she
 
 ## Done
 
+### Gallery filter (2026-11-10)
+
+- [x] Filter dropdowns for camera, lens, film and orientation on gallery pages (`assets/js/gallery-filter.js`, logic in `gallery-filter-core.js` with unit tests). Only dimensions with two or more values; faceted counts, impossible options disabled; state in the query string (slugs); lightbox skips hidden photos and keeps the query string; a link to a filtered-out photo resets the filter. Two-column grid on phones. Input validation: photo data normalized (`toItem`), query values slug-normalized, bounded (200 chars) and matched against gallery values, form values checked (`validFilterValue`), output only via `textContent`/`new Option()`; checked in Chrome with hostile URLs and a tampered option.
+
 ### Phase 3 (2026-11-10)
 
 - [x] N2: categories as plain text links in the meta label style.

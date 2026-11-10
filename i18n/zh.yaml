@@ -14,3 +14,13 @@ photoCount:
 albumCount:
   other: "{{ .count }} 个相册，共计 {{ .photoCount }}"
 copyCaptionTitle: "复制相机、胶片和镜头"
+filterLabel: "筛选照片"
+filterCamera: "相机"
+filterLens: "镜头"
+filterFilm: "胶片"
+filterOrientation: "方向"
+filterAll: "全部"
+orientationLandscape: "横向"
+orientationPortrait: "纵向"
+orientationSquare: "方形"
+filterReset: "重置"

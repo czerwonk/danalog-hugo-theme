@@ -3,13 +3,15 @@ import PhotoSwipe from "./photoswipe/photoswipe.esm.js";
 import PhotoSwipeDynamicCaption from "./photoswipe/photoswipe-dynamic-caption-plugin.esm.min.js";
 import * as params from "@params";
 import { buildCaption, buildCaptionText } from "./caption.js";
+import { resetFilters } from "./gallery-filter.js";
 
 const gallery = document.getElementById("gallery");
 
 if (gallery) {
   const lightbox = new PhotoSwipeLightbox({
     gallery,
-    children: ".gallery-item",
+    // Photos hidden by the gallery filter are left out of the lightbox
+    children: ".gallery-item:not([hidden])",
     showHideAnimationType: "zoom",
     bgOpacity: 1,
     pswpModule: PhotoSwipe,
@@ -124,13 +126,14 @@ if (gallery) {
     });
   });
 
+  // Path and query string (active gallery filter) are kept, only the hash changes
   lightbox.on("change", () => {
     const target = lightbox.pswp.currSlide?.data?.element?.dataset["pswpTarget"];
-    history.replaceState("", document.title, "#" + target);
+    history.replaceState("", document.title, window.location.pathname + window.location.search + "#" + target);
   });
 
   lightbox.on("close", () => {
-    history.replaceState("", document.title, window.location.pathname);
+    history.replaceState("", document.title, window.location.pathname + window.location.search);
   });
 
   new PhotoSwipeDynamicCaption(lightbox, {
@@ -152,12 +155,12 @@ if (gallery) {
 
   if (window.location.hash.substring(1).length > 1) {
     const target = window.location.hash.substring(1);
-    const items = gallery.querySelectorAll("a");
-    for (let i = 0; i < items.length; i++) {
-      if (items[i].dataset["pswpTarget"] === target) {
-        lightbox.loadAndOpen(i, { gallery });
-        break;
-      }
+    const linked = Array.from(gallery.querySelectorAll(".gallery-item")).find((item) => item.dataset["pswpTarget"] === target);
+    if (linked) {
+      // A shared link to a photo wins over an active filter that hides it
+      if (linked.hidden) resetFilters();
+      const visible = Array.from(gallery.querySelectorAll(".gallery-item:not([hidden])"));
+      lightbox.loadAndOpen(visible.indexOf(linked), { gallery });
     }
   }
 }
