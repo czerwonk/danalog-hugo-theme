@@ -5,13 +5,15 @@
 @use "photoswipe/photoswipe-dynamic-caption-plugin";
 @use "custom";
 
-.lazyload,
-.lazyloading {
-  opacity: 0;
+// Lazily loaded images fade in once loaded (assets/js/fade-in.js); they are only hidden
+// while scripts run, so without JS images show up without the fade
+@media (scripting: enabled) {
+  img[loading="lazy"]:not(.is-loaded) {
+    opacity: 0;
+  }
 }
 
-.lazyloaded {
-  opacity: 1;
+img[loading="lazy"] {
   transition: opacity 300ms;
 }
 
@@ -21,8 +23,4 @@
 
 .card-slide:first-child {
   opacity: 1;
-}
-
-img.lazyload:not([src]) {
-  visibility: hidden;
 }

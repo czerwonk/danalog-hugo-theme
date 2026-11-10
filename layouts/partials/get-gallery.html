@@ -25,16 +25,15 @@
     {{ $featured = $cover | default ((.Resources.ByType "image").GetMatch (.Params.featured_image | default "*feature*")) | default (index $images 0) }}
   {{ end }}
 
-  {{ $thumbnail := $featured.Filter (slice images.AutoOrient (images.Process "fit 600x600")) }}
-  {{ $color := partial "placeholder-color.html" $thumbnail }}
-  {{ $thumbnail = partial "apply-border.html" (dict "image" $thumbnail) }}
+  {{/* previews are thumbnail dicts (see thumbnail.html); the first one is the cover */}}
+  {{ $coverThumb := partial "thumbnail.html" $featured }}
+  {{ $thumbnail := $coverThumb.image }}
+  {{ $color := $coverThumb.color }}
 
-  {{ $previews := slice $thumbnail }}
+  {{ $previews := slice $coverThumb }}
   {{ range after 1 $featuredImages }}
     {{ if lt (len $previews) 5 }}
-      {{ $t := .Filter (slice images.AutoOrient (images.Process "fit 600x600")) }}
-      {{ $t = partial "apply-border.html" (dict "image" $t) }}
-      {{ $previews = $previews | append $t }}
+      {{ $previews = $previews | append (partial "thumbnail.html" .) }}
     {{ end }}
   {{ end }}
 
@@ -49,9 +48,7 @@
   {{ range $images }}
     {{ if lt (len $previews) 5 }}
       {{ if not (in $featuredPermalinks .RelPermalink) }}
-        {{ $t := .Filter (slice images.AutoOrient (images.Process "fit 600x600")) }}
-        {{ $t = partial "apply-border.html" (dict "image" $t) }}
-        {{ $previews = $previews | append $t }}
+        {{ $previews = $previews | append (partial "thumbnail.html" .) }}
       {{ end }}
     {{ end }}
   {{ end }}

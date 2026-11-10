@@ -413,7 +413,9 @@ section.gallery {
 
   & > img,
   & figure > img {
-    transition: filter 200ms;
+    transition:
+      filter 200ms,
+      opacity 300ms;
     border-radius: var(--radius);
 
     // Slideshow previews with another aspect ratio are letterboxed with --card-fit: contain
@@ -631,35 +633,33 @@ section.featured {
   }
 }
 
+// Categories as plain text links in the meta label style, like the navigation
 nav.categories {
+  margin: 0 auto 3rem;
   padding-right: 1.5rem;
   padding-left: 1.5rem;
-  margin: 0 auto 3rem;
 
   & > ul {
     display: flex;
     flex-flow: row wrap;
     justify-content: center;
-    gap: 0.75rem;
+    gap: 0.5rem 1.5rem;
 
     li {
       max-width: 100%;
 
       & > a {
-        display: block;
-        padding: 0.5rem 0.75rem;
-        border-radius: 9999px;
-        border: 1px solid var(--border);
-        font-size: 0.875rem;
-        line-height: 1.4286;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        @extend %meta-label;
 
-        @media (min-width: 640px) {
-          padding: 0.75rem 1rem;
-          font-size: 1rem;
-          line-height: 1.25;
+        display: block;
+        overflow: hidden;
+        padding: 0.5rem 0;
+        color: var(--text-2);
+        text-overflow: ellipsis;
+        white-space: nowrap;
+
+        &:hover {
+          color: var(--text-1);
         }
       }
     }

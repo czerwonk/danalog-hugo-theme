@@ -7,12 +7,12 @@
       <figure class="card-slides-{{ $count }}" style="--placeholder: {{ .color }}">
         {{ range $i, $img := .previews }}
           {{ $slot := cond (eq $i 0) (sub $count 1) (sub $i 1) }}
-          <img class="lazyload card-slide" style="--i: {{ $slot }}" width="{{ $img.Width }}" height="{{ $img.Height }}" data-src="{{ $img.RelPermalink }}" alt="{{ $title }}" />
+          <img class="card-slide" loading="lazy" decoding="async" style="--i: {{ $slot }}" width="{{ $img.image.Width }}" height="{{ $img.image.Height }}" src="{{ $img.image.RelPermalink }}" srcset="{{ $img.srcset }}" alt="{{ $title }}" />
         {{ end }}
       </figure>
     {{ else }}
       <figure style="--placeholder: {{ .color }}">
-        <img class="lazyload" width="{{ .thumbnail.Width }}" height="{{ .thumbnail.Height }}" data-src="{{ .thumbnail.RelPermalink }}" alt="{{ .page.Title }}" />
+        <img loading="lazy" decoding="async" width="{{ .thumbnail.Width }}" height="{{ .thumbnail.Height }}" src="{{ .thumbnail.RelPermalink }}" srcset="{{ (index .previews 0).srcset }}" alt="{{ .page.Title }}" />
       </figure>
     {{ end }}
     <div>

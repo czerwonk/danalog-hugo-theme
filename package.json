@@ -1,6 +1,5 @@
 {
   "dependencies": {
-    "lazysizes": "5.3.2",
     "photoswipe": "5.4.4",
     "photoswipe-dynamic-caption-plugin": "1.2.7"
   },

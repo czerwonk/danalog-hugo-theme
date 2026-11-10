@@ -4,17 +4,18 @@ Modernization: keep the minimalism, lean into an analog / darkroom / contact she
 
 ## Open
 
-### Phase 2: layout and motion
+### Follow-ups
 
-### Phase 3: color and cleanup
-
-- [ ] (medium) V4: Softer surfaces: dark around `#141414`–`#1b1b1b`, light off-white (`#f2f1ee`) so white mats stay visible in light mode.
-- [ ] (low) P1: Simplify `_colors.scss` with `light-dark()`.
-- [ ] (low) P2: Add `srcset` for thumbnails and full-size images (no format change; JPEG stays).
-- [ ] (low) P3: Replace vendored `lazysizes.js` with native `loading="lazy"`.
-- [ ] (low) N2: Categories as plain text links instead of bordered pills.
+- [ ] (low) Without JavaScript the album gallery stays invisible (`#gallery` is hidden until the justified layout runs). Consider a CSS fallback layout (e.g. flex-wrap rows) for `scripting: none`.
 
 ## Done
+
+### Phase 3 (2026-11-10)
+
+- [x] N2: categories as plain text links in the meta label style.
+- [x] V4/P1: dark surface #141414, light surface off-white #f2f1ee (muted text #666 for AA contrast); colors switch via `light-dark()`.
+- [x] P3: native `loading="lazy"` instead of lazysizes (removed from package.json and vendoring); fade-in via `assets/js/fade-in.js`, images only hidden with `@media (scripting: enabled)`.
+- [x] P2: 2x thumbnails (`partials/thumbnail.html`, mat scaled via `apply-border.html` `scale`) and a half-size lightbox image via `data-pswp-srcset`. On danalog.pics: first build 223 s once, `resources/_gen` 2.0 → 2.7 GB; a 1x desktop lightbox loads 1644 px instead of 3288 px, zoom switches to full size.
 
 ### Copy caption (2026-11-10)
 
@@ -71,6 +72,8 @@ Modernization: keep the minimalism, lean into an analog / darkroom / contact she
 - No WebP/AVIF conversion in the theme: danalog.pics needs JPEG derivatives for other platforms.
 
 ## Recurring issues
+
+- html/template treats attributes containing `src` (e.g. `data-pswp-srcset`) as a single URL and percent-encodes spaces; render such lists via `printf ... | safeHTMLAttr`.
 
 - `prettier-plugin-go-template` can change output: it removed the whitespace between optional attributes (`{{ with }}attr{{ end }}`). Keep separating spaces outside the `with` blocks and check generated HTML after formatting. It also turned `class="a{{ if }} b{{ end }}"` into `class="ab"` (phase 2 nav panel); compute such attribute values in a variable (`cond`) instead of inline conditionals.
 - `hugo --quiet` also hides build errors; the build checks use `--logLevel warn` and capture the log, printing it on failure.

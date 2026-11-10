@@ -51,7 +51,9 @@ assert_count() {
 HOME_PAGE="$OUT/index.html"
 ALBUM_A="$OUT/album-a/index.html"
 ALBUM_B="$OUT/album-b/index.html"
+ALBUM_D="$OUT/album-d/index.html"
 CSS="$(find "$OUT/css" -name 'main*.css' | head -n 1)"
+JS="$(find "$OUT/js" -name 'main*.js' | head -n 1)"
 
 [ -f "$ALBUM_B" ] || fail "B2: album without cover/featured images must build"
 
@@ -126,6 +128,36 @@ assert_contains "$CSS" '\.card>div>h2\{[^}]*font-weight:var\(--font-display-weig
 assert_contains "$CSS" '\.caption-title\{[^}]*font-weight:var\(--font-display-weight\)' "lightbox title uses --font-display-weight"
 assert_contains "$CSS" '\.caption-meta\{[^}]*text-transform:none' "lightbox details keep their original case (f/2, 35mm)"
 assert_contains "$CSS" '\.site-nav-panel a\{[^}]*font-family:var\(--font-display\)' "album names in the nav panel use the display font like the card titles"
+
+# N2: categories as plain text links in the meta label style, not bordered pills
+assert_not_contains "$CSS" 'border-radius:9999px' "N2: categories must not be pills"
+assert_contains "$CSS" 'nav\.categories>ul li>a\{[^}]*color:var\(--text-2\)' "N2: category links are muted text links"
+
+# V4/P1: softer surfaces, colors switched via light-dark() instead of duplicated blocks
+assert_contains "$CSS" '--surface-1-dark:#141414' "V4: dark surface is a soft black"
+assert_contains "$CSS" '--surface-1-light:#f2f1ee' "V4: light surface is off-white so white mats stay visible"
+assert_contains "$CSS" '--text-2-light:#666' "V4: muted text keeps WCAG AA contrast on the off-white surface"
+assert_contains "$CSS" '--surface-1:light-dark\(var\(--surface-1-light\), ?var\(--surface-1-dark\)\)' "P1: surface switches via light-dark()"
+assert_not_contains "$CSS" 'prefers-color-scheme:dark' "P1: no duplicated dark-mode block"
+assert_contains "$CSS" 'html\.dark\{color-scheme:dark\}' "P1: defaultTheme = dark forces the dark scheme"
+assert_contains "$CSS" 'html\.light\{color-scheme:light\}' "P1: defaultTheme = light forces the light scheme"
+
+# P3: native lazy loading instead of lazysizes; fade-in only hides images when scripts run
+assert_contains "$ALBUM_A" '<img loading="lazy" decoding="async" width="78" height="58" src="/album-a/' "P3: gallery images load lazily via the browser"
+assert_contains "$HOME_PAGE" '<img class="card-slide" loading="lazy"' "P3: card slideshow images load lazily via the browser"
+for page in "$HOME_PAGE" "$ALBUM_A"; do
+  assert_not_contains "$page" 'lazyload|data-src=' "P3: no lazysizes markup left"
+done
+assert_not_contains "$JS" 'lazySizes' "P3: lazysizes is not bundled"
+assert_not_contains "$CSS" 'lazyload' "P3: no lazysizes styles left"
+assert_contains "$CSS" '@media ?\(scripting:enabled\)' "P3: images are only hidden for the fade-in when scripts run"
+
+# P2: 2x thumbnails for high-density screens and a smaller lightbox image for small screens
+# album-d-001 is 1300x900: thumbnails 618/1236px wide incl. mat, lightbox 1318px and half size 810px
+assert_contains "$ALBUM_D" 'srcset="/album-d/album-d-001_hu_[0-9a-f]+\.jpg 1x, /album-d/album-d-001_hu_[0-9a-f]+\.jpg 2x"' "P2: gallery thumbnails offer a 2x version"
+assert_contains "$HOME_PAGE" 'srcset="/album-d/album-d-001_hu_[0-9a-f]+\.jpg 1x, /album-d/album-d-001_hu_[0-9a-f]+\.jpg 2x"' "P2: album card covers offer a 2x version"
+assert_contains "$ALBUM_D" 'data-pswp-srcset="/album-d/album-d-001_hu_[0-9a-f]+\.jpg 1318w, /album-d/album-d-001_hu_[0-9a-f]+\.jpg 810w"' "P2: lightbox offers full and half size with proportional mats"
+assert_not_contains "$ALBUM_A" ' 2x"' "P2: no 2x candidate when the original is too small to provide one"
 
 # N3: featured album as a print with a caption below, no gradient overlay
 assert_contains "$HOME_PAGE" '<a class="featured-card" href="/album-c/">' "N3: featured block links to the album"

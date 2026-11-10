@@ -13,7 +13,6 @@ export const VENDORED_FILES = [
   { from: "photoswipe/dist/photoswipe.css", to: "assets/css/photoswipe/photoswipe.css" },
   { from: "photoswipe-dynamic-caption-plugin/dist/photoswipe-dynamic-caption-plugin.esm.min.js", to: "assets/js/photoswipe/photoswipe-dynamic-caption-plugin.esm.min.js" },
   { from: "photoswipe-dynamic-caption-plugin/photoswipe-dynamic-caption-plugin.css", to: "assets/css/photoswipe/photoswipe-dynamic-caption-plugin.css" },
-  { from: "lazysizes/lazysizes.js", to: "assets/js/lazysizes.js" },
 ];
 
 // Some packages ship CRLF line endings; normalize so diffs stay readable

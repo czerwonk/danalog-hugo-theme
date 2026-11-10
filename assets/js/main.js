@@ -1,5 +1,5 @@
 import "./menu.js";
 import "./gallery.js";
-import "./lazysizes.js";
+import "./fade-in.js";
 import "./lightbox.js";
 import "./custom.js";

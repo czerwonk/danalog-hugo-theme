@@ -1,11 +1,21 @@
 {{/* Input: {image, title, pswpTarget, publishResources} */}}
 {{ $image := .image }}
 {{ $fullSize := site.Params.gallery.fullSize | default 1600 | int }}
-{{ $thumbnail := $image.Filter (slice images.AutoOrient (images.Process "fit 600x600")) }}
+{{ $thumb := partial "thumbnail.html" $image }}
+{{ $thumbnail := $thumb.image }}
+{{ $color := $thumb.color }}
 {{ $full := $image.Filter (slice images.AutoOrient (images.Process (printf "fit %dx%d" $fullSize $fullSize))) }}
-{{ $color := partial "placeholder-color.html" $thumbnail }}
-{{ $thumbnail = partial "apply-border.html" (dict "image" $thumbnail) }}
+{{ $half := $image.Filter (slice images.AutoOrient (images.Process (printf "fit %dx%d" (div $fullSize 2) (div $fullSize 2)))) }}
 {{ $full = partial "apply-border.html" (dict "image" $full "full" true) }}
+
+{{/* The lightbox picks the half-size image on smaller screens; skipped if the original is too small.
+  Rendered via safeHTMLAttr: html/template treats data-pswp-srcset as a single URL and would encode the spaces.
+*/}}
+{{ $pswpSrcset := printf "%s %dw" $full.RelPermalink $full.Width }}
+{{ $halfWithBorder := partial "apply-border.html" (dict "image" $half "full" true "scale" 0.5) }}
+{{ if lt $halfWithBorder.Width $full.Width }}
+  {{ $pswpSrcset = printf "%s, %s %dw" $pswpSrcset $halfWithBorder.RelPermalink $halfWithBorder.Width }}
+{{ end }}
 
 {{ $href := $image.RelPermalink }}
 {{ if not .publishResources }}{{ $href = $full.RelPermalink }}{{ end }}
@@ -26,9 +36,9 @@
 {{ end }}
 
 
-<a class="gallery-item" href="{{ $href }}" data-pswp-src="{{ $full.RelPermalink }}" data-pswp-width="{{ $full.Width }}" data-pswp-height="{{ $full.Height }}" data-pswp-target="{{ .pswpTarget }}" title="{{ .title }}" data-caption-camera="{{ $captionCamera }}" data-caption-film="{{ $captionFilm }}" data-caption-lens="{{ $captionLens }}" itemscope itemtype="https://schema.org/ImageObject" style="aspect-ratio: {{ $thumbnail.Width }} / {{ $thumbnail.Height }}">
+<a class="gallery-item" href="{{ $href }}" data-pswp-src="{{ $full.RelPermalink }}" data-pswp-width="{{ $full.Width }}" data-pswp-height="{{ $full.Height }}" {{ printf "data-pswp-srcset=%q" $pswpSrcset | safeHTMLAttr }} data-pswp-target="{{ .pswpTarget }}" title="{{ .title }}" data-caption-camera="{{ $captionCamera }}" data-caption-film="{{ $captionFilm }}" data-caption-lens="{{ $captionLens }}" itemscope itemtype="https://schema.org/ImageObject" style="aspect-ratio: {{ $thumbnail.Width }} / {{ $thumbnail.Height }}">
   <figure style="--placeholder: {{ $color }}; aspect-ratio: {{ $thumbnail.Width }} / {{ $thumbnail.Height }}">
-    <img class="lazyload" width="{{ $thumbnail.Width }}" height="{{ $thumbnail.Height }}" data-src="{{ $thumbnail.RelPermalink }}" alt="{{ .title }}" />
+    <img loading="lazy" decoding="async" width="{{ $thumbnail.Width }}" height="{{ $thumbnail.Height }}" src="{{ $thumbnail.RelPermalink }}" srcset="{{ $thumb.srcset }}" alt="{{ .title }}" />
   </figure>
   <meta itemprop="contentUrl" content="{{ $href }}" />
   {{ with site.Params.Author }}
