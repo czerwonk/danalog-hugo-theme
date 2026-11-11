@@ -19,6 +19,6 @@ jobs:
         with:
           node-version: lts/*
       - name: Install packages
-        run: npm install --ignore-scripts --no-audit --no-fund
+        run: npm ci --ignore-scripts --no-audit --no-fund
       - name: Check vendored files match package.json versions
         run: npm run vendor -- --check

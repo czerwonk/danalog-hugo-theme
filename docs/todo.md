@@ -15,7 +15,7 @@ Modernization: keep the minimalism, lean into an analog / darkroom / contact she
 - [x] L1: RSS descriptions are HTML inside XML and must be escaped twice. `| html` did not do that (html/template treats an explicit `html` as the final escaper), so page titles (`rss-image-items.html`) and page descriptions (`rss.xml`) became live HTML in feed readers. Now `| htmlEscape`. Build check S3.
 - [x] L2: alternate `<link>` in `head.html` rendered via normal template escaping instead of `printf | safeHTML` with the raw site title. Build check S4.
 - [x] L3: `data-pswp-srcset` HTML-escaped (`htmlEscape`) before `safeHTMLAttr`; `%q` is Go quoting and left `&` in file names raw. Build check S5.
-- [x] L4: CI actions pinned to commit SHAs (Dependabot updates them), `npm install --ignore-scripts`.
+- [x] L4: CI actions pinned to commit SHAs (Dependabot updates them), `npm ci --ignore-scripts` with the now committed `package-lock.json`.
 - [x] I1: README states that `private` only unlists an album and is not access control.
 - Fixtures: site title `Fixture "Q" <&>`, album-e title `Album <E>` and image `album-e-a&b.jpg`, RSS output for pages and sections.
 
@@ -89,7 +89,7 @@ Modernization: keep the minimalism, lean into an analog / darkroom / contact she
 
 ## Decisions
 
-- CI uses `npm install --ignore-scripts` rather than `npm ci`: `package-lock.json` is not committed; runtime dependencies are pinned exactly in `package.json` and the vendor check compares against them.
+- `package-lock.json` is committed (the ignore entry was inherited from the former upstream); CI installs with `npm ci --ignore-scripts` so builds use exactly the locked versions and no install scripts run. Dependabot updates the lockfile.
 
 - Vendored files stay in `assets/` instead of being resolved from `node_modules` at build time: sites (git submodule) build with Hugo alone. `package.json` exists for Dependabot and tooling only. `justified-layout.ts` is a modified fork and maintained as theme code.
 - Direction is analog/darkroom rather than generic editorial, matching the main consumer (danalog.pics): dark default, film-strip banner, monospace type, matted prints.
