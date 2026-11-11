@@ -1,0 +1,34 @@
+# target (relative to content/) | source photo (relative to the source content dir)
+# Only the source's aspect ratio and gear EXIF tags are used; the pixels are generated.
+home.jpg|tetraeder/tetraeder-005.jpg
+trips/harbour/harbour-01.jpg|zollverein/zollverein-016.jpg
+trips/harbour/harbour-02.jpg|zollverein/zollverein-020.jpg
+trips/harbour/harbour-03.jpg|zollverein/zollverein-017.jpg
+trips/harbour/harbour-04.jpg|zollverein/zollverein-018.jpg
+trips/harbour/harbour-05.jpg|zollverein/zollverein-002.jpg
+trips/harbour/harbour-06.jpg|zollverein/zollverein-005.jpg
+trips/harbour/harbour-07.jpg|zollverein/zollverein-003.jpg
+trips/harbour/harbour-cover.jpg|zollverein/zollverein-019.jpg
+trips/coast/coast-01.jpg|noordwijk/noordwijk-017.jpg
+trips/coast/coast-02.jpg|noordwijk/noordwijk-018.jpg
+trips/coast/coast-03.jpg|noordwijk/noordwijk-001.jpg
+trips/coast/coast-04.jpg|noordwijk/noordwijk-051.jpg
+trips/coast/coast-05.jpg|noordwijk/noordwijk-056.jpg
+trips/coast/coast-06.jpg|noordwijk/noordwijk-028.jpg
+trips/coast/coast-07.jpg|noordwijk/noordwijk-046.jpg
+park/park-01.jpg|grugapark/grugapark-019.jpg
+park/park-02.jpg|grugapark/grugapark-012.jpg
+park/park-03.jpg|grugapark/grugapark-013.jpg
+park/park-04.jpg|grugapark/grugapark-001.jpg
+park/park-05.jpg|grugapark/grugapark-005.jpg
+park/park-06.jpg|grugapark/grugapark-022.jpg
+park/park-07.jpg|grugapark/grugapark-031.jpg
+towers/towers-01.jpg|tetraeder/tetraeder-001.jpg
+towers/towers-02.jpg|tetraeder/tetraeder-002.jpg
+towers/towers-03.jpg|tetraeder/tetraeder-003.jpg
+towers/towers-04.jpg|tetraeder/tetraeder-007.jpg
+towers/towers-05.jpg|tetraeder/tetraeder-004.jpg
+towers/towers-06.jpg|tetraeder/tetraeder-005.jpg
+private/private-01.jpg|phoenix-west/phoenix-west-002.jpg
+private/private-02.jpg|phoenix-west/phoenix-west-001.jpg
+trips/trips.jpg|noordwijk/noordwijk-029.jpg

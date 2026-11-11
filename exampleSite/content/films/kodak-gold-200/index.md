@@ -1,3 +1,3 @@
 ---
-title: Kodak Gold 200
+title: "Kodak Gold 200"
 ---

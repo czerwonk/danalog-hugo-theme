@@ -1,6 +1,7 @@
 ---
-description: A private gallery that is only available by direct link.
+date: 2026-08-06
 title: Private
+description: A private album. It is not listed anywhere (album lists, equipment pages, recent uploads, RSS, sitemap), but anyone with the link can open it.
 params:
-  private: true # This gallery does not show in lists, RSS, sitemaps, etc. On list pages, use cascade to hide descendants.
+  private: true
 ---

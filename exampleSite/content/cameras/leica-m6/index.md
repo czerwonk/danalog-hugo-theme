@@ -1,3 +1,0 @@
----
-title: Leica M6
----

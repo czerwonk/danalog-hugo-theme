@@ -8,6 +8,12 @@ Nothing open.
 
 ## Done
 
+### Example site with generated images (2026-11-11)
+
+- [x] Unsplash photos (`pull-images.sh`, no gear EXIF, equipment pages empty) replaced by 32 generated placeholder images (417 KB, committed). `exampleSite/scripts/generate-images.sh` takes the aspect ratio and an allowlist of gear tags (`Make`, `Model`, `LensMake`, `LensModel`, `UserComment`, `DateTimeOriginal`) from danalog.pics photos listed in `scripts/images.txt`; pixels are plasma noise in a palette per film (gray for black and white). ImageMagick runs in an Alpine container.
+- [x] Content: Trips (section with Harbour and Coast), Park, Towers, a private album; featured album, hidden cover, an image without film data; camera/lens/film pages matching the copied gear (6 cameras, 3 lenses, 8 films). Categories removed (taxonomies are disabled in the config).
+- [x] `images/screenshot.jpg`/`tn.jpg` (1500x1000/900x600, Hugo theme gallery sizes) from danalog.pics (`/emma/`: banner, filter, matted prints, no people) instead of upstream's.
+
 ### Equipment pages: only album photos (2026-11-11)
 
 - [x] `collect-equipment.html` ranged over `site.Pages`, so images of list pages (home page cover, section covers) with gear EXIF appeared on camera/lens/film pages. Now `site.RegularPages`, like the recent page. Found with the new example site (home cover counted on the Kentmere page). Build check E1 (fixture `cameras/section-image.jpg`).
@@ -117,6 +123,7 @@ Nothing open.
 
 ## Decisions
 
+- Example images are generated, not photos: real gear data without publishing photos, no licensing questions, small enough to commit, builds offline. Placeholders do not show the theme off, so the screenshot comes from danalog.pics.
 - Theme/site config split: structural requirements (EXIF fields, Hugo version, content sections) are documented by the theme; look and feel is exposed as CSS variables and `params` defaults the site overrides. Mat/stroke values, sort order, `fullSize`, fonts and colors are danalog.pics choices and stay in its config. Menus stay in the site: Hugo merges theme menus, but sites cannot remove the entries. Tested on Hugo 0.168: from a theme `hugo.toml` only `params` (deep) and `menus` are merged; `imaging`, `outputs` and `services` are ignored.
 - `package-lock.json` is committed (the ignore entry was inherited from the former upstream); CI installs with `npm ci --ignore-scripts` so builds use exactly the locked versions and no install scripts run. Dependabot updates the lockfile.
 

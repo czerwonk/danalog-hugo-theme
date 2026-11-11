@@ -9,7 +9,7 @@ title = "Gallery"
 
 [params]
   defaultTheme = "dark"
-  description = "Example site for hugo-theme-gallery"
+  description = "Example site for danalog-hugo-theme"
   title = "My Gallery"
   [params.author]
     email = "user@example.com"

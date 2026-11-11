@@ -7,4 +7,4 @@ menu:
     weight: 90
 ---
 
-This is a demonstration site for the Hugo Gallery theme.
+This is a demonstration site for danalog-hugo-theme.
