@@ -1,7 +1,7 @@
 {{/* Input: string "camera", "lens", or "film". Returns dict: name → slice of {image, page}. */}}
 {{ $type := . }}
 {{ $groups := dict }}
-{{ range where site.Pages "Params.private" "ne" true }}
+{{ range where site.RegularPages "Params.private" "ne" true }}
   {{ $page := . }}
   {{ range where (.Resources.ByType "image") "Params.hidden" "ne" true }}
     {{ $image := . }}

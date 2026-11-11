@@ -215,6 +215,10 @@ for page in "$CAMERA_PAGE" "$OUT/cameras/index.html" "$RECENT_PAGE" "$HOME_PAGE"
   assert_not_contains "$page" '/album-f/' "S2: private albums must not be exposed on public pages"
 done
 
+# E1: equipment pages only collect album photos, not images of list pages (fixture: cameras/section-image.jpg has Nikon F3 EXIF)
+assert_contains "$CAMERA_PAGE" '/album-a/album-a-001' "E1: album photos appear on the camera page"
+assert_not_contains "$CAMERA_PAGE" 'section-image' "E1: images of sections and the home page are not album photos"
+
 # S3 (L1): the RSS description is HTML inside XML, so the page title is escaped twice
 ALBUM_E_RSS="$OUT/album-e/index.xml"
 assert_contains "$ALBUM_E_RSS" '&lt;p&gt;Album &amp;lt;E&amp;gt;&lt;/p&gt;' "S3: page title in the RSS description must be escaped for the HTML inside the XML"

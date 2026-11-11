@@ -8,6 +8,10 @@ Nothing open.
 
 ## Done
 
+### Equipment pages: only album photos (2026-11-11)
+
+- [x] `collect-equipment.html` ranged over `site.Pages`, so images of list pages (home page cover, section covers) with gear EXIF appeared on camera/lens/film pages. Now `site.RegularPages`, like the recent page. Found with the new example site (home cover counted on the Kentmere page). Build check E1 (fixture `cameras/section-image.jpg`).
+
 ### theme.toml (2026-11-11)
 
 - [x] `theme.toml` points to this repository (`homepage`, `licenselink`); author is the fork's maintainer, Nico Kaiser is credited in the `[original]` section Hugo provides for forks. `demosite` removed (the upstream demo does not show this fork). `LICENSE` unchanged (MIT, copyright Nico Kaiser).
