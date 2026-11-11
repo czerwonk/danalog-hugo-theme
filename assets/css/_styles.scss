@@ -346,8 +346,23 @@ section.galleries {
 
   label {
     display: flex;
+    position: relative;
     flex-direction: column;
     gap: 0.375rem;
+
+    // Chevron replacing the native select arrow
+    &::after {
+      position: absolute;
+      right: 0.25rem;
+      bottom: 0.8rem;
+      transform: rotate(45deg);
+      border-right: 1px solid var(--text-2);
+      border-bottom: 1px solid var(--text-2);
+      width: 0.375rem;
+      height: 0.375rem;
+      pointer-events: none;
+      content: "";
+    }
   }
 
   label > span {
@@ -356,11 +371,15 @@ section.galleries {
     color: var(--text-2);
   }
 
+  // Native appearance off: mobile browsers otherwise draw a rounded box whose
+  // corners clip the unpadded text.
   select {
+    appearance: none;
     border: 0;
     border-bottom: 1px solid var(--border);
+    border-radius: 0;
     background-color: transparent;
-    padding: 0.25rem 0;
+    padding: 0.25rem 1.25rem 0.25rem 0;
     max-width: 16rem;
     color: var(--text-1);
     font-family: var(--font-display);
