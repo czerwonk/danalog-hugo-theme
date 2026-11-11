@@ -4,9 +4,14 @@ Modernization: keep the minimalism, lean into an analog / darkroom / contact she
 
 ## Open
 
-- [ ] (low) Gear fallback in front matter: `collect-equipment.html` uses `params.camera`/`lens`/`film` of an image resource when its EXIF is missing, but captions and the gallery filter read EXIF only, and the README does not mention the fallback. Either document it and use it everywhere, or remove it.
+Nothing open.
 
 ## Done
+
+### Gear from front matter (2026-11-11)
+
+- [x] F1: camera, lens and film can come from resource params (`params.camera`/`lens`/`film`, per photo or with a glob) when EXIF lacks them. Before, only equipment pages read them; captions, copy button and filter used EXIF only, so a photo could be listed on a camera page but hidden by that camera's filter in its own album. One partial (`image-gear.html`) now resolves the gear for `gallery-render.html` and `collect-equipment.html`; EXIF wins per value. README section "Camera, lens and film without EXIF". Build check G1 (fixture album-g).
+- Hugo applies matching resource entries in order and later `params` win, so album-wide globs go first (found with the fixture; documented).
 
 ### CI tests (2026-11-11)
 

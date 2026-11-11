@@ -1,0 +1,22 @@
+{{/* Input: image resource. Returns dict camera, lens, film (empty string if unknown).
+  EXIF first (Make + Model, LensMake + LensModel, UserComment); for each value missing there,
+  the image's resource params from the front matter (params.camera, params.lens, params.film).
+*/}}
+{{ $camera := "" }}
+{{ $lens := "" }}
+{{ $film := "" }}
+{{ with .Meta }}
+  {{ $cameraParts := slice }}
+  {{ with .Exif.Make }}{{ $cameraParts = $cameraParts | append . }}{{ end }}
+  {{ with .Exif.Model }}{{ $cameraParts = $cameraParts | append . }}{{ end }}
+  {{ $camera = delimit $cameraParts " " }}
+  {{ $lensParts := slice }}
+  {{ with .Exif.LensMake }}{{ $lensParts = $lensParts | append . }}{{ end }}
+  {{ with .Exif.LensModel }}{{ $lensParts = $lensParts | append . }}{{ end }}
+  {{ $lens = delimit $lensParts " " }}
+  {{ with .Exif.UserComment }}{{ $film = . }}{{ end }}
+{{ end }}
+{{ if not $camera }}{{ $camera = .Params.camera | default "" }}{{ end }}
+{{ if not $lens }}{{ $lens = .Params.lens | default "" }}{{ end }}
+{{ if not $film }}{{ $film = .Params.film | default "" }}{{ end }}
+{{ return dict "camera" (string $camera) "lens" (string $lens) "film" (string $film) }}

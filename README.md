@@ -164,6 +164,27 @@ Hugo's default `imaging.meta.fields` includes all of them. If your site sets its
   fields = ["DateTimeOriginal", "ImageDescription", "Make", "Model", "UserComment", "LensMake", "LensModel"]
 ```
 
+#### Camera, lens and film without EXIF
+
+Scans often have no EXIF data. Camera, lens and film can then be set as resource params in the album's front matter: per photo, or for all photos with a glob. They are used wherever EXIF would be (captions, copy button, filter, equipment pages), only for values missing in the EXIF data, which always wins. Hugo applies matching entries in order and later ones win, so put the album-wide entry first:
+
+```yaml
+---
+title: Harbour
+resources:
+  - src: "*.jpg"
+    params:
+      camera: Leica M2
+      lens: ZEISS Biogon T* 35mm f/2 ZM
+      film: Kodak Portra 400
+  - src: harbour-07.jpg # the last frames of the roll were shot on another film
+    params:
+      film: Ilford HP5
+---
+```
+
+Equipment pages match these values exactly, like EXIF values: the `params.camera`, `params.lens` or `params.film` of a page in `content/cameras/`, `content/lenses/` or `content/films/` (or its title) must equal the value.
+
 Alternatively, the image title can be set in the front matter:
 
 ```plain
@@ -357,7 +378,7 @@ photoCount:
 
 ### Gallery Filter
 
-Galleries (albums, the recent page and equipment pages) get a filter bar with one dropdown per camera, lens, film (`UserComment`) and orientation, built from the photos' EXIF data. Camera, lens or film shared by all photos are shown as static info with their icons instead; a dropdown only appears for values that differ, so a camera page shows its camera and offers filters for the rest. Orientation is offered alongside this gear info, never on its own; galleries without camera, lens or film data show no filter bar. Filters combine; each option shows how many photos remain and is disabled if none would. The active filter is kept in the URL (e.g. `?film=kodak-portra-400`), so filtered views can be shared; the lightbox only steps through the filtered photos. Without JavaScript the filter bar stays hidden.
+Galleries (albums, the recent page and equipment pages) get a filter bar with one dropdown per camera, lens, film (`UserComment`) and orientation, built from the photos' EXIF data (or front matter, see [Camera, lens and film without EXIF](#camera-lens-and-film-without-exif)). Camera, lens or film shared by all photos are shown as static info with their icons instead; a dropdown only appears for values that differ, so a camera page shows its camera and offers filters for the rest. Orientation is offered alongside this gear info, never on its own; galleries without camera, lens or film data show no filter bar. Filters combine; each option shows how many photos remain and is disabled if none would. The active filter is kept in the URL (e.g. `?film=kodak-portra-400`), so filtered views can be shared; the lightbox only steps through the filtered photos. Without JavaScript the filter bar stays hidden.
 
 ### Caption Icons
 

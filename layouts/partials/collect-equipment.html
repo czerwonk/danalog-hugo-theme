@@ -5,27 +5,7 @@
   {{ $page := . }}
   {{ range where (.Resources.ByType "image") "Params.hidden" "ne" true }}
     {{ $image := . }}
-    {{ $key := "" }}
-    {{ if eq $type "camera" }}
-      {{ with $image.Meta }}
-        {{ $cameraParts := slice }}
-        {{ with .Exif.Make }}{{ $cameraParts = $cameraParts | append . }}{{ end }}
-        {{ with .Exif.Model }}{{ $cameraParts = $cameraParts | append . }}{{ end }}
-        {{ with delimit $cameraParts " " }}{{ $key = . }}{{ end }}
-      {{ end }}
-      {{ if not $key }}{{ with $image.Params.camera }}{{ $key = . }}{{ end }}{{ end }}
-    {{ else if eq $type "film" }}
-      {{ with $image.Meta }}{{ with .Exif.UserComment }}{{ $key = . }}{{ end }}{{ end }}
-      {{ if not $key }}{{ with $image.Params.film }}{{ $key = . }}{{ end }}{{ end }}
-    {{ else }}
-      {{ with $image.Meta }}
-        {{ $parts := slice }}
-        {{ with .Exif.LensMake }}{{ $parts = $parts | append . }}{{ end }}
-        {{ with .Exif.LensModel }}{{ $parts = $parts | append . }}{{ end }}
-        {{ with delimit $parts " " }}{{ $key = . }}{{ end }}
-      {{ end }}
-      {{ if not $key }}{{ with $image.Params.lens }}{{ $key = . }}{{ end }}{{ end }}
-    {{ end }}
+    {{ $key := index (partial "image-gear.html" $image) $type }}
     {{ with $key }}
       {{ $existing := index $groups . | default slice }}
       {{ $groups = merge $groups (dict . ($existing | append (dict "image" $image "page" $page))) }}

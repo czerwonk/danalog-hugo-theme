@@ -28,20 +28,10 @@
 {{ $href := $full.RelPermalink }}
 {{ if .publishResources }}{{ $href = $image.RelPermalink }}{{ end }}
 
-{{ $captionCamera := "" }}
-{{ $captionFilm := "" }}
-{{ $captionLens := "" }}
-{{ with $image.Meta }}
-  {{ $cameraParts := slice }}
-  {{ with .Exif.Make }}{{ $cameraParts = $cameraParts | append . }}{{ end }}
-  {{ with .Exif.Model }}{{ $cameraParts = $cameraParts | append . }}{{ end }}
-  {{ $captionCamera = delimit $cameraParts " " }}
-  {{ with .Exif.UserComment }}{{ $captionFilm = . }}{{ end }}
-  {{ $lensParts := slice }}
-  {{ with .Exif.LensMake }}{{ $lensParts = $lensParts | append . }}{{ end }}
-  {{ with .Exif.LensModel }}{{ $lensParts = $lensParts | append . }}{{ end }}
-  {{ $captionLens = delimit $lensParts " " }}
-{{ end }}
+{{ $gear := partial "image-gear.html" $image }}
+{{ $captionCamera := $gear.camera }}
+{{ $captionFilm := $gear.film }}
+{{ $captionLens := $gear.lens }}
 
 
 <a class="gallery-item" href="{{ $href }}" data-pswp-src="{{ $full.RelPermalink }}" data-pswp-width="{{ $full.Width }}" data-pswp-height="{{ $full.Height }}" {{ printf `data-pswp-srcset="%s"` (htmlEscape $pswpSrcset) | safeHTMLAttr }} data-pswp-target="{{ .pswpTarget }}" data-title="{{ .title }}" data-caption-camera="{{ $captionCamera }}" data-caption-film="{{ $captionFilm }}" data-caption-lens="{{ $captionLens }}" data-orientation="{{ $orientation }}" itemscope itemtype="https://schema.org/ImageObject" style="aspect-ratio: {{ $thumbnail.Width }} / {{ $thumbnail.Height }}">

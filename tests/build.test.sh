@@ -232,6 +232,19 @@ assert_contains "$OUT/album-e/index.html" '<link rel="alternate" type="applicati
 # S5 (L3): lightbox srcset is HTML-escaped like src (file name album-e-a&b.jpg)
 assert_contains "$OUT/album-e/index.html" 'data-pswp-srcset="/album-e/album-e-a&amp;b_hu_[0-9a-f]+\.jpg 1318w, /album-e/album-e-a&amp;b_hu_' "S5: data-pswp-srcset must be HTML-escaped"
 
+# G1: gear from front matter (resource params) when EXIF is missing, in captions, filter data and on equipment pages; EXIF wins
+ALBUM_G="$OUT/album-g/index.html"
+gear_of() { grep -oE "href=\"/album-g/$1[^>]*" "$ALBUM_G" | grep -oE 'data-caption-(camera|film|lens)="[^"]*"' | paste -sd' '; }
+[[ "$(gear_of album-g-001)" == 'data-caption-camera="Nikon F3" data-caption-film="Ilford HP5" data-caption-lens="Nikkor 28mm f/2.8"' ]] ||
+  fail "G1: album-g-001 must take camera from the album-wide entry and lens/film from its own entry, got: $(gear_of album-g-001)"
+[[ "$(gear_of album-g-002)" == 'data-caption-camera="Nikon F3" data-caption-film="Kodak Gold 200" data-caption-lens=""' ]] ||
+  fail "G1: album-g-002 must take camera/film from the album-wide entry, got: $(gear_of album-g-002)"
+[[ "$(gear_of album-g-003)" == 'data-caption-camera="Nikon F3" data-caption-film="Kodak Portra 400" data-caption-lens="Nikon Nikkor 50mm f/1.4"' ]] ||
+  fail "G1: album-g-003 must keep its EXIF values over the front matter, got: $(gear_of album-g-003)"
+for image in album-g-001 album-g-002 album-g-003; do
+  assert_contains "$CAMERA_PAGE" "/album-g/$image" "G1: $image appears on the Nikon F3 page"
+done
+
 # J1: without scripts the photos wrap in rows; only when scripts run is the gallery hidden until the justified layout is done
 for page in "$ALBUM_A" "$RECENT_PAGE" "$CAMERA_PAGE"; do
   assert_contains "$page" '<div id="gallery" class="gallery-photos">' "J1: gallery container is styled by class, not hidden inline"
