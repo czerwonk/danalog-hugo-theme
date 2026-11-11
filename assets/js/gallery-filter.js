@@ -1,5 +1,6 @@
-// Filter bar above a gallery: shared camera/lens/film as static info with icons, one select per
-// dimension with at least two values (orientation only alongside gear info).
+// Filter bar above a gallery, one line in the fixed order camera, lens, film, orientation: each field
+// is an icon with either the shared value (static info) or a select (at least two values);
+// orientation only alongside gear info.
 // Filters combine (AND), options show the remaining photo count and are disabled at 0,
 // the state lives in the query string. Hidden items are skipped by gallery.js and the lightbox.
 import * as params from "@params";
@@ -86,10 +87,11 @@ function iconFor(dimension) {
 }
 
 // Gear shared by all photos (e.g. one camera): icon + value instead of a dropdown
-function renderStatic({ dimension, value }) {
+function renderStatic(dimension, value) {
   const item = document.createElement("p");
   item.className = "gallery-filter-static";
-  item.title = LABELS[dimension];
+  // Full value in the tooltip: long values are cut off on narrow screens
+  item.title = `${LABELS[dimension]}: ${value}`;
   const label = document.createElement("span");
   label.className = "visually-hidden";
   label.textContent = `${LABELS[dimension]}: `;
@@ -99,9 +101,12 @@ function renderStatic({ dimension, value }) {
   form.append(item);
 }
 
+// Icon + select; the dimension name is only for screen readers and the tooltip, like for static info
 function renderDropdown(dimension) {
   const label = document.createElement("label");
+  label.title = LABELS[dimension];
   const caption = document.createElement("span");
+  caption.className = "visually-hidden";
   caption.textContent = LABELS[dimension];
   const select = document.createElement("select");
   select.name = dimension;
@@ -111,17 +116,17 @@ function renderDropdown(dimension) {
     apply();
   });
   selects[dimension] = select;
-  label.append(caption, select);
+  label.append(iconFor(dimension), caption, select);
   form.append(label);
 }
 
 function init() {
-  const { statics, dropdowns } = filterBar(entries);
-  if (statics.length === 0 && dropdowns.length === 0) return;
+  const fields = filterBar(entries);
+  if (fields.length === 0) return;
 
-  statics.forEach(renderStatic);
-  dropdowns.forEach(renderDropdown);
+  fields.forEach(({ dimension, type, value }) => (type === "static" ? renderStatic(dimension, value) : renderDropdown(dimension)));
   form.hidden = false;
+  const dropdowns = fields.filter(({ type }) => type === "dropdown").map(({ dimension }) => dimension);
   if (dropdowns.length === 0) return;
 
   const reset = document.createElement("button");

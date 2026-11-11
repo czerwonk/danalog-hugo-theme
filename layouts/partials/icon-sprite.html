@@ -1,8 +1,8 @@
-{{/* Renders assets/icons/{camera,film,lens}.svg once as <symbol> elements for <use href="#icon-NAME">.
+{{/* Renders assets/icons/{camera,film,lens,orientation}.svg once as <symbol> elements for <use href="#icon-NAME">.
   Sites can replace an icon by providing their own assets/icons/NAME.svg.
 */}}
 <svg class="icon-sprite" aria-hidden="true" width="0" height="0">
-  {{ range $name := slice "camera" "film" "lens" }}
+  {{ range $name := slice "camera" "film" "lens" "orientation" }}
     {{ with resources.Get (printf "icons/%s.svg" $name) }}
       {{ .Content | replaceRE `\s*xmlns="[^"]*"` "" | replaceRE `<svg\b` (printf `<symbol id="icon-%s"` $name) | replaceRE `</svg>` `</symbol>` | safeHTML }}
     {{ end }}

@@ -8,6 +8,14 @@ Nothing open.
 
 ## Done
 
+### Filter bar overhaul (2026-11-11)
+
+- [x] O2: fields always in the order camera, lens, film, orientation, whether static or dropdown. `filterBar()` returns one ordered list of `{dimension, type, value?}` instead of separate statics/dropdowns (before, all statics came first, so a static lens could stand before a camera dropdown). Unit test for the order.
+- [x] O1: one line: dropdowns are icon + select like static info; the dimension name is a visually hidden label and tooltip; default option stays "All". Static info has the full value in its tooltip.
+- [x] O3: orientation icon (`assets/icons/orientation.svg`, landscape frame in front of a portrait frame), in the sprite; build check X1 covers it.
+- [x] O4/O5: selects sized to the selected option (`field-sizing: content`, 4–20rem); phones: two columns in the same order, long values cut off with an ellipsis.
+- Checked in Chrome on the example site (Harbour: four dropdowns; Towers: static gear + orientation; Park: camera dropdown before static lens; filter set via URL) at 1280px and 390px.
+
 ### CI: Dart Sass from npm (2026-11-11)
 
 - [x] First CI run failed: `snap install dart-sass` could not reach the snap store. Dart Sass now comes from the npm registry (`sass-embedded-linux-x64`, the native build with the same `dart-sass/sass` layout as the GitHub release), version and SHA-256 pinned in `test.yml`. Tested locally: all tests pass with that binary first on `PATH`; its hash matches the registry's integrity value. Dependabot does not update it; bump version and checksum together.

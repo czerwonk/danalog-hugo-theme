@@ -42,18 +42,21 @@ const distinctValues = (items, dimension) => [...new Set(items.map((item) => ite
 const GEAR = ["camera", "lens", "film"];
 
 /**
- * Splits the dimensions into static info and dropdowns:
- *   statics    camera, lens or film with exactly one value in the gallery (photos without a value are ignored)
- *   dropdowns  dimensions with at least two values
- * Without any gear info both are empty, so orientation never stands alone.
+ * Fields of the filter bar in the fixed order camera, lens, film, orientation:
+ *   { dimension, type: "static", value }  camera, lens or film with exactly one value in the gallery
+ *                                         (photos without a value are ignored)
+ *   { dimension, type: "dropdown" }       dimensions with at least two values
+ * Without any gear info the bar is empty, so orientation never stands alone.
  */
 export function filterBar(items) {
-  const statics = GEAR.map((dimension) => ({ dimension, values: distinctValues(items, dimension) }))
-    .filter(({ values }) => values.length === 1)
-    .map(({ dimension, values }) => ({ dimension, value: values[0] }));
-  const dropdowns = DIMENSIONS.filter((dimension) => distinctValues(items, dimension).length >= 2);
-  const hasGear = statics.length > 0 || dropdowns.some((dimension) => GEAR.includes(dimension));
-  return hasGear ? { statics, dropdowns } : { statics: [], dropdowns: [] };
+  const fields = DIMENSIONS.flatMap((dimension) => {
+    const values = distinctValues(items, dimension);
+    if (values.length >= 2) return [{ dimension, type: "dropdown" }];
+    if (values.length === 1 && GEAR.includes(dimension)) return [{ dimension, type: "static", value: values[0] }];
+    return [];
+  });
+  const hasGear = fields.some(({ dimension }) => GEAR.includes(dimension));
+  return hasGear ? fields : [];
 }
 
 const sortValues = (dimension, values) => (dimension === "orientation" ? ORIENTATION_ORDER.filter((value) => values.includes(value)) : [...values].sort((a, b) => a.localeCompare(b)));

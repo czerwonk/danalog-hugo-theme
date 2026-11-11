@@ -378,11 +378,11 @@ photoCount:
 
 ### Gallery Filter
 
-Galleries (albums, the recent page and equipment pages) get a filter bar with one dropdown per camera, lens, film (`UserComment`) and orientation, built from the photos' EXIF data (or front matter, see [Camera, lens and film without EXIF](#camera-lens-and-film-without-exif)). Camera, lens or film shared by all photos are shown as static info with their icons instead; a dropdown only appears for values that differ, so a camera page shows its camera and offers filters for the rest. Orientation is offered alongside this gear info, never on its own; galleries without camera, lens or film data show no filter bar. Filters combine; each option shows how many photos remain and is disabled if none would. The active filter is kept in the URL (e.g. `?film=kodak-portra-400`), so filtered views can be shared; the lightbox only steps through the filtered photos. Without JavaScript the filter bar stays hidden.
+Galleries (albums, the recent page and equipment pages) get a filter bar: one line with camera, lens, film (`UserComment`) and orientation, always in this order, built from the photos' EXIF data (or front matter, see [Camera, lens and film without EXIF](#camera-lens-and-film-without-exif)). Each field is an icon followed by either the value all photos share (static info) or a dropdown for values that differ, so a camera page shows its camera and offers filters for the rest. On phones the fields wrap into two columns. Orientation is offered alongside gear info, never on its own; galleries without camera, lens or film data show no filter bar. Filters combine; each option shows how many photos remain and is disabled if none would. The active filter is kept in the URL (e.g. `?film=kodak-portra-400`), so filtered views can be shared; the lightbox only steps through the filtered photos. Without JavaScript the filter bar stays hidden.
 
 ### Caption Icons
 
-The lightbox shows camera, film (`UserComment`) and lens EXIF values with icons from `assets/icons/camera.svg`, `film.svg` and `lens.svg`. To replace an icon, put an SVG with the same name into your site's `assets/icons/`. Use `currentColor` for strokes or fills so the icon follows the caption color.
+The lightbox and the filter bar show camera, film (`UserComment`) and lens with icons from `assets/icons/camera.svg`, `film.svg` and `lens.svg`; the filter bar also uses `orientation.svg`. To replace an icon, put an SVG with the same name into your site's `assets/icons/`. Use `currentColor` for strokes or fills so the icon follows the caption color.
 
 The lightbox toolbar has a copy button that puts camera, film and lens on the clipboard as plain text with emojis, ready to paste into social media posts:
 

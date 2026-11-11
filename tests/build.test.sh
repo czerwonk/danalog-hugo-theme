@@ -66,7 +66,7 @@ assert_contains "$ALBUM_A" 'data-caption-camera="Nikon F3"' "X1: camera caption 
 assert_contains "$ALBUM_A" 'data-caption-film="Kodak Portra 400"' "X1: film caption must be the raw EXIF value"
 assert_contains "$ALBUM_A" 'data-caption-lens="Nikon Nikkor 50mm f/1.4"' "X1: lens caption must be the raw EXIF value"
 assert_not_contains "$ALBUM_A" '📷|🎞️|🔘' "X1: captions must not contain emoji"
-for icon in camera film lens; do
+for icon in camera film lens orientation; do
   assert_count "$ALBUM_A" "<symbol id=\"icon-$icon\"" 1 "X1: gallery page must contain the $icon icon exactly once"
 done
 assert_not_contains "$HOME_PAGE" '<symbol id="icon-' "X1: pages without a gallery must not contain the icon sprite"

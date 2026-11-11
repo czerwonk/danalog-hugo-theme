@@ -23,30 +23,57 @@ test("matches combines dimensions with AND and ignores empty filters", () => {
 });
 
 test("filter bar: varying dimensions become dropdowns, shared gear is shown as static info", () => {
-  assert.deepEqual(filterBar(items), { statics: [{ dimension: "lens", value: "Summicron 50mm f/2" }], dropdowns: ["camera", "film", "orientation"] }, "lens has one value (photos without a lens value are ignored), the rest varies");
+  assert.deepEqual(
+    filterBar(items),
+    [
+      { dimension: "camera", type: "dropdown" },
+      { dimension: "lens", type: "static", value: "Summicron 50mm f/2" },
+      { dimension: "film", type: "dropdown" },
+      { dimension: "orientation", type: "dropdown" },
+    ],
+    "lens has one value (photos without a lens value are ignored), the rest varies",
+  );
   const sameGear = [
     { camera: "Leica M2", lens: "", film: "HP5+", orientation: "landscape" },
     { camera: "Leica M2", lens: "", film: "HP5+", orientation: "portrait" },
   ];
   assert.deepEqual(
     filterBar(sameGear),
-    {
-      statics: [
-        { dimension: "camera", value: "Leica M2" },
-        { dimension: "film", value: "HP5+" },
-      ],
-      dropdowns: ["orientation"],
-    },
+    [
+      { dimension: "camera", type: "static", value: "Leica M2" },
+      { dimension: "film", type: "static", value: "HP5+" },
+      { dimension: "orientation", type: "dropdown" },
+    ],
     "orientation is accompanied by the shared camera and film",
   );
-  assert.deepEqual(filterBar([{ orientation: "landscape" }, { orientation: "portrait" }]), { statics: [], dropdowns: [] }, "without any gear info, orientation never stands alone");
+  assert.deepEqual(filterBar([{ orientation: "landscape" }, { orientation: "portrait" }]), [], "without any gear info, orientation never stands alone");
   const allLandscape = [
     { camera: "Leica M2", film: "HP5+", orientation: "landscape" },
     { camera: "Leica M2", film: "Portra 400", orientation: "landscape" },
   ];
-  assert.deepEqual(filterBar(allLandscape).dropdowns, ["film"], "no orientation dropdown when all photos share one orientation");
-  assert.deepEqual(filterBar(items.slice(0, 1)).dropdowns, [], "a single photo offers nothing to filter");
-  assert.equal(filterBar(items.slice(0, 1)).statics.length, 3, "but its camera, lens and film are shown");
+  assert.deepEqual(
+    filterBar(allLandscape).map(({ dimension, type }) => `${dimension}:${type}`),
+    ["camera:static", "film:dropdown"],
+    "no orientation dropdown when all photos share one orientation",
+  );
+  const single = filterBar(items.slice(0, 1));
+  assert.ok(
+    single.every(({ type }) => type === "static"),
+    "a single photo offers nothing to filter",
+  );
+  assert.equal(single.length, 3, "but its camera, lens and film are shown");
+});
+
+test("filter bar keeps the order camera, lens, film, orientation whether a field is static or a dropdown", () => {
+  const staticLensDropdownCamera = [
+    { camera: "Leica M2", lens: "Summicron 50mm f/2", film: "HP5+", orientation: "landscape" },
+    { camera: "Nikon F3", lens: "Summicron 50mm f/2", film: "HP5+", orientation: "portrait" },
+  ];
+  assert.deepEqual(
+    filterBar(staticLensDropdownCamera).map(({ dimension }) => dimension),
+    ["camera", "lens", "film", "orientation"],
+    "a dropdown camera comes before the static lens and film",
+  );
 });
 
 test("options count photos matching the other active filters", () => {
