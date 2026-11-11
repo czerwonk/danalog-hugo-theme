@@ -8,6 +8,10 @@ Nothing open.
 
 ## Done
 
+### CI: Dart Sass from npm (2026-11-11)
+
+- [x] First CI run failed: `snap install dart-sass` could not reach the snap store. Dart Sass now comes from the npm registry (`sass-embedded-linux-x64`, the native build with the same `dart-sass/sass` layout as the GitHub release), version and SHA-256 pinned in `test.yml`. Tested locally: all tests pass with that binary first on `PATH`; its hash matches the registry's integrity value. Dependabot does not update it; bump version and checksum together.
+
 ### Gear from front matter (2026-11-11)
 
 - [x] F1: camera, lens and film can come from resource params (`params.camera`/`lens`/`film`, per photo or with a glob) when EXIF lacks them. Before, only equipment pages read them; captions, copy button and filter used EXIF only, so a photo could be listed on a camera page but hidden by that camera's filter in its own album. One partial (`image-gear.html`) now resolves the gear for `gallery-render.html` and `collect-equipment.html`; EXIF wins per value. README section "Camera, lens and film without EXIF". Build check G1 (fixture album-g).

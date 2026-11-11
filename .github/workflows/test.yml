@@ -22,7 +22,18 @@ jobs:
         with:
           node-version: lts/*
       - name: Install Dart Sass
-        run: sudo snap install dart-sass
+        # Native Dart Sass from the npm registry (same layout as the GitHub release); the snap store is not
+        # always reachable from runners. Version and checksum pinned: update both together.
+        working-directory: ${{ runner.temp }}
+        env:
+          DART_SASS_VERSION: 1.100.0
+          DART_SASS_SHA256: 6b435cdd4953bd8919fb4046abb1b604aadbe7e86bc40f1d3710cabfc56f3026
+        run: |
+          tgz="sass-embedded-linux-x64-${DART_SASS_VERSION}.tgz"
+          curl -fsSLO "https://registry.npmjs.org/sass-embedded-linux-x64/-/$tgz"
+          echo "$DART_SASS_SHA256  $tgz" | sha256sum -c -
+          tar -xzf "$tgz"
+          echo "$PWD/package/dart-sass" >>"$GITHUB_PATH"
       - name: Install Hugo
         working-directory: ${{ runner.temp }}
         run: |
