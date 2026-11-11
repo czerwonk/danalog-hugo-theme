@@ -7,9 +7,12 @@ Modernization: keep the minimalism, lean into an analog / darkroom / contact she
 ### Follow-ups
 
 - [ ] (low) `theme.toml` `homepage`/`demosite` still point to upstream; decide whether this fork gets its own entries.
-- [ ] (low) Without JavaScript the album gallery stays invisible (`#gallery` is hidden until the justified layout runs). Consider a CSS fallback layout (e.g. flex-wrap rows) for `scripting: none`.
 
 ## Done
+
+### Gallery without JavaScript (2026-11-11)
+
+- [x] Galleries were invisible without JavaScript (inline `visibility: hidden` until the justified layout ran). The container now has the class `gallery-photos`: with `@media (scripting: none)` photos wrap in centered rows of equal height (12rem, `object-fit: contain`), with `(scripting: enabled)` it stays hidden until `gallery.js` lays it out and sets `visibility: visible` inline. Checked on danalog.pics in Chrome (JS disabled via DevTools protocol) at 1280px and 390px; with JS the layout is unchanged. Build check J1.
 
 ### Config split C6 (2026-11-11)
 

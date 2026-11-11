@@ -657,6 +657,40 @@ section.gallery {
   }
 }
 
+// Without scripts the photos wrap in rows of equal height. With scripts the gallery stays
+// hidden until assets/js/gallery.js has laid it out (justified layout, inline styles).
+@media (scripting: none) {
+  .gallery-photos {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+
+    & > .gallery-item {
+      max-width: 100%;
+      height: 12rem;
+
+      & > figure,
+      & > figure > img {
+        width: 100%;
+        height: 100%;
+      }
+
+      & > figure > img {
+        object-fit: contain;
+      }
+    }
+  }
+}
+
+@media (scripting: enabled) {
+  .gallery-photos {
+    visibility: hidden;
+    height: 1px;
+    overflow: hidden;
+  }
+}
+
 // Gallery photos open in the lightbox; they brighten slightly on hover like the album cards
 .gallery-item {
   cursor: zoom-in;

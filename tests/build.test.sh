@@ -228,6 +228,14 @@ assert_contains "$OUT/album-e/index.html" '<link rel="alternate" type="applicati
 # S5 (L3): lightbox srcset is HTML-escaped like src (file name album-e-a&b.jpg)
 assert_contains "$OUT/album-e/index.html" 'data-pswp-srcset="/album-e/album-e-a&amp;b_hu_[0-9a-f]+\.jpg 1318w, /album-e/album-e-a&amp;b_hu_' "S5: data-pswp-srcset must be HTML-escaped"
 
+# J1: without scripts the photos wrap in rows; only when scripts run is the gallery hidden until the justified layout is done
+for page in "$ALBUM_A" "$RECENT_PAGE" "$CAMERA_PAGE"; do
+  assert_contains "$page" '<div id="gallery" class="gallery-photos">' "J1: gallery container is styled by class, not hidden inline"
+done
+assert_contains "$CSS" '@media ?\(scripting: ?none\) ?\{ ?\.gallery-photos ?\{[^}]*flex-wrap: ?wrap' "J1: without scripts the photos wrap in rows"
+assert_contains "$CSS" '@media ?\(scripting: ?enabled\) ?\{ ?\.gallery-photos ?\{[^}]*visibility: ?hidden' "J1: with scripts the gallery is hidden until laid out"
+assert_contains "$JS" 'style\.visibility="visible"' "J1: gallery.js must override the CSS visibility once laid out"
+
 # C3: gallery defaults come from the theme's hugo.toml (merged into the site params), not from template fallbacks
 GALLERY_PARAMS="$(hugo config --format json --source "$THEME_DIR/tests/site" --themesDir "$WORK_DIR/themes" 2>/dev/null |
   python3 -c 'import json, sys; print(json.dumps(json.load(sys.stdin)["params"]["gallery"], sort_keys=True))')"

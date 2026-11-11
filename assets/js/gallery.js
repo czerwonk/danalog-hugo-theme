@@ -43,8 +43,9 @@ if (gallery) {
 
     gallery.style.position = "relative";
     gallery.style.height = layout.containerHeight + "px";
-    gallery.style.visibility = "";
-    // The inline overflow: hidden only hides the unlaid-out gallery; afterwards it would clip focus outlines
+    // Inline values override the CSS that hides the gallery until it is laid out (see .gallery-photos);
+    // overflow: hidden would also clip focus outlines
+    gallery.style.visibility = "visible";
     gallery.style.overflow = "visible";
   }
 
