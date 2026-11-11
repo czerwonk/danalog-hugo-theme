@@ -23,6 +23,14 @@ html {
   navigation: auto;
 }
 
+// Phones: no title morph, it lags there; pages still cross-fade.
+// !important is needed to override the inline view-transition-name.
+@media (max-width: 639px) {
+  [style*="view-transition-name"] {
+    view-transition-name: none !important;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-group(*),
   ::view-transition-old(*),

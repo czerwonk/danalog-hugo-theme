@@ -59,6 +59,7 @@ Modernization: keep the minimalism, lean into an analog / darkroom / contact she
 - [x] (medium) N4: Album card caption on one line: title left, count right in meta font. Optional "frames" wording via i18n/param; default stays "photos".
   - "Frames" wording via the site's own `i18n/en.yaml` (documented in README), no theme param.
 - [x] (medium) M1: Cross-document View Transitions (`@view-transition { navigation: auto; }`) with a shared `view-transition-name` from album cover to gallery. Respect `prefers-reduced-motion`.
+- [x] (medium) M1a: Disable the card-title → page-title morph on phones (< 640px); it lagged there. Page cross-fade stays. Override uses `!important` because the name is set inline.
   - Card titles morph into the page title (`partials/transition-name.html`). The cover image itself does not morph: the gallery is laid out by JS after first render, so the target position is unknown when the transition snapshots the new page. The featured block has no name (duplicate names abort the transition).
 - [x] stylelint kept on 17: `stylelint-config-standard-scss` 17.0.0 (latest) requires stylelint ^17.
 

@@ -108,6 +108,7 @@ assert_contains "$CSS" '@view-transition\{navigation: ?auto' "M1: cross-document
 assert_contains "$HOME_PAGE" '<h2 style="view-transition-name: title-album-a">Album A</h2>' "M1: album card title must carry the target page's transition name"
 assert_contains "$ALBUM_A" '<h1 style="view-transition-name: title-album-a">Album A</h1>' "M1: page title must carry its transition name"
 assert_count "$HOME_PAGE" 'view-transition-name: title-album-c' 1 "M1: transition names must be unique per page (featured album also has a card)"
+assert_contains "$CSS" '@media ?\(max-width: ?639px\)\{\[style\*=view-transition-name\]\{view-transition-name:none ?!important\}\}' "M1: title morph is disabled on phones (it lags there)"
 
 # N4: card caption on one line, title left and count right
 assert_contains "$CSS" '\.card>div\{[^}]*justify-content:space-between' "N4: card caption puts title and count on one line"
