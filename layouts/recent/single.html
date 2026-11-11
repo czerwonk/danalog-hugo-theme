@@ -1,6 +1,6 @@
 {{ define "main" }}
   {{ partial "title.html" . }}
-  {{ $count := site.Params.gallery.recentCount | default 50 | int }}
+  {{ $count := site.Params.gallery.recentCount | int }}
 
   {{ $allImages := slice }}
   {{ range where site.RegularPages "Params.private" "ne" true }}

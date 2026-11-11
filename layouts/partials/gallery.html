@@ -31,7 +31,7 @@
       }}
     {{ end }}
     {{ $publishResources := default true .Params.build.publishResources }}
-    {{ range sort $images (.Params.sort_by | default site.Params.gallery.sortBy | default "Name") (.Params.sort_order | default site.Params.gallery.sortOrder | default "asc") }}
+    {{ range sort $images (.Params.sort_by | default site.Params.gallery.sortBy) (.Params.sort_order | default site.Params.gallery.sortOrder) }}
       {{ partial "gallery-render.html" (dict
         "image" .image
         "title" .Title

@@ -2,7 +2,7 @@
   the mat color when images get a border (borderSize > 0), otherwise the image's dominant color.
 */}}
 {{ $color := index .Colors 0 | default "transparent" }}
-{{ if gt (site.Params.gallery.borderSize | default 0 | int) 0 }}
-  {{ $color = site.Params.gallery.borderColor | default "#ffffff" }}
+{{ if gt (site.Params.gallery.borderSize | int) 0 }}
+  {{ $color = site.Params.gallery.borderColor }}
 {{ end }}
 {{ return $color }}

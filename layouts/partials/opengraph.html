@@ -41,7 +41,7 @@
 {{ end }}
 {{ $image := ($images.GetMatch (.Params.featured_image | default "*feature*")) | default (index $images $index) }}
 {{- with $image -}}
-  {{ $fullSize := site.Params.gallery.fullSize | default 1600 | int }}
+  {{ $fullSize := site.Params.gallery.fullSize | int }}
   {{ $full := $image.Filter (slice images.AutoOrient (images.Process (printf "fit %dx%d" $fullSize $fullSize))) }}
   <meta property="og:image" content="{{ $full.Permalink }}" />
 {{- end -}}

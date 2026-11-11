@@ -1,6 +1,6 @@
 {{/* Input: {image, title, pswpTarget, publishResources} */}}
 {{ $image := .image }}
-{{ $fullSize := site.Params.gallery.fullSize | default 1600 | int }}
+{{ $fullSize := site.Params.gallery.fullSize | int }}
 {{ $thumb := partial "thumbnail.html" $image }}
 {{ $thumbnail := $thumb.image }}
 {{ $color := $thumb.color }}

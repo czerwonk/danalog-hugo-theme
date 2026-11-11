@@ -7,7 +7,7 @@
       {{ $cover = index $covers 0 }}
     {{ end }}
     {{ $featured := $cover | default ((.Resources.ByType "image").GetMatch (.Params.featured_image | default "*feature*")) | default (index $gallery.images 0) }}
-    {{ $fullSize := site.Params.gallery.fullSize | default 1600 | int }}
+    {{ $fullSize := site.Params.gallery.fullSize | int }}
     {{ $thumbnail := $featured.Filter (slice images.AutoOrient (images.Process (printf "fit %dx%d" $fullSize $fullSize))) }}
     {{ $color := partial "placeholder-color.html" $thumbnail }}
     {{ $thumbnail = partial "apply-border.html" (dict "image" $thumbnail "full" true) }}

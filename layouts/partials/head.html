@@ -41,9 +41,9 @@
     "orientationPortrait" (i18n "orientationPortrait")
     "orientationSquare" (i18n "orientationSquare")
     "filterReset" (i18n "filterReset")
-    "boxSpacing" (default 8 .Site.Params.gallery.boxSpacing)
-    "targetRowHeight" (default 288 .Site.Params.gallery.targetRowHeight)
-    "targetRowHeightTolerance" (default 0.25 .Site.Params.gallery.targetRowHeightTolerance)
+    "boxSpacing" site.Params.gallery.boxSpacing
+    "targetRowHeight" site.Params.gallery.targetRowHeight
+    "targetRowHeightTolerance" site.Params.gallery.targetRowHeightTolerance
     "enableDownload" (default true .Params.build.publishResources)
   }}
   {{ $js := resources.Get "js/main.js" | js.Build (dict "minify" true "params" $params) | resources.Fingerprint }}

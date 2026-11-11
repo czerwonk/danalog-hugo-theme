@@ -6,7 +6,6 @@ Modernization: keep the minimalism, lean into an analog / darkroom / contact she
 
 ### Config split theme/site (2026-11-11)
 
-- [ ] (low) C3: Collect the `params.gallery` defaults in a theme `hugo.toml` (one source instead of `| default` spread over `apply-border.html`, `gallery-render.html`, `gallery.html`, `recent/single.html`). Keep the current values (no mat/stroke); danalog.pics keeps its print settings in its own config.
 - [ ] (medium) C5: CSS variables for what danalog.pics now overrides by selector: `--font-body` (`body`), `--card-title-size` (`.card > div > h2`), page title transform/tracking/size (`hgroup h1`). Then switch the site's `custom.css` to the variables.
 - [ ] (low) C6: Update `exampleSite`: upstream demo/GitHub links, `imaging.quality` → `imaging.jpeg.quality`, show current features (mat/stroke, equipment sections).
 
@@ -15,6 +14,10 @@ Modernization: keep the minimalism, lean into an analog / darkroom / contact she
 - [ ] (low) Without JavaScript the album gallery stays invisible (`#gallery` is hidden until the justified layout runs). Consider a CSS fallback layout (e.g. flex-wrap rows) for `scripting: none`.
 
 ## Done
+
+### Config split C3 (2026-11-11)
+
+- [x] C3: `params.gallery` defaults in the theme's `hugo.toml` instead of `| default` in templates. A site value of 0 (e.g. `boxSpacing = 0`) is no longer replaced by the fallback. `borderSizeFull`/`strokeSizeFull` fall back to the thumbnail size only when unset (`isset`), so 0 now works for them too. Fixture output identical. Build check C3.
 
 ### Config split C1/C2 (2026-11-11)
 

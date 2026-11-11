@@ -228,6 +228,16 @@ assert_contains "$OUT/album-e/index.html" '<link rel="alternate" type="applicati
 # S5 (L3): lightbox srcset is HTML-escaped like src (file name album-e-a&b.jpg)
 assert_contains "$OUT/album-e/index.html" 'data-pswp-srcset="/album-e/album-e-a&amp;b_hu_[0-9a-f]+\.jpg 1318w, /album-e/album-e-a&amp;b_hu_' "S5: data-pswp-srcset must be HTML-escaped"
 
+# C3: gallery defaults come from the theme's hugo.toml (merged into the site params), not from template fallbacks
+GALLERY_PARAMS="$(hugo config --format json --source "$THEME_DIR/tests/site" --themesDir "$WORK_DIR/themes" 2>/dev/null |
+  python3 -c 'import json, sys; print(json.dumps(json.load(sys.stdin)["params"]["gallery"], sort_keys=True))')"
+for expected in '"bordersize": 8' '"fullsize": 1600' '"recentcount": 50' '"sortby": "Name"' '"sortorder": "asc"' '"boxspacing": 8' '"targetrowheight": 288' '"targetrowheighttolerance": 0.25'; do
+  [[ "$GALLERY_PARAMS" == *"$expected"* ]] || fail "C3: params.gallery must contain $expected (site value or theme default), got $GALLERY_PARAMS"
+done
+if grep -rnE 'Params\.gallery\.[A-Za-z]+\)? *\| *default|default [^ ]+ \.?[Ss]ite\.Params\.gallery' "$THEME_DIR/layouts"; then
+  fail "C3: gallery params must not have template fallbacks (a site value of 0 would be replaced), set defaults in hugo.toml"
+fi
+
 if [ "$FAILURES" -gt 0 ]; then
   echo "$FAILURES check(s) failed"
   exit 1

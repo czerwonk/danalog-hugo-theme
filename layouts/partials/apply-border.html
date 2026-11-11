@@ -1,22 +1,22 @@
 {{/* Input: {image, full?, scale?}. Returns image with stroke and border applied.
-  full=true uses strokeSizeFull/borderSizeFull params (absolute pixels for full-size images).
+  full=true uses strokeSizeFull/borderSizeFull params if set (absolute pixels for full-size images).
   scale multiplies both sizes for other resolutions of the same image (2 for 2x thumbnails,
   0.5 for half-size lightbox images), so the mat keeps its proportion; a size never drops below 1px.
 */}}
 {{ $image := .image }}
 {{ $scale := .scale | default 1 }}
-{{ $strokeSize := site.Params.gallery.strokeSize | default 0 | int }}
-{{ $borderSize := site.Params.gallery.borderSize | default 0 | int }}
+{{ $strokeSize := site.Params.gallery.strokeSize | int }}
+{{ $borderSize := site.Params.gallery.borderSize | int }}
 {{ if .full }}
-  {{ $strokeSize = site.Params.gallery.strokeSizeFull | default $strokeSize | int }}
-  {{ $borderSize = site.Params.gallery.borderSizeFull | default $borderSize | int }}
+  {{ if isset site.Params.gallery "strokesizefull" }}{{ $strokeSize = site.Params.gallery.strokeSizeFull | int }}{{ end }}
+  {{ if isset site.Params.gallery "bordersizefull" }}{{ $borderSize = site.Params.gallery.borderSizeFull | int }}{{ end }}
 {{ end }}
 {{ if gt $strokeSize 0 }}
   {{ $strokeSize = math.Max 1 (math.Round (mul $strokeSize $scale)) | int }}
-  {{ $image = $image.Filter (images.Padding $strokeSize (site.Params.gallery.strokeColor | default "#000000")) }}
+  {{ $image = $image.Filter (images.Padding $strokeSize site.Params.gallery.strokeColor) }}
 {{ end }}
 {{ if gt $borderSize 0 }}
   {{ $borderSize = math.Max 1 (math.Round (mul $borderSize $scale)) | int }}
-  {{ $image = $image.Filter (images.Padding $borderSize (site.Params.gallery.borderColor | default "#ffffff")) }}
+  {{ $image = $image.Filter (images.Padding $borderSize site.Params.gallery.borderColor) }}
 {{ end }}
 {{ return $image }}

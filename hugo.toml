@@ -1,0 +1,17 @@
+# Theme defaults. Hugo deep-merges `params` into the site config, so sites only set what they change.
+# Other keys (imaging, outputs, services) are not merged from themes; sites must set them, see README.
+
+[params.gallery]
+  fullSize = 1600
+  recentCount = 50
+  sortBy = "Name"
+  sortOrder = "asc"
+  # Mat and stroke around photos, off by default (0 = none).
+  # borderSizeFull/strokeSizeFull (lightbox images) default to borderSize/strokeSize when not set.
+  borderSize = 0
+  borderColor = "#ffffff"
+  strokeSize = 0
+  strokeColor = "#000000"
+  boxSpacing = 8
+  targetRowHeight = 288
+  targetRowHeightTolerance = 0.25
