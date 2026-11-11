@@ -6,7 +6,6 @@ Modernization: keep the minimalism, lean into an analog / darkroom / contact she
 
 ### Config split theme/site (2026-11-11)
 
-- [ ] (medium) C5: CSS variables for what danalog.pics now overrides by selector: `--font-body` (`body`), `--card-title-size` (`.card > div > h2`), page title transform/tracking/size (`hgroup h1`). Then switch the site's `custom.css` to the variables.
 - [ ] (low) C6: Update `exampleSite`: upstream demo/GitHub links, `imaging.quality` → `imaging.jpeg.quality`, show current features (mat/stroke, equipment sections).
 
 ### Follow-ups
@@ -14,6 +13,10 @@ Modernization: keep the minimalism, lean into an analog / darkroom / contact she
 - [ ] (low) Without JavaScript the album gallery stays invisible (`#gallery` is hidden until the justified layout runs). Consider a CSS fallback layout (e.g. flex-wrap rows) for `scripting: none`.
 
 ## Done
+
+### Config split C5 (2026-11-11)
+
+- [x] C5: CSS variables `--font-body`, `--card-title-size` and `--page-title-{font,weight,size,tracking,transform}`, so sites no longer override `body`, `.card > div > h2` and `hgroup h1` by selector. Defaults keep the previous look. Documented in the README. Build check C5.
 
 ### Config split C3 (2026-11-11)
 

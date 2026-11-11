@@ -148,13 +148,13 @@ exiftool -ImageDescription="A closeup of a gray cat's face" cat-4.jpg
 
 The theme reads these EXIF fields:
 
-| Field | Used for |
-| --- | --- |
-| `DateTimeOriginal` | sorting by `Date` |
-| `ImageDescription` | image titles |
-| `Make`, `Model` | camera (captions, filter, `/cameras`) |
-| `LensMake`, `LensModel` | lens (captions, filter, `/lenses`) |
-| `UserComment` | film stock (captions, filter, `/films`) |
+| Field                   | Used for                                |
+| ----------------------- | --------------------------------------- |
+| `DateTimeOriginal`      | sorting by `Date`                       |
+| `ImageDescription`      | image titles                            |
+| `Make`, `Model`         | camera (captions, filter, `/cameras`)   |
+| `LensMake`, `LensModel` | lens (captions, filter, `/lenses`)      |
+| `UserComment`           | film stock (captions, filter, `/films`) |
 
 Hugo's default `imaging.meta.fields` includes all of them. If your site sets its own list, it must contain these fields. A theme cannot provide this setting, as Hugo does not merge `imaging` from themes:
 
@@ -321,14 +321,21 @@ CSS is generated with Hugo Pipes, so you can add additional CSS in `assets/css/c
 
 The theme exposes these CSS variables:
 
-| Variable                | Default                 | Purpose                                                              |
-| ----------------------- | ----------------------- | -------------------------------------------------------------------- |
-| `--radius`              | `0`                     | Corner radius of photos                                              |
-| `--card-fit`            | `cover`                 | `object-fit` of album card images; `contain` keeps borders uncropped |
-| `--card-placeholder`    | the image's placeholder | Card background while loading; set `transparent` with `contain`      |
-| `--font-display`        | system sans-serif       | Page, album, featured and lightbox titles, menu entries              |
-| `--font-display-weight` | `600`                   | Weight of those titles; match a weight your font files provide       |
-| `--font-meta`           | system monospace        | Metadata labels (photo counts, EXIF captions)                        |
+| Variable                 | Default                      | Purpose                                                              |
+| ------------------------ | ---------------------------- | -------------------------------------------------------------------- |
+| `--radius`               | `0`                          | Corner radius of photos                                              |
+| `--card-fit`             | `cover`                      | `object-fit` of album card images; `contain` keeps borders uncropped |
+| `--card-placeholder`     | the image's placeholder      | Card background while loading; set `transparent` with `contain`      |
+| `--font-display`         | system sans-serif            | Page, album, featured and lightbox titles, menu entries              |
+| `--font-display-weight`  | `600`                        | Weight of those titles; match a weight your font files provide       |
+| `--font-meta`            | system monospace             | Metadata labels (photo counts, EXIF captions)                        |
+| `--font-body`            | system sans-serif            | Running text (descriptions, prose pages)                             |
+| `--card-title-size`      | `1.125rem`                   | Album card titles                                                    |
+| `--page-title-font`      | `var(--font-display)`        | Page title (`h1`)                                                    |
+| `--page-title-weight`    | `var(--font-display-weight)` | Weight of the page title                                             |
+| `--page-title-size`      | fluid `2rem`–`3rem`          | Size of the page title                                               |
+| `--page-title-tracking`  | `normal`                     | `letter-spacing` of the page title                                   |
+| `--page-title-transform` | `none`                       | `text-transform` of the page title, e.g. `uppercase`                 |
 
 ```css
 :root {

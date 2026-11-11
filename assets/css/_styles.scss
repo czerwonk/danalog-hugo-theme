@@ -5,6 +5,13 @@
   --font-display: ui-sans-serif, system-ui, sans-serif;
   --font-display-weight: 600;
   --font-meta: ui-monospace, "SFMono-Regular", menlo, consolas, monospace;
+  --font-body: ui-sans-serif, system-ui, sans-serif;
+  --card-title-size: 1.125rem;
+  --page-title-font: var(--font-display);
+  --page-title-weight: var(--font-display-weight);
+  --page-title-size: clamp(2rem, calc(1.667rem + 1.481vw), 3rem);
+  --page-title-tracking: normal;
+  --page-title-transform: none;
 }
 
 html {
@@ -56,6 +63,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-color: var(--surface-1);
   color: var(--text-1);
+  font-family: var(--font-body);
 }
 
 body > header {
@@ -273,9 +281,11 @@ hgroup {
   text-align: center;
 
   h1 {
-    font-family: var(--font-display);
-    font-weight: var(--font-display-weight);
-    font-size: clamp(2rem, calc(1.667rem + 1.481vw), 3rem);
+    font-family: var(--page-title-font);
+    font-weight: var(--page-title-weight);
+    font-size: var(--page-title-size);
+    letter-spacing: var(--page-title-tracking);
+    text-transform: var(--page-title-transform);
     line-height: clamp(2.25rem, calc(1.833rem + 1.852vw), 3.5rem);
     text-wrap: balance;
   }
@@ -588,7 +598,7 @@ section.gallery {
     & > h2 {
       font-family: var(--font-display);
       font-weight: var(--font-display-weight);
-      font-size: 1.125rem;
+      font-size: var(--card-title-size);
       line-height: 1.375;
     }
 

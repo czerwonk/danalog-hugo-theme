@@ -238,6 +238,12 @@ if grep -rnE 'Params\.gallery\.[A-Za-z]+\)? *\| *default|default [^ ]+ \.?[Ss]it
   fail "C3: gallery params must not have template fallbacks (a site value of 0 would be replaced), set defaults in hugo.toml"
 fi
 
+# C5: site typography hooks are CSS variables instead of selectors sites override
+for variable in --font-body --card-title-size --page-title-font --page-title-weight --page-title-size --page-title-tracking --page-title-transform; do
+  assert_contains "$CSS" "var\\($variable\\)" "C5: $variable must be used by the theme CSS"
+  assert_contains "$CSS" "$variable:" "C5: $variable must have a default"
+done
+
 if [ "$FAILURES" -gt 0 ]; then
   echo "$FAILURES check(s) failed"
   exit 1
