@@ -1,12 +1,17 @@
 name = "Gallery"
 license = "MIT"
-licenselink = "https://github.com/nicokaiser/hugo-theme-gallery/blob/main/LICENSE"
+licenselink = "https://github.com/czerwonk/danalog-hugo-theme/blob/main/LICENSE"
 description = "A very simple and opinionated photo gallery theme for Hugo"
-homepage = "https://github.com/nicokaiser/hugo-theme-gallery"
-demosite = "https://nicokaiser.github.io/hugo-theme-gallery/"
+homepage = "https://github.com/czerwonk/danalog-hugo-theme"
 tags = ["gallery", "responsive", "minimal", "dark"]
 min_version = "0.168.0"
 
 [author]
-  name = "Nico Kaiser"
+  name = "Daniel Brendgen-Czerwonk"
+  homepage = "https://danalog.pics"
+
+# This theme is a fork
+[original]
+  author = "Nico Kaiser"
   homepage = "https://kaiser.me"
+  repo = "https://github.com/nicokaiser/hugo-theme-gallery"

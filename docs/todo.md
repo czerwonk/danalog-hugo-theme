@@ -4,11 +4,13 @@ Modernization: keep the minimalism, lean into an analog / darkroom / contact she
 
 ## Open
 
-### Follow-ups
-
-- [ ] (low) `theme.toml` `homepage`/`demosite` still point to upstream; decide whether this fork gets its own entries.
+Nothing open.
 
 ## Done
+
+### theme.toml (2026-11-11)
+
+- [x] `theme.toml` points to this repository (`homepage`, `licenselink`); author is the fork's maintainer, Nico Kaiser is credited in the `[original]` section Hugo provides for forks. `demosite` removed (the upstream demo does not show this fork). `LICENSE` unchanged (MIT, copyright Nico Kaiser).
 
 ### Gallery without JavaScript (2026-11-11)
 
