@@ -51,10 +51,10 @@
         <media:content url="{{ $thumbnail.Permalink }}" type="image/jpeg"/>
         <description>
           &lt;img src=&quot;{{ $thumbnail.Permalink }}&quot; /&gt;
-          &lt;p&gt;{{ .Params.description | html }}&lt;/p&gt;
+          &lt;p&gt;{{ .Params.description | htmlEscape }}&lt;/p&gt;
         </description>
       {{- else }}
-        <description>{{ .Params.description | html }}</description>
+        <description>{{ .Params.description | htmlEscape }}</description>
       {{- end }}
     </item>
       {{- end }}

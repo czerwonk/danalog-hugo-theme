@@ -1,5 +1,5 @@
 baseURL = "https://example.org/"
-title = "Fixture"
+title = "Fixture \"Q\" <&>"
 locale = "en"
 theme = "gallery"
 disableKinds = ["taxonomy"]
@@ -23,8 +23,8 @@ disableKinds = ["taxonomy"]
 
 [outputs]
   home = ["HTML"]
-  page = ["HTML"]
-  section = ["HTML"]
+  page = ["HTML", "RSS"]
+  section = ["HTML", "RSS"]
 
 [menus]
   [[menus.main]]

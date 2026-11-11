@@ -9,7 +9,7 @@
 {{ $full = partial "apply-border.html" (dict "image" $full "full" true) }}
 
 {{/* The lightbox picks the half-size image on smaller screens; skipped if the original is too small.
-  Rendered via safeHTMLAttr: html/template treats data-pswp-srcset as a single URL and would encode the spaces.
+  Rendered via htmlEscape + safeHTMLAttr: html/template treats data-pswp-srcset as a single URL and would encode the spaces.
 */}}
 {{ $pswpSrcset := printf "%s %dw" $full.RelPermalink $full.Width }}
 {{ $halfWithBorder := partial "apply-border.html" (dict "image" $half "full" true "scale" 0.5) }}
@@ -44,7 +44,7 @@
 {{ end }}
 
 
-<a class="gallery-item" href="{{ $href }}" data-pswp-src="{{ $full.RelPermalink }}" data-pswp-width="{{ $full.Width }}" data-pswp-height="{{ $full.Height }}" {{ printf "data-pswp-srcset=%q" $pswpSrcset | safeHTMLAttr }} data-pswp-target="{{ .pswpTarget }}" data-title="{{ .title }}" data-caption-camera="{{ $captionCamera }}" data-caption-film="{{ $captionFilm }}" data-caption-lens="{{ $captionLens }}" data-orientation="{{ $orientation }}" itemscope itemtype="https://schema.org/ImageObject" style="aspect-ratio: {{ $thumbnail.Width }} / {{ $thumbnail.Height }}">
+<a class="gallery-item" href="{{ $href }}" data-pswp-src="{{ $full.RelPermalink }}" data-pswp-width="{{ $full.Width }}" data-pswp-height="{{ $full.Height }}" {{ printf `data-pswp-srcset="%s"` (htmlEscape $pswpSrcset) | safeHTMLAttr }} data-pswp-target="{{ .pswpTarget }}" data-title="{{ .title }}" data-caption-camera="{{ $captionCamera }}" data-caption-film="{{ $captionFilm }}" data-caption-lens="{{ $captionLens }}" data-orientation="{{ $orientation }}" itemscope itemtype="https://schema.org/ImageObject" style="aspect-ratio: {{ $thumbnail.Width }} / {{ $thumbnail.Height }}">
   <figure style="--placeholder: {{ $color }}; aspect-ratio: {{ $thumbnail.Width }} / {{ $thumbnail.Height }}">
     <img loading="lazy" decoding="async" width="{{ $thumbnail.Width }}" height="{{ $thumbnail.Height }}" src="{{ $thumbnail.RelPermalink }}" srcset="{{ $thumb.srcset }}" alt="{{ .title }}" />
   </figure>

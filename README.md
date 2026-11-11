@@ -103,7 +103,7 @@ content/
 - `description` -- description shown on the album page. Rendered as markdown to enable adding links and some formatting.
 - `weight` -- can be used to adjust sort order.
 - `params.featured_image` -- name of the image file used for the album thumbnail. If not set, the first image which contains `feature` in its filename is used, otherwise the first image in the album. (Deprecated, use `resources.params.cover`)
-- `params.private` -- if set to `true`, this album is not shown in the album overview and is excluded from RSS feeds.
+- `params.private` -- if set to `true`, this album is not shown in the album overview, on equipment and recent pages, in the sitemap and in RSS feeds, and is marked `noindex`. It is still published: anyone with the link can open it, so this is not access control.
 - `params.featured` -- if set to `true`, this album is featured on the homepage (even if private).
 - `params.sort_by` -- property used for sorting images in an album. Default is `Name` (filename), but can also be `Date` (from EXIF/IPTC/XMP metadata, see [Image Metadata](#image-metadata)). Overrides the site-wide `params.gallery.sortBy` configuration.
 - `params.sort_order` -- sort order. Default is `asc`. Overrides the site-wide `params.gallery.sortOrder` configuration.

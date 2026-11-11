@@ -214,6 +214,19 @@ for page in "$CAMERA_PAGE" "$OUT/cameras/index.html" "$RECENT_PAGE" "$HOME_PAGE"
   assert_not_contains "$page" '/album-f/' "S2: private albums must not be exposed on public pages"
 done
 
+# S3 (L1): the RSS description is HTML inside XML, so the page title is escaped twice
+ALBUM_E_RSS="$OUT/album-e/index.xml"
+assert_contains "$ALBUM_E_RSS" '&lt;p&gt;Album &amp;lt;E&amp;gt;&lt;/p&gt;' "S3: page title in the RSS description must be escaped for the HTML inside the XML"
+assert_not_contains "$ALBUM_E_RSS" '&lt;p&gt;Album &lt;E&gt;&lt;/p&gt;' "S3: page title must not become markup in feed readers"
+
+assert_contains "$OUT/cameras/index.xml" '<description>Body &amp;lt;F3&amp;gt;</description>' "S3: page description in the RSS description must be escaped twice as well"
+
+# S4 (L2): the site title in the alternate link is escaped (fixture title: Fixture "Q" <&>)
+assert_contains "$OUT/album-e/index.html" '<link rel="alternate" type="application/rss(\+|&#43;)xml" href="https://example.org/album-e/index.xml" title="Fixture &#34;Q&#34; &lt;&amp;&gt;"' "S4: alternate link carries the escaped site title"
+
+# S5 (L3): lightbox srcset is HTML-escaped like src (file name album-e-a&b.jpg)
+assert_contains "$OUT/album-e/index.html" 'data-pswp-srcset="/album-e/album-e-a&amp;b_hu_[0-9a-f]+\.jpg 1318w, /album-e/album-e-a&amp;b_hu_' "S5: data-pswp-srcset must be HTML-escaped"
+
 if [ "$FAILURES" -gt 0 ]; then
   echo "$FAILURES check(s) failed"
   exit 1

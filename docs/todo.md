@@ -6,14 +6,18 @@ Modernization: keep the minimalism, lean into an analog / darkroom / contact she
 
 ### Follow-ups
 
-- [ ] (low) Security audit L1: RSS item description escapes `.page.Title` only once (`rss-image-items.html`), so a title becomes live HTML in feed readers; use `| html` like `rss.xml`.
-- [ ] (low) Security audit L2: `head.html` alternate links insert `.Site.Title` unescaped via `printf | safeHTML`; render the `<link>` with normal template escaping.
-- [ ] (low) Security audit L3: `data-pswp-srcset` is quoted with Go `%q` (not HTML escaping); currently safe only because Hugo percent-encodes file names. Escape with `htmlEscape`.
-- [ ] (low) Security audit L4: CI uses `npm install` and tag-pinned actions; switch to `npm ci --ignore-scripts` and SHA pins.
-- [ ] (low) Security audit I1: README should state that `private` only unlists an album, it is not access control.
 - [ ] (low) Without JavaScript the album gallery stays invisible (`#gallery` is hidden until the justified layout runs). Consider a CSS fallback layout (e.g. flex-wrap rows) for `scripting: none`.
 
 ## Done
+
+### Security audit L1-L4, I1 (2026-11-11)
+
+- [x] L1: RSS descriptions are HTML inside XML and must be escaped twice. `| html` did not do that (html/template treats an explicit `html` as the final escaper), so page titles (`rss-image-items.html`) and page descriptions (`rss.xml`) became live HTML in feed readers. Now `| htmlEscape`. Build check S3.
+- [x] L2: alternate `<link>` in `head.html` rendered via normal template escaping instead of `printf | safeHTML` with the raw site title. Build check S4.
+- [x] L3: `data-pswp-srcset` HTML-escaped (`htmlEscape`) before `safeHTMLAttr`; `%q` is Go quoting and left `&` in file names raw. Build check S5.
+- [x] L4: CI actions pinned to commit SHAs (Dependabot updates them), `npm install --ignore-scripts`.
+- [x] I1: README states that `private` only unlists an album and is not access control.
+- Fixtures: site title `Fixture "Q" <&>`, album-e title `Album <E>` and image `album-e-a&b.jpg`, RSS output for pages and sections.
 
 ### Security audit H1/H2 (2026-11-11)
 
@@ -85,6 +89,8 @@ Modernization: keep the minimalism, lean into an analog / darkroom / contact she
 
 ## Decisions
 
+- CI uses `npm install --ignore-scripts` rather than `npm ci`: `package-lock.json` is not committed; runtime dependencies are pinned exactly in `package.json` and the vendor check compares against them.
+
 - Vendored files stay in `assets/` instead of being resolved from `node_modules` at build time: sites (git submodule) build with Hugo alone. `package.json` exists for Dependabot and tooling only. `justified-layout.ts` is a modified fork and maintained as theme code.
 - Direction is analog/darkroom rather than generic editorial, matching the main consumer (danalog.pics): dark default, film-strip banner, monospace type, matted prints.
 - No bundled web fonts and no icon library: fonts come from the site via CSS variables, icons are drawn in-house as SVG files that sites can override.
@@ -94,7 +100,8 @@ Modernization: keep the minimalism, lean into an analog / darkroom / contact she
 
 - Never read `.RelPermalink`/`.Permalink` of an original image resource unless the album publishes resources: it silently publishes the file with all metadata. Use `.Name` for comparisons, derived images (`.Filter`/`.Process`) for links.
 
-- html/template treats attributes containing `src` (e.g. `data-pswp-srcset`) as a single URL and percent-encodes spaces; render such lists via `printf ... | safeHTMLAttr`.
+- html/template treats attributes containing `src` (e.g. `data-pswp-srcset`) as a single URL and percent-encodes spaces; render such lists via ``printf `attr="%s"` (htmlEscape $value) | safeHTMLAttr`` (never without `htmlEscape`, `%q` is not HTML escaping).
+- HTML inside XML (RSS `<description>`) needs double escaping: use `| htmlEscape`, not `| html` (html/template does not escape again after an explicit `html`).
 
 - `prettier-plugin-go-template` can change output: it removed the whitespace between optional attributes (`{{ with }}attr{{ end }}`). Keep separating spaces outside the `with` blocks and check generated HTML after formatting. It also turned `class="a{{ if }} b{{ end }}"` into `class="ab"` (phase 2 nav panel); compute such attribute values in a variable (`cond`) instead of inline conditionals.
 - `hugo --quiet` also hides build errors; the build checks use `--logLevel warn` and capture the log, printing it on failure.

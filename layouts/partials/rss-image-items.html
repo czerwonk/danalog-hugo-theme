@@ -13,7 +13,7 @@
   <media:content url="{{ $thumbnail.Permalink }}" type="image/jpeg"/>
   <description>
     &lt;img src=&quot;{{ $thumbnail.Permalink }}&quot; /&gt;
-    &lt;p&gt;{{ .page.Title }}&lt;/p&gt;
+    &lt;p&gt;{{ .page.Title | htmlEscape }}&lt;/p&gt;
   </description>
 </item>
 {{- end }}
