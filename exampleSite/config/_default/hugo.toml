@@ -17,7 +17,7 @@ title = "Gallery"
   [params.socialIcons]
     facebook = "https://www.facebook.com/"
     instagram = "https://www.instagram.com/"
-    github = "https://github.com/nicokaiser/hugo-theme-gallery/"
+    github = "https://github.com/czerwonk/danalog-hugo-theme/"
     youtube = "https://www.youtube.com/"
     email = "mailto:user@example.com"
     #website = "https://example.com"
@@ -27,15 +27,22 @@ title = "Gallery"
     #flickr = "https://www.flickr.com"
     #500px = "https://500px"
     #whatsapp = "1234567890"
+  # Defaults are in the theme's hugo.toml; set only what you change.
   [params.gallery]
-    #fullSize = 2400
-    #recentCount = 50
-    #borderSize = 0
+    # Photos as prints: a white mat with a thin black stroke (theme default: none)
+    borderSize = 8
+    strokeSize = 1
     #borderColor = "#ffffff"
-    #boxSpacing = 10
+    #strokeColor = "#000000"
+    # Mat and stroke of the lightbox images in pixels (default: borderSize/strokeSize)
+    #borderSizeFull = 40
+    #strokeSizeFull = 4
+    #fullSize = 1600
+    #recentCount = 50
+    #boxSpacing = 8
     #targetRowHeight = 288
     #targetRowHeightTolerance = 0.25
-    #sortBy = "Date"
+    #sortBy = "Name"
     #sortOrder = "asc"
 
 [outputs]
@@ -44,8 +51,9 @@ title = "Gallery"
   section = ["HTML"]
 
 [imaging]
-  quality = 75
   resampleFilter = "CatmullRom"
+  [imaging.jpeg]
+    quality = 75
   [imaging.meta]
     sources = ["exif"]
     fields = ["DateTimeOriginal", "ImageDescription", "Make", "Model", "UserComment", "LensMake", "LensModel"]
@@ -67,7 +75,7 @@ title = "Gallery"
     weight = 2
   [[menu.footer]]
     name = "GitHub"
-    url = "https://github.com/nicokaiser/hugo-theme-gallery/"
+    url = "https://github.com/czerwonk/danalog-hugo-theme/"
     weight = 3
 
 [services]

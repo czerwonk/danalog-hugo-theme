@@ -1,4 +1,4 @@
-# Example site for hugo-theme-gallery
+# Example site for danalog-hugo-theme
 
 ## Installation
 

@@ -4,15 +4,16 @@ Modernization: keep the minimalism, lean into an analog / darkroom / contact she
 
 ## Open
 
-### Config split theme/site (2026-11-11)
-
-- [ ] (low) C6: Update `exampleSite`: upstream demo/GitHub links, `imaging.quality` → `imaging.jpeg.quality`, show current features (mat/stroke, equipment sections).
-
 ### Follow-ups
 
+- [ ] (low) `theme.toml` `homepage`/`demosite` still point to upstream; decide whether this fork gets its own entries.
 - [ ] (low) Without JavaScript the album gallery stays invisible (`#gallery` is hidden until the justified layout runs). Consider a CSS fallback layout (e.g. flex-wrap rows) for `scripting: none`.
 
 ## Done
+
+### Config split C6 (2026-11-11)
+
+- [x] C6: `exampleSite` shows the print look (`borderSize = 8`, `strokeSize = 1`, `--card-fit: contain`), lists the remaining `params.gallery` options with the theme defaults (`boxSpacing` said 10, the default is 8), uses `imaging.jpeg.quality` and links to this repository. README: dropped the upstream demo link (it does not show this fork) and points the example site source and screenshot to this repository.
 
 ### Config split C5 (2026-11-11)
 
