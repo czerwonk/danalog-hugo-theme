@@ -4,6 +4,14 @@ Modernization: keep the minimalism, lean into an analog / darkroom / contact she
 
 ## Open
 
+### Config split theme/site (2026-11-11)
+
+- [ ] (medium) C1: README lists the `imaging.meta.fields` the theme requires (`DateTimeOriginal`, `ImageDescription`, `Make`, `Model`, `UserComment`, `LensMake`, `LensModel`). Hugo does not merge `imaging` from themes, so sites must set it themselves. Same list in `exampleSite` and `tests/site`. Site follow-up: drop the unused `FocalLength` from danalog.pics.
+- [ ] (medium) C2: `min_version` in `theme.toml` (and `module.hugoVersion` in `exampleSite`) is 0.128.0, but the templates use `$image.Meta` / `imaging.meta`. Find the first Hugo version that supports them and raise it.
+- [ ] (low) C3: Collect the `params.gallery` defaults in a theme `hugo.toml` (one source instead of `| default` spread over `apply-border.html`, `gallery-render.html`, `gallery.html`, `recent/single.html`). Keep the current values (no mat/stroke); danalog.pics keeps its print settings in its own config.
+- [ ] (medium) C5: CSS variables for what danalog.pics now overrides by selector: `--font-body` (`body`), `--card-title-size` (`.card > div > h2`), page title transform/tracking/size (`hgroup h1`). Then switch the site's `custom.css` to the variables.
+- [ ] (low) C6: Update `exampleSite`: upstream demo/GitHub links, `imaging.quality` → `imaging.jpeg.quality`, show current features (mat/stroke, equipment sections).
+
 ### Follow-ups
 
 - [ ] (low) Without JavaScript the album gallery stays invisible (`#gallery` is hidden until the justified layout runs). Consider a CSS fallback layout (e.g. flex-wrap rows) for `scripting: none`.
@@ -90,6 +98,7 @@ Modernization: keep the minimalism, lean into an analog / darkroom / contact she
 
 ## Decisions
 
+- Theme/site config split: structural requirements (EXIF fields, Hugo version, content sections) are documented by the theme; look and feel is exposed as CSS variables and `params` defaults the site overrides. Mat/stroke values, sort order, `fullSize`, fonts and colors are danalog.pics choices and stay in its config. Menus stay in the site: Hugo merges theme menus, but sites cannot remove the entries. Tested on Hugo 0.168: from a theme `hugo.toml` only `params` (deep) and `menus` are merged; `imaging`, `outputs` and `services` are ignored.
 - `package-lock.json` is committed (the ignore entry was inherited from the former upstream); CI installs with `npm ci --ignore-scripts` so builds use exactly the locked versions and no install scripts run. Dependabot updates the lockfile.
 
 - Vendored files stay in `assets/` instead of being resolved from `node_modules` at build time: sites (git submodule) build with Hugo alone. `package.json` exists for Dependabot and tooling only. `justified-layout.ts` is a modified fork and maintained as theme code.
