@@ -37,17 +37,18 @@
     {{ end }}
   {{ end }}
 
-  {{ $featuredPermalinks := slice }}
+  {{/* Compared by name: reading .RelPermalink would publish the originals despite publishResources: false */}}
+  {{ $featuredNames := slice }}
   {{ range $featuredImages }}
-    {{ $featuredPermalinks = $featuredPermalinks | append .RelPermalink }}
+    {{ $featuredNames = $featuredNames | append .Name }}
   {{ end }}
-  {{ if not (in $featuredPermalinks $featured.RelPermalink) }}
-    {{ $featuredPermalinks = $featuredPermalinks | append $featured.RelPermalink }}
+  {{ if not (in $featuredNames $featured.Name) }}
+    {{ $featuredNames = $featuredNames | append $featured.Name }}
   {{ end }}
 
   {{ range $images }}
     {{ if lt (len $previews) 5 }}
-      {{ if not (in $featuredPermalinks .RelPermalink) }}
+      {{ if not (in $featuredNames .Name) }}
         {{ $previews = $previews | append (partial "thumbnail.html" .) }}
       {{ end }}
     {{ end }}

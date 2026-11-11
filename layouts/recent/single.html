@@ -1,7 +1,6 @@
 {{ define "main" }}
   {{ partial "title.html" . }}
   {{ $count := site.Params.gallery.recentCount | default 50 | int }}
-  {{ $publishResources := default true .Params.build.publishResources }}
 
   {{ $allImages := slice }}
   {{ range where site.RegularPages "Params.private" "ne" true }}
@@ -27,7 +26,7 @@
           "image" .image
           "title" .title
           "pswpTarget" (print .page.File.TranslationBaseName "-" (.image.Name | urlize))
-          "publishResources" $publishResources
+          "publishResources" (default true .page.Params.build.publishResources)
           )
         }}
       {{ end }}

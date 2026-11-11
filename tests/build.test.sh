@@ -197,6 +197,23 @@ sed -n '/<section class="featured">/,/<\/section>/p' "$HOME_PAGE" | grep -q '<im
 assert_not_contains "$HOME_PAGE" 'background-image: url' "N3: featured image must not be a CSS background"
 assert_not_contains "$CSS" 'linear-gradient' "N3: no gradient overlay"
 
+# S1 (H1): with publishResources: false the original (incl. EXIF/GPS) is never published, not even via the
+# equipment or recent pages; albums without the option still publish and link their originals
+CAMERA_PAGE="$OUT/cameras/nikon-f3/index.html"
+RECENT_PAGE="$OUT/recent/index.html"
+[ -f "$OUT/album-a/album-a-001.jpg" ] || fail "S1: originals are published by default"
+[ -f "$OUT/album-e/album-e-001.jpg" ] && fail "S1: original of an album with publishResources: false must not be published"
+assert_contains "$CAMERA_PAGE" 'href="/album-a/album-a-001\.jpg"' "S1: camera page links originals of albums that publish them"
+for page in "$OUT/album-e/index.html" "$CAMERA_PAGE" "$RECENT_PAGE" "$HOME_PAGE"; do
+  assert_not_contains "$page" '/album-e/album-e-001\.jpg' "S1: no page may link the original of an album with publishResources: false"
+  assert_contains "$page" '/album-e/album-e-001_hu_' "S1: resized versions of album-e are still shown"
+done
+
+# S2 (H2): photos of private albums do not appear on the public equipment pages
+for page in "$CAMERA_PAGE" "$OUT/cameras/index.html" "$RECENT_PAGE" "$HOME_PAGE"; do
+  assert_not_contains "$page" '/album-f/' "S2: private albums must not be exposed on public pages"
+done
+
 if [ "$FAILURES" -gt 0 ]; then
   echo "$FAILURES check(s) failed"
   exit 1

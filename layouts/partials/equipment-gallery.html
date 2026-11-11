@@ -16,7 +16,7 @@
         "image" $image
         "title" $title
         "pswpTarget" (print .page.File.TranslationBaseName "-" ($image.Name | urlize))
-        "publishResources" true
+        "publishResources" (default true .page.Params.build.publishResources)
         )
       }}
     {{ end }}

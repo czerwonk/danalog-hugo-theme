@@ -6,9 +6,20 @@ Modernization: keep the minimalism, lean into an analog / darkroom / contact she
 
 ### Follow-ups
 
+- [ ] (low) Security audit L1: RSS item description escapes `.page.Title` only once (`rss-image-items.html`), so a title becomes live HTML in feed readers; use `| html` like `rss.xml`.
+- [ ] (low) Security audit L2: `head.html` alternate links insert `.Site.Title` unescaped via `printf | safeHTML`; render the `<link>` with normal template escaping.
+- [ ] (low) Security audit L3: `data-pswp-srcset` is quoted with Go `%q` (not HTML escaping); currently safe only because Hugo percent-encodes file names. Escape with `htmlEscape`.
+- [ ] (low) Security audit L4: CI uses `npm install` and tag-pinned actions; switch to `npm ci --ignore-scripts` and SHA pins.
+- [ ] (low) Security audit I1: README should state that `private` only unlists an album, it is not access control.
 - [ ] (low) Without JavaScript the album gallery stays invisible (`#gallery` is hidden until the justified layout runs). Consider a CSS fallback layout (e.g. flex-wrap rows) for `scripting: none`.
 
 ## Done
+
+### Security audit H1/H2 (2026-11-11)
+
+- [x] H1: originals were published despite `build.publishResources: false` (with full EXIF, possibly GPS): Hugo publishes a resource as soon as a template reads its `.RelPermalink`. `gallery-render.html` read it unconditionally, `get-gallery.html` compared images by permalink, equipment pages hard-coded `publishResources` true and the recent page used its own setting. Now only read when allowed, compared by `.Name`, and the album's setting is used per photo.
+- [x] H2: photos of `private` albums appeared (with links to the album) on the indexed camera/lens/film pages; `collect-equipment.html` now skips private pages.
+- [x] Build checks S1/S2 with fixtures album-e (`publishResources: false`), album-f (`private`), a camera page and the recent page.
 
 ### Mobile filter select (2026-11-11)
 
@@ -80,6 +91,8 @@ Modernization: keep the minimalism, lean into an analog / darkroom / contact she
 - No WebP/AVIF conversion in the theme: danalog.pics needs JPEG derivatives for other platforms.
 
 ## Recurring issues
+
+- Never read `.RelPermalink`/`.Permalink` of an original image resource unless the album publishes resources: it silently publishes the file with all metadata. Use `.Name` for comparisons, derived images (`.Filter`/`.Process`) for links.
 
 - html/template treats attributes containing `src` (e.g. `data-pswp-srcset`) as a single URL and percent-encodes spaces; render such lists via `printf ... | safeHTMLAttr`.
 

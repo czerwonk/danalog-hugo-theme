@@ -24,8 +24,9 @@
   {{ $orientation = "portrait" }}
 {{ end }}
 
-{{ $href := $image.RelPermalink }}
-{{ if not .publishResources }}{{ $href = $full.RelPermalink }}{{ end }}
+{{/* Reading .RelPermalink of the original publishes it (with all its metadata), so only do so when allowed */}}
+{{ $href := $full.RelPermalink }}
+{{ if .publishResources }}{{ $href = $image.RelPermalink }}{{ end }}
 
 {{ $captionCamera := "" }}
 {{ $captionFilm := "" }}
