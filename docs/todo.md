@@ -5,12 +5,12 @@ Modernization: keep the minimalism, lean into an analog / darkroom / contact she
 ## Open
 
 - [ ] (low) Gear fallback in front matter: `collect-equipment.html` uses `params.camera`/`lens`/`film` of an image resource when its EXIF is missing, but captions and the gallery filter read EXIF only, and the README does not mention the fallback. Either document it and use it everywhere, or remove it.
-- [ ] (low) GitHub Pages deploy of the example site: `.github/workflows/hugo.yml` was removed in `aa9a140` (an unrelated feature commit, no mention). Decide whether the example should be published again; it now builds without downloads.
 
 ## Done
 
 ### CI tests (2026-11-11)
 
+- [x] Example site deployed to GitHub Pages again (`.github/workflows/hugo.yml` had been removed in `aa9a140`): jobs in `test.yml`, so only a tested build is deployed, and only on pushes to `main`. baseURL `https://<owner>.github.io/<repo>/` (all 1506 root-relative links carry the subpath); `pages: write`/`id-token: write` only for the deploy job. Demo link in README and `demosite` in `theme.toml` restored.
 - [x] `.github/workflows/test.yml`: runs `tests/run.sh` (JS unit tests and build checks) and builds the example site with `--panicOnWarning`. Hugo 0.168.0 from the release `.deb`, verified against the release checksums; Dart Sass via snap; actions pinned to SHAs like `vendor.yml`. Before, CI only checked the vendored files. Checked with actionlint; the checksum step could not be tried locally (GitHub release downloads are blocked here).
 
 ### Example site with generated images (2026-11-11)

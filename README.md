@@ -4,6 +4,7 @@ A very simple and opinionated photo gallery theme for Hugo.
 
 This is a fork of [nicokaiser/hugo-theme-gallery](https://github.com/nicokaiser/hugo-theme-gallery) by [Nico Kaiser](https://kaiser.me/), which has since diverged significantly and is no longer synced with upstream.
 
+- [Demo](https://czerwonk.github.io/danalog-hugo-theme/) (the example site, with generated placeholder images)
 - [Example site source](https://github.com/czerwonk/danalog-hugo-theme/tree/main/exampleSite)
 
 ---
