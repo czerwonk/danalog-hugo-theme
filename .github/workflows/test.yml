@@ -1,0 +1,40 @@
+name: Tests
+
+on:
+  pull_request:
+  push:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      # Same version as theme.toml min_version; raise both together
+      HUGO_VERSION: 0.168.0
+    steps:
+      - name: Checkout
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - name: Setup Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: lts/*
+      - name: Install Dart Sass
+        run: sudo snap install dart-sass
+      - name: Install Hugo
+        working-directory: ${{ runner.temp }}
+        run: |
+          deb="hugo_extended_${HUGO_VERSION}_linux-amd64.deb"
+          base="https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}"
+          curl -fsSLO "$base/$deb"
+          curl -fsSL "$base/hugo_${HUGO_VERSION}_checksums.txt" | grep " $deb\$" | sha256sum -c -
+          sudo dpkg -i "$deb"
+      - name: Install packages
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Run tests
+        run: tests/run.sh
+      - name: Build example site
+        working-directory: exampleSite
+        run: hugo --panicOnWarning --destination "${{ runner.temp }}/example"
