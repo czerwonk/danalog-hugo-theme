@@ -12,6 +12,9 @@
   --page-title-size: clamp(2rem, calc(1.667rem + 1.481vw), 3rem);
   --page-title-tracking: normal;
   --page-title-transform: none;
+
+  // Wider than the album list (1280px) so a row holds a few more photos; "none" for edge to edge
+  --gallery-max-width: 1536px;
 }
 
 html {
@@ -468,6 +471,7 @@ section.galleries {
 
 // Prints keep a margin to the window edges: the box spacing on phones, the page margin above
 section.gallery {
+  max-width: var(--gallery-max-width);
   padding-right: 0.5rem;
   padding-left: 0.5rem;
 

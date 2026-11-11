@@ -357,6 +357,7 @@ The theme exposes these CSS variables:
 | `--page-title-size`      | fluid `2rem`–`3rem`          | Size of the page title                                               |
 | `--page-title-tracking`  | `normal`                     | `letter-spacing` of the page title                                   |
 | `--page-title-transform` | `none`                       | `text-transform` of the page title, e.g. `uppercase`                 |
+| `--gallery-max-width`    | `1536px`                     | Maximum width of galleries; `none` for edge to edge                  |
 
 ```css
 :root {

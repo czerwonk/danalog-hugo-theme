@@ -8,6 +8,10 @@ Nothing open.
 
 ## Done
 
+### Gallery width (2026-11-11)
+
+- [x] Galleries were the only content without a maximum width (album list, featured album: 1280px). New CSS variable `--gallery-max-width`, default 1536px; `none` for edge to edge. Compared on danalog.pics (Emma) at 1920 and 2560px with full width, 1536 and 1280: the justified layout keeps photos about the same size and only changes the number per row (1920: 6/5/4, 2560: 7/5/4). 1536 keeps a few photos per row without a wide empty margin on large screens. Build check W1; the phone edge margin check now allows further properties in the rule.
+
 ### Filter bar overhaul (2026-11-11)
 
 - [x] O2: fields always in the order camera, lens, film, orientation, whether static or dropdown. `filterBar()` returns one ordered list of `{dimension, type, value?}` instead of separate statics/dropdowns (before, all statics came first, so a static lens could stand before a camera dropdown). Unit test for the order.

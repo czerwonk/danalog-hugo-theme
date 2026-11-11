@@ -161,7 +161,7 @@ assert_contains "$ALBUM_D" 'data-pswp-srcset="/album-d/album-d-001_hu_[0-9a-f]+\
 assert_not_contains "$ALBUM_A" ' 2x"' "P2: no 2x candidate when the original is too small to provide one"
 
 # Gallery keeps a margin to the window edges: box spacing on phones, the page margin from 640px
-assert_contains "$CSS" 'section\.gallery\{padding-right:\.5rem;padding-left:\.5rem\}' "gallery has a small edge margin on phones"
+assert_contains "$CSS" 'section\.gallery\{[^}]*padding-right:\.5rem;padding-left:\.5rem[;}]' "gallery has a small edge margin on phones"
 assert_contains "$CSS" 'section\.gallery\{padding-right:1\.5rem;padding-left:1\.5rem\}' "gallery aligns with the 1.5rem page margin on larger screens"
 
 # Gallery filter: photos carry their orientation; gallery pages get a filter form that JS fills in
@@ -252,6 +252,10 @@ done
 assert_contains "$CSS" '@media ?\(scripting: ?none\) ?\{ ?\.gallery-photos ?\{[^}]*flex-wrap: ?wrap' "J1: without scripts the photos wrap in rows"
 assert_contains "$CSS" '@media ?\(scripting: ?enabled\) ?\{ ?\.gallery-photos ?\{[^}]*visibility: ?hidden' "J1: with scripts the gallery is hidden until laid out"
 assert_contains "$JS" 'style\.visibility="visible"' "J1: gallery.js must override the CSS visibility once laid out"
+
+# W1: galleries are limited by --gallery-max-width, sites can set none for edge to edge
+assert_contains "$CSS" '--gallery-max-width: ?1536px' "W1: --gallery-max-width defaults to 1536px"
+assert_contains "$CSS" 'section\.gallery ?\{[^}]*max-width: ?var\(--gallery-max-width\)' "W1: gallery sections use --gallery-max-width"
 
 # C3: gallery defaults come from the theme's hugo.toml (merged into the site params), not from template fallbacks
 GALLERY_PARAMS="$(hugo config --format json --source "$THEME_DIR/tests/site" --themesDir "$WORK_DIR/themes" 2>/dev/null |
