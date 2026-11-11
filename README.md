@@ -39,7 +39,7 @@ This is a fork of [nicokaiser/hugo-theme-gallery](https://github.com/nicokaiser/
 
 ## Installation
 
-This theme requires Hugo >= 0.128.0 and [Dart Sass](https://gohugo.io/functions/css/sass/#dart-sass) (the `sass` executable in your `PATH`, e.g. `dart-sass` in nixpkgs or `snap install dart-sass`). Other dependencies are bundled, so no Node.js/NPM and PostCSS is needed.
+This theme requires Hugo >= 0.168.0 and [Dart Sass](https://gohugo.io/functions/css/sass/#dart-sass) (the `sass` executable in your `PATH`, e.g. `dart-sass` in nixpkgs or `snap install dart-sass`). Other dependencies are bundled, so no Node.js/NPM and PostCSS is needed.
 
 ### As a Hugo Module
 
@@ -144,6 +144,24 @@ EXIF tags can be written using software like Adobe Lightroom or by using command
 
 ```sh
 exiftool -ImageDescription="A closeup of a gray cat's face" cat-4.jpg
+```
+
+The theme reads these EXIF fields:
+
+| Field | Used for |
+| --- | --- |
+| `DateTimeOriginal` | sorting by `Date` |
+| `ImageDescription` | image titles |
+| `Make`, `Model` | camera (captions, filter, `/cameras`) |
+| `LensMake`, `LensModel` | lens (captions, filter, `/lenses`) |
+| `UserComment` | film stock (captions, filter, `/films`) |
+
+Hugo's default `imaging.meta.fields` includes all of them. If your site sets its own list, it must contain these fields. A theme cannot provide this setting, as Hugo does not merge `imaging` from themes:
+
+```toml
+[imaging.meta]
+  sources = ["exif"]
+  fields = ["DateTimeOriginal", "ImageDescription", "Make", "Model", "UserComment", "LensMake", "LensModel"]
 ```
 
 Alternatively, the image title can be set in the front matter:
