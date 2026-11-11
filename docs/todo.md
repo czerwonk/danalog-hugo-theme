@@ -10,6 +10,10 @@ Modernization: keep the minimalism, lean into an analog / darkroom / contact she
 
 ## Done
 
+### Mobile filter select (2026-11-11)
+
+- [x] Filter selects drawn with `appearance: none`: mobile browsers drew a rounded native box whose corners clipped the unpadded text. Chevron is a rotated border on `label::after`, not a gradient (the N3 build check forbids `linear-gradient` in the CSS).
+
 ### Gallery filter (2026-11-10)
 
 - [x] Filter dropdowns for camera, lens, film and orientation on gallery pages (`assets/js/gallery-filter.js`, logic in `gallery-filter-core.js` with unit tests). Shared camera/lens/film shown as static info with icons, dropdowns only for dimensions with two or more values, orientation only alongside gear info; faceted counts, impossible options disabled; state in the query string (slugs); lightbox skips hidden photos and keeps the query string; a link to a filtered-out photo resets the filter. Two-column grid on phones. Input validation: photo data normalized (`toItem`), query values slug-normalized, bounded (200 chars) and matched against gallery values, form values checked (`validFilterValue`), output only via `textContent`/`new Option()`; checked in Chrome with hostile URLs and a tampered option.
