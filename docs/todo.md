@@ -13,7 +13,7 @@ Nothing open.
 - [x] O2: fields always in the order camera, lens, film, orientation, whether static or dropdown. `filterBar()` returns one ordered list of `{dimension, type, value?}` instead of separate statics/dropdowns (before, all statics came first, so a static lens could stand before a camera dropdown). Unit test for the order.
 - [x] O1: one line: dropdowns are icon + select like static info; the dimension name is a visually hidden label and tooltip; default option stays "All". Static info has the full value in its tooltip.
 - [x] O3: orientation icon (`assets/icons/orientation.svg`, landscape frame in front of a portrait frame), in the sprite; build check X1 covers it.
-- [x] O4/O5: selects sized to the selected option (`field-sizing: content`, 4–20rem); phones: two columns in the same order, long values cut off with an ellipsis.
+- [x] O4/O5: selects sized to the selected option (`field-sizing: content`, 4–20rem). Phones: one field per row (first two columns, but cut-off lens names could not be read without a tooltip); static values wrap there instead of getting an ellipsis.
 - Checked in Chrome on the example site (Harbour: four dropdowns; Towers: static gear + orientation; Park: camera dropdown before static lens; filter set via URL) at 1280px and 390px.
 
 ### CI: Dart Sass from npm (2026-11-11)
