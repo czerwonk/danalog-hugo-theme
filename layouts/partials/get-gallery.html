@@ -28,7 +28,6 @@
   {{/* previews are thumbnail dicts (see thumbnail.html); the first one is the cover */}}
   {{ $coverThumb := partial "thumbnail.html" $featured }}
   {{ $thumbnail := $coverThumb.image }}
-  {{ $color := $coverThumb.color }}
 
   {{ $previews := slice $coverThumb }}
   {{ range after 1 $featuredImages }}
@@ -69,7 +68,7 @@
     "images" $images
     "thumbnail" $thumbnail
     "previews" $previews
-    "color" $color
+    "placeholder" $coverThumb.placeholder
     "albumCount" $albumCount
     "imageCount" $imageCount
   }}

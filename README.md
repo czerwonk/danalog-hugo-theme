@@ -18,7 +18,7 @@ This is a fork of [nicokaiser/hugo-theme-gallery](https://github.com/nicokaiser/
 - Responsive design
 - Dark color scheme (can be set per page)
 - Private albums
-- Justified album views with [Flickr's Justified Layout](https://github.com/flickr/justified-layout)
+- Justified album views in pure CSS: photos show as soon as the page renders, also without JavaScript
 - Lightbox with [PhotoSwipe](https://photoswipe.com/)
 - SEO with Open Graph tags
 - Automatic (or manual) selection of feature/cover images
@@ -342,22 +342,24 @@ CSS is generated with Hugo Pipes, so you can add additional CSS in `assets/css/c
 
 The theme exposes these CSS variables:
 
-| Variable                 | Default                      | Purpose                                                              |
-| ------------------------ | ---------------------------- | -------------------------------------------------------------------- |
-| `--radius`               | `0`                          | Corner radius of photos                                              |
-| `--card-fit`             | `cover`                      | `object-fit` of album card images; `contain` keeps borders uncropped |
-| `--card-placeholder`     | the image's placeholder      | Card background while loading; set `transparent` with `contain`      |
-| `--font-display`         | system sans-serif            | Page, album, featured and lightbox titles, menu entries              |
-| `--font-display-weight`  | `600`                        | Weight of those titles; match a weight your font files provide       |
-| `--font-meta`            | system monospace             | Metadata labels (photo counts, EXIF captions)                        |
-| `--font-body`            | system sans-serif            | Running text (descriptions, prose pages)                             |
-| `--card-title-size`      | `1.125rem`                   | Album card titles                                                    |
-| `--page-title-font`      | `var(--font-display)`        | Page title (`h1`)                                                    |
-| `--page-title-weight`    | `var(--font-display-weight)` | Weight of the page title                                             |
-| `--page-title-size`      | fluid `2rem`–`3rem`          | Size of the page title                                               |
-| `--page-title-tracking`  | `normal`                     | `letter-spacing` of the page title                                   |
-| `--page-title-transform` | `none`                       | `text-transform` of the page title, e.g. `uppercase`                 |
-| `--gallery-max-width`    | `1536px`                     | Maximum width of galleries; `none` for edge to edge                  |
+| Variable                 | Default                          | Purpose                                                              |
+| ------------------------ | -------------------------------- | -------------------------------------------------------------------- |
+| `--radius`               | `0`                              | Corner radius of photos                                              |
+| `--card-fit`             | `cover`                          | `object-fit` of album card images; `contain` keeps borders uncropped |
+| `--card-placeholder`     | the image's placeholder          | Card background while loading; set `transparent` with `contain`      |
+| `--font-display`         | system sans-serif                | Page, album, featured and lightbox titles, menu entries              |
+| `--font-display-weight`  | `600`                            | Weight of those titles; match a weight your font files provide       |
+| `--font-meta`            | system monospace                 | Metadata labels (photo counts, EXIF captions)                        |
+| `--font-body`            | system sans-serif                | Running text (descriptions, prose pages)                             |
+| `--card-title-size`      | `1.125rem`                       | Album card titles                                                    |
+| `--page-title-font`      | `var(--font-display)`            | Page title (`h1`)                                                    |
+| `--page-title-weight`    | `var(--font-display-weight)`     | Weight of the page title                                             |
+| `--page-title-size`      | fluid `2rem`–`3rem`              | Size of the page title                                               |
+| `--page-title-tracking`  | `normal`                         | `letter-spacing` of the page title                                   |
+| `--page-title-transform` | `none`                           | `text-transform` of the page title, e.g. `uppercase`                 |
+| `--gallery-max-width`    | `1536px`                         | Maximum width of galleries; `none` for edge to edge                  |
+| `--gallery-spacing`      | `params.gallery.boxSpacing`      | Space between gallery photos                                         |
+| `--gallery-row-height`   | `params.gallery.targetRowHeight` | Height a gallery row starts from                                     |
 
 ```css
 :root {
@@ -367,7 +369,9 @@ The theme exposes these CSS variables:
 }
 ```
 
-If images get a border (`borderSize > 0`), the border color is used as loading placeholder, otherwise the image's dominant color.
+While photos load, the placeholder looks like the print: with a border (`borderSize > 0`) the border color around the photo's dominant color, otherwise just the dominant color. Only the photo area fades in.
+
+Gallery rows are laid out in CSS: every photo starts at `targetRowHeight` (default `288`) and a row holds as many photos as fit at that height, then grows until it is full, so all photos in a row share one height. The last row keeps the row height. `boxSpacing` (default `8`) is the space between photos. `targetRowHeightTolerance` is no longer used.
 
 Texts like the photo count come from `i18n/`; a site can override them with its own `i18n/en.yaml`, e.g. to count frames instead of photos:
 

@@ -3,7 +3,6 @@
 {{ $fullSize := site.Params.gallery.fullSize | int }}
 {{ $thumb := partial "thumbnail.html" $image }}
 {{ $thumbnail := $thumb.image }}
-{{ $color := $thumb.color }}
 {{ $full := $image.Filter (slice images.AutoOrient (images.Process (printf "fit %dx%d" $fullSize $fullSize))) }}
 {{ $half := $image.Filter (slice images.AutoOrient (images.Process (printf "fit %dx%d" (div $fullSize 2) (div $fullSize 2)))) }}
 {{ $full = partial "apply-border.html" (dict "image" $full "full" true) }}
@@ -34,8 +33,8 @@
 {{ $captionLens := $gear.lens }}
 
 
-<a class="gallery-item" href="{{ $href }}" data-pswp-src="{{ $full.RelPermalink }}" data-pswp-width="{{ $full.Width }}" data-pswp-height="{{ $full.Height }}" {{ printf `data-pswp-srcset="%s"` (htmlEscape $pswpSrcset) | safeHTMLAttr }} data-pswp-target="{{ .pswpTarget }}" data-title="{{ .title }}" data-caption-camera="{{ $captionCamera }}" data-caption-film="{{ $captionFilm }}" data-caption-lens="{{ $captionLens }}" data-orientation="{{ $orientation }}" itemscope itemtype="https://schema.org/ImageObject" style="aspect-ratio: {{ $thumbnail.Width }} / {{ $thumbnail.Height }}">
-  <figure style="--placeholder: {{ $color }}; --placeholder-photo: {{ $thumb.photoColor }}; --mat-x: {{ $thumb.matX }}; --mat-y: {{ $thumb.matY }}; aspect-ratio: {{ $thumbnail.Width }} / {{ $thumbnail.Height }}">
+<a class="gallery-item" href="{{ $href }}" data-pswp-src="{{ $full.RelPermalink }}" data-pswp-width="{{ $full.Width }}" data-pswp-height="{{ $full.Height }}" {{ printf `data-pswp-srcset="%s"` (htmlEscape $pswpSrcset) | safeHTMLAttr }} data-pswp-target="{{ .pswpTarget }}" data-title="{{ .title }}" data-caption-camera="{{ $captionCamera }}" data-caption-film="{{ $captionFilm }}" data-caption-lens="{{ $captionLens }}" data-orientation="{{ $orientation }}" itemscope itemtype="https://schema.org/ImageObject" style="--ar: {{ printf "%.4f" (div (float $thumbnail.Width) $thumbnail.Height) }}; aspect-ratio: {{ $thumbnail.Width }} / {{ $thumbnail.Height }}">
+  <figure style="{{ $thumb.placeholder }}; aspect-ratio: {{ $thumbnail.Width }} / {{ $thumbnail.Height }}">
     <img loading="lazy" decoding="async" width="{{ $thumbnail.Width }}" height="{{ $thumbnail.Height }}" src="{{ $thumbnail.RelPermalink }}" srcset="{{ $thumb.srcset }}" alt="{{ .title }}" />
   </figure>
   <meta itemprop="contentUrl" content="{{ $href }}" />

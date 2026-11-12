@@ -16,8 +16,5 @@ declare module "@params" {
   export const orientationLandscape: string | undefined;
   export const orientationPortrait: string | undefined;
   export const orientationSquare: string | undefined;
-  export const boxSpacing: number | undefined;
-  export const targetRowHeight: number | undefined;
-  export const targetRowHeightTolerance: number | undefined;
   export const enableDownload: boolean | undefined;
 }

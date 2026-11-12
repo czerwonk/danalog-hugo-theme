@@ -1,3 +1,5 @@
+@use "hugo:vars" as hugo;
+
 // Design tokens; override in assets/css/custom.css
 :root {
   --radius: 0;
@@ -15,6 +17,25 @@
 
   // Wider than the album list (1280px) so a row holds a few more photos; "none" for edge to edge
   --gallery-max-width: 1536px;
+
+  // From params.gallery boxSpacing / targetRowHeight (see layouts/partials/head.html)
+  --gallery-spacing: #{hugo.$gallerySpacing};
+  --gallery-row-height: #{hugo.$galleryRowHeight};
+}
+
+// Loading placeholder that looks like the print: the mat (--placeholder) around the photo's dominant color
+// (--placeholder-photo) on the photo's share of the image; set per image by partials/print-placeholder.html.
+// With $override, a site variable replaces the whole placeholder (e.g. transparent).
+@mixin print-placeholder($override: null) {
+  $placeholder:
+    linear-gradient(var(--placeholder-photo), var(--placeholder-photo)) center / var(--photo-w) var(--photo-h) no-repeat,
+    var(--placeholder);
+
+  @if $override {
+    background: var(#{$override}, #{$placeholder});
+  } @else {
+    background: $placeholder;
+  }
 }
 
 html {
@@ -576,7 +597,8 @@ section.gallery {
     margin: calc(100cqw * 2 / 3 - var(--print-height)) auto 0;
 
     // The placeholder has the print's size; --card-placeholder overrides it per site
-    background-color: var(--card-placeholder, var(--placeholder));
+    @include print-placeholder(--card-placeholder);
+
     border-radius: var(--radius);
     width: var(--print-width);
     height: var(--print-height);
@@ -672,56 +694,41 @@ section.gallery {
   }
 }
 
-// Without scripts the photos wrap in rows of equal height. With scripts the gallery stays
-// hidden until assets/js/gallery.ts has laid it out (justified layout, inline styles).
-@media (scripting: none) {
-  .gallery-photos {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.5rem;
+// Justified rows in CSS, so photos show as soon as the page renders, with or without scripts: every photo
+// starts at the row height (flex-basis: aspect ratio x height) and the photos of a row grow by their
+// aspect ratio until it is full, so all photos in a row share one height. A lone photo wider than the
+// row shrinks to fit. Hidden photos (gallery filter) simply drop out.
+.gallery-photos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--gallery-spacing);
 
-    & > .gallery-item {
-      max-width: 100%;
-      height: 12rem;
-
-      & > figure,
-      & > figure > img {
-        width: 100%;
-        height: 100%;
-      }
-
-      & > figure > img {
-        object-fit: contain;
-      }
-    }
-  }
-}
-
-// It reserves a screen height meanwhile, so the footer does not jump when the script arrives late
-// (slow mobile connections); the inline height set by the layout replaces it.
-@media (scripting: enabled) {
-  .gallery-photos {
-    visibility: hidden;
-    height: 100svh;
-    overflow: hidden;
+  // Takes the free space of the last row, which keeps the row height instead of growing;
+  // the negative margin cancels its gap, so it never wraps into a row of its own
+  &::after {
+    flex-grow: 1000000000;
+    margin-left: calc(-1 * var(--gallery-spacing));
+    content: "";
   }
 }
 
 // Gallery photos open in the lightbox; they brighten slightly on hover like the album cards
+// --ar (aspect ratio) is set inline per photo. The grow factor is scaled up: if the factors of a row add
+// up to less than 1 (a portrait alone in a row), flexbox only hands out that fraction of the free space.
 .gallery-item {
+  flex: calc(var(--ar) * 100) 1 calc(var(--ar) * var(--gallery-row-height));
   cursor: zoom-in;
+  min-width: 0;
 
-  // While loading, the placeholder looks like the print: the mat (--placeholder) around the photo's
-  // dominant color, so only the photo area fades in instead of a bright mat-colored box
+  // Only the photo area fades in, the mat is there from the start
   & > figure {
-    background:
-      linear-gradient(var(--placeholder-photo), var(--placeholder-photo)) center / calc(100% - 2 * var(--mat-x)) calc(100% - 2 * var(--mat-y)) no-repeat,
-      var(--placeholder);
+    @include print-placeholder;
   }
 
   // Includes the fade-in transition from main.scss, which this more specific rule would override
   & > figure > img {
+    width: 100%;
     transition:
       filter 200ms,
       opacity 300ms;
@@ -822,8 +829,10 @@ section.featured {
 
   img {
     transition: filter 200ms;
+
+    @include print-placeholder;
+
     border-radius: var(--radius);
-    background-color: var(--placeholder);
     aspect-ratio: var(--ratio);
     width: 100%;
     height: auto;

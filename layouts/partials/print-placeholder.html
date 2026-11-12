@@ -1,0 +1,10 @@
+{{/* Input: {base, image}: base is the processed photo, image the same photo with mat and stroke (apply-border.html).
+  Returns the CSS variables for the loading placeholder, which looks like the print: the mat color
+  (--placeholder, see placeholder-color.html) around the photo's dominant color (--placeholder-photo),
+  which covers the photo's share of the image (--photo-w, --photo-h).
+*/}}
+{{ $photoColor := index .base.Colors 0 | default "transparent" }}
+{{ $photoWidth := printf "%.3f%%" (mul 100 (div (float .base.Width) .image.Width)) }}
+{{ $photoHeight := printf "%.3f%%" (mul 100 (div (float .base.Height) .image.Height)) }}
+{{ $style := printf "--placeholder: %s; --placeholder-photo: %s; --photo-w: %s; --photo-h: %s" (partial "placeholder-color.html" .base) $photoColor $photoWidth $photoHeight }}
+{{ return safeCSS $style }}

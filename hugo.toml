@@ -12,6 +12,7 @@
   borderColor = "#ffffff"
   strokeSize = 0
   strokeColor = "#000000"
+  # Gallery rows: spacing between photos and the height a row starts from (both in pixels); a row
+  # is filled with as many photos as fit at this height and then grows until it is full
   boxSpacing = 8
   targetRowHeight = 288
-  targetRowHeightTolerance = 0.25

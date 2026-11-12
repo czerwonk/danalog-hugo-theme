@@ -41,7 +41,6 @@ title = "Gallery"
     #recentCount = 50
     #boxSpacing = 8
     #targetRowHeight = 288
-    #targetRowHeightTolerance = 0.25
     #sortBy = "Name"
     #sortOrder = "asc"
 

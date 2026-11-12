@@ -4,9 +4,14 @@ Modernization: keep the minimalism, lean into an analog / darkroom / contact she
 
 ## Open
 
-- [ ] (low) Album cards and the featured block still use the plain mat color as placeholder; the same print-like placeholder could apply there (card figures have the print's size).
+- [ ] (medium) F1: the filter bar is empty until the script fills it, so on slow connections it appears late and pushes the gallery down (about 150px on phones with four fields). Options: render the fields in the template (the field logic would then exist twice, or move to the template entirely), or reserve the space.
 
 ## Done
+
+### Gallery rows in CSS, print placeholders everywhere (2026-11-12)
+
+- [x] R1: justified rows in CSS instead of the JavaScript layout. Every photo starts at `targetRowHeight` (`flex-basis` = aspect ratio x height, `--ar` set inline) and the photos of a row grow by their aspect ratio until it is full, so a row shares one height; a filler keeps the last row at the row height. Galleries show as soon as the page renders (before, they stayed hidden until the 95 KB script ran, about 6s on a slow phone connection), with and without JavaScript. Removed `gallery.ts`, `justified-layout.ts` (forked Flickr algorithm), `gallery-options.ts` and its test, the hide-until-laid-out CSS (K1) and the no-JS fallback rows. `boxSpacing`/`targetRowHeight` reach the CSS via Hugo's Sass vars (`--gallery-spacing`, `--gallery-row-height`); `targetRowHeightTolerance` is no longer used. Simulated on four danalog.pics albums before deciding, then measured in Chrome (Emma, Grugapark at 390/1280/1920px, with and without JS): rows match the simulation; desktop practically as before, on phones portraits get their own full-width row (or pair up) instead of being squeezed next to a landscape. Pitfall: if the grow factors of a row add up to less than 1 (a lone portrait, 0.68), flexbox only hands out that fraction of the free space, so the factors are scaled by 100. Filter (rows re-flow), lightbox and deep links checked. Build checks R1.
+- [x] R4: the print-like placeholder (mat around the photo's dominant color) for album/equipment cards and the featured album too, from one partial (`print-placeholder.html`) and one Sass mixin. The photo area is the processed photo's share of the bordered image, so it needs no mat or stroke settings. `--card-placeholder` still replaces it. Build checks K2/R4.
 
 ### Unused code (2026-11-12)
 
@@ -166,10 +171,11 @@ Modernization: keep the minimalism, lean into an analog / darkroom / contact she
 - Theme/site config split: structural requirements (EXIF fields, Hugo version, content sections) are documented by the theme; look and feel is exposed as CSS variables and `params` defaults the site overrides. Mat/stroke values, sort order, `fullSize`, fonts and colors are danalog.pics choices and stay in its config. Menus stay in the site: Hugo merges theme menus, but sites cannot remove the entries. Tested on Hugo 0.168: from a theme `hugo.toml` only `params` (deep) and `menus` are merged; `imaging`, `outputs` and `services` are ignored.
 - `package-lock.json` is committed (the ignore entry was inherited from the former upstream); CI installs with `npm ci --ignore-scripts` so builds use exactly the locked versions and no install scripts run. Dependabot updates the lockfile.
 
-- Vendored files stay in `assets/` instead of being resolved from `node_modules` at build time: sites (git submodule) build with Hugo alone. `package.json` exists for Dependabot and tooling only. `justified-layout.ts` is a modified fork and maintained as theme code.
+- Vendored files stay in `assets/` instead of being resolved from `node_modules` at build time: sites (git submodule) build with Hugo alone. `package.json` exists for Dependabot and tooling only. Gallery rows are plain CSS (flexbox), so no layout library is maintained.
 - Direction is analog/darkroom rather than generic editorial, matching the main consumer (danalog.pics): dark default, film-strip banner, monospace type, matted prints.
 - No bundled web fonts and no icon library: fonts come from the site via CSS variables, icons are drawn in-house as SVG files that sites can override.
 - TypeScript instead of JSDoc types (`checkJs`): better readability; Hugo and Node strip the types without a build step, `tsc` only checks. `erasableSyntaxOnly` keeps to syntax Node can strip (no enums, namespaces, parameter properties). Imports use `.ts` extensions (needed by Node, `allowImportingTsExtensions` for `tsc`).
+- Gallery rows in CSS rather than a JavaScript justified layout: the gallery must not wait for scripts (flicker on phones). With danalog.pics' uniform 3:2 photos the greedy CSS rows match the Flickr algorithm on desktop; the remaining difference (no upper row height limit, portraits alone on phones) was accepted after a simulation on real albums.
 - No WebP/AVIF conversion in the theme: danalog.pics needs JPEG derivatives for other platforms.
 
 ## Recurring issues

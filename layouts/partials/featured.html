@@ -8,12 +8,11 @@
     {{ end }}
     {{ $featured := $cover | default ((.Resources.ByType "image").GetMatch (.Params.featured_image | default "*feature*")) | default (index $gallery.images 0) }}
     {{ $fullSize := site.Params.gallery.fullSize | int }}
-    {{ $thumbnail := $featured.Filter (slice images.AutoOrient (images.Process (printf "fit %dx%d" $fullSize $fullSize))) }}
-    {{ $color := partial "placeholder-color.html" $thumbnail }}
-    {{ $thumbnail = partial "apply-border.html" (dict "image" $thumbnail "full" true) }}
+    {{ $base := $featured.Filter (slice images.AutoOrient (images.Process (printf "fit %dx%d" $fullSize $fullSize))) }}
+    {{ $thumbnail := partial "apply-border.html" (dict "image" $base "full" true) }}
     <section class="featured">
       <a class="featured-card" href="{{ .RelPermalink }}">
-        <figure style="--ratio: {{ $thumbnail.Width }} / {{ $thumbnail.Height }}; --placeholder: {{ $color }}">
+        <figure style="--ratio: {{ $thumbnail.Width }} / {{ $thumbnail.Height }}; {{ partial "print-placeholder.html" (dict "base" $base "image" $thumbnail) }}">
           <img src="{{ $thumbnail.RelPermalink }}" width="{{ $thumbnail.Width }}" height="{{ $thumbnail.Height }}" alt="{{ .Title }}" decoding="async" />
           <figcaption>
             <h2>{{ .Title }}</h2>

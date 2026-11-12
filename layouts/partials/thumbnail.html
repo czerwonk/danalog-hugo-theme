@@ -1,15 +1,12 @@
-{{/* Input: original image. Returns {image, image2x, srcset, color}:
-  image    600px thumbnail with mat
-  image2x  1200px version with a proportionally doubled mat for high-density screens,
+{{/* Input: original image. Returns {image, image2x, srcset, placeholder}:
+  image        600px thumbnail with mat
+  image2x      1200px version with a proportionally doubled mat for high-density screens,
   or "" if the original is too small to provide one (Hugo does not upscale)
-  srcset   value for the img srcset attribute
-  color    loading placeholder (see placeholder-color.html)
-  photoColor  the photo's dominant color, painted inside the mat while loading
-  matX, matY  mat width as a share of the thumbnail's width and height ("8.000%"), "0%" without a mat
+  srcset       value for the img srcset attribute
+  placeholder  CSS variables for the print-like loading placeholder (see print-placeholder.html)
 */}}
 {{ $base := .Filter (slice images.AutoOrient (images.Process "fit 600x600")) }}
 {{ $large := .Filter (slice images.AutoOrient (images.Process "fit 1200x1200")) }}
-{{ $color := partial "placeholder-color.html" $base }}
 {{ $image := partial "apply-border.html" (dict "image" $base) }}
 {{ $image2x := "" }}
 {{ $srcset := printf "%s 1x" $image.RelPermalink }}
@@ -17,12 +14,5 @@
   {{ $image2x = partial "apply-border.html" (dict "image" $large "scale" 2) }}
   {{ $srcset = printf "%s, %s 2x" $srcset $image2x.RelPermalink }}
 {{ end }}
-{{ $photoColor := index $base.Colors 0 | default "transparent" }}
-{{ $matX := "0%" }}
-{{ $matY := "0%" }}
-{{ $borderSize := site.Params.gallery.borderSize | int }}
-{{ if gt $borderSize 0 }}
-  {{ $matX = printf "%.3f%%" (mul 100 (div (float $borderSize) $image.Width)) }}
-  {{ $matY = printf "%.3f%%" (mul 100 (div (float $borderSize) $image.Height)) }}
-{{ end }}
-{{ return dict "image" $image "image2x" $image2x "srcset" $srcset "color" $color "photoColor" $photoColor "matX" $matX "matY" $matY }}
+{{ $placeholder := partial "print-placeholder.html" (dict "base" $base "image" $image) }}
+{{ return dict "image" $image "image2x" $image2x "srcset" $srcset "placeholder" $placeholder }}

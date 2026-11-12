@@ -22,7 +22,12 @@
     <link rel="{{ .Rel }}" type="{{ .MediaType.Type }}" href="{{ .Permalink }}" title="{{ $.Site.Title }}" />
   {{ end -}}
   {{ partial "opengraph.html" . }}
-  {{ $css := resources.Get "/css/main.scss" | css.Sass (dict "transpiler" "dartsass") | minify | fingerprint }}
+  {{/* Gallery row layout from params.gallery, available in Sass as hugo:vars */}}
+  {{ $sassVars := dict
+    "gallerySpacing" (printf "%dpx" (site.Params.gallery.boxSpacing | int))
+    "galleryRowHeight" (printf "%dpx" (site.Params.gallery.targetRowHeight | int))
+  }}
+  {{ $css := resources.Get "/css/main.scss" | css.Sass (dict "transpiler" "dartsass" "vars" $sassVars) | minify | fingerprint }}
   <link rel="stylesheet" href="{{ $css.RelPermalink }}" />
   {{ $params := dict
     "closeTitle" (i18n "closeTitle")
@@ -41,9 +46,6 @@
     "orientationPortrait" (i18n "orientationPortrait")
     "orientationSquare" (i18n "orientationSquare")
     "filterReset" (i18n "filterReset")
-    "boxSpacing" site.Params.gallery.boxSpacing
-    "targetRowHeight" site.Params.gallery.targetRowHeight
-    "targetRowHeightTolerance" site.Params.gallery.targetRowHeightTolerance
     "enableDownload" (default true .Params.build.publishResources)
   }}
   {{ $js := resources.Get "js/main.ts" | js.Build (dict "minify" true "params" $params) | resources.Fingerprint }}

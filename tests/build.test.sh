@@ -74,7 +74,6 @@ assert_not_contains "$HOME_PAGE" '<symbol id="icon-' "X1: pages without a galler
 # A1: with a mat (borderSize > 0) the loading placeholder is the mat color
 assert_count "$ALBUM_A" 'figure style="--placeholder: #ffffff' 2 "A1: gallery placeholders must use borderColor"
 assert_contains "$HOME_PAGE" 'figure class="card-slides-2" style="--placeholder: #ffffff' "A1: album card placeholder must use borderColor"
-assert_contains "$CSS" 'background-color:var\(--card-placeholder,var\(--placeholder\)\)' "A1: cards must allow overriding the placeholder (e.g. transparent with --card-fit: contain)"
 
 # Banner attributes must stay separated (regression from formatting title.html)
 assert_contains "$HOME_PAGE" 'class="banner"[^>]* width="600" height="150"' "Banner must render width and height as separate attributes"
@@ -196,7 +195,7 @@ assert_contains "$ALBUM_A" '<a class="gallery-item"[^>]* data-title="Harbour &lt
 assert_contains "$HOME_PAGE" '<a class="featured-card" href="/album-c/">' "N3: featured block links to the album"
 sed -n '/<section class="featured">/,/<\/section>/p' "$HOME_PAGE" | grep -q '<img' || fail "N3: featured image must be an img element"
 assert_not_contains "$HOME_PAGE" 'background-image: url' "N3: featured image must not be a CSS background"
-assert_not_contains "$CSS" '\.featured[^{]*\{[^}]*linear-gradient' "N3: no gradient overlay"
+assert_not_contains "$CSS" '\.featured[^{]*\{[^}]*linear-gradient\([^v]' "N3: no gradient overlay (the only gradient is the placeholder's photo area)"
 
 # S1 (H1): with publishResources: false the original (incl. EXIF/GPS) is never published, not even via the
 # equipment or recent pages; albums without the option still publish and link their originals
@@ -245,31 +244,38 @@ for image in album-g-001 album-g-002 album-g-003; do
   assert_contains "$CAMERA_PAGE" "/album-g/$image" "G1: $image appears on the Nikon F3 page"
 done
 
-# J1: without scripts the photos wrap in rows; only when scripts run is the gallery hidden until the justified layout is done
+# R1: justified rows come from CSS, so the gallery shows without waiting for scripts: every photo starts at the
+# target row height (flex-basis = aspect ratio x height) and grows by its aspect ratio until the row is full
 for page in "$ALBUM_A" "$RECENT_PAGE" "$CAMERA_PAGE"; do
-  assert_contains "$page" '<div id="gallery" class="gallery-photos">' "J1: gallery container is styled by class, not hidden inline"
+  assert_contains "$page" '<div id="gallery" class="gallery-photos">' "R1: gallery container is laid out by CSS, not hidden inline"
 done
-assert_contains "$CSS" '@media ?\(scripting: ?none\) ?\{ ?\.gallery-photos ?\{[^}]*flex-wrap: ?wrap' "J1: without scripts the photos wrap in rows"
-assert_contains "$CSS" '@media ?\(scripting: ?enabled\) ?\{ ?\.gallery-photos ?\{[^}]*visibility: ?hidden' "J1: with scripts the gallery is hidden until laid out"
-assert_contains "$JS" 'style\.visibility="visible"' "J1: gallery.ts must override the CSS visibility once laid out"
+assert_contains "$ALBUM_A" '<a class="gallery-item"[^>]* style="--ar: 1\.3448; aspect-ratio: 78 / 58"' "R1: landscape photo carries its aspect ratio (bordered thumbnail 78x58)"
+assert_contains "$ALBUM_A" '<a class="gallery-item"[^>]* style="--ar: 0\.7436; aspect-ratio: 58 / 78"' "R1: portrait photo carries its aspect ratio"
+assert_contains "$CSS" '\.gallery-photos\{display:flex;flex-wrap:wrap;[^}]*gap:var\(--gallery-spacing\)' "R1: photos wrap into rows with the configured spacing"
+assert_contains "$CSS" '\.gallery-item\{[^}]*flex:calc\(var\(--ar\) ?\* ?100\) ?1 calc\(var\(--ar\) ?\* ?var\(--gallery-row-height\)\)' "R1: photos start at the row height and grow by their aspect ratio (scaled, so a lone portrait still fills the row)"
+assert_contains "$CSS" '\.gallery-photos::?after\{[^}]*flex-grow:(1e9|[0-9]{9,})' "R1: a filler keeps the last row at the row height"
+assert_contains "$CSS" '--gallery-spacing:8px;--gallery-row-height:288px' "R1: spacing and row height come from params.gallery (theme defaults)"
+assert_not_contains "$CSS" 'scripting:enabled\)\{\.gallery-photos' "R1: the gallery is not hidden while scripts load"
+assert_not_contains "$JS" 'gallery:filtered|containerHeight' "R1: no layout script is bundled"
 
 # W1: galleries are limited by --gallery-max-width, sites can set none for edge to edge
 assert_contains "$CSS" '--gallery-max-width: ?1536px' "W1: --gallery-max-width defaults to 1536px"
 assert_contains "$CSS" 'section\.gallery ?\{[^}]*max-width: ?var\(--gallery-max-width\)' "W1: gallery sections use --gallery-max-width"
 
-# K1: while scripts lay out the gallery, it reserves a screen height so the footer does not jump on slow connections
-assert_contains "$CSS" '@media ?\(scripting: ?enabled\) ?\{ ?\.gallery-photos ?\{[^}]*height: ?100svh' "K1: the hidden gallery reserves a screen height until laid out"
-
-# K2: the loading placeholder looks like the print: the mat around the photo's dominant color
-# (album-a thumbnails: 60x40 photo + 1px stroke + 8px mat = 78x58, so the mat is 8/78 wide and 8/58 high; swapped for the portrait)
-assert_contains "$ALBUM_A" 'figure style="--placeholder: #ffffff; --placeholder-photo: #[0-9a-f]{6}; --mat-x: 10\.256%; --mat-y: 13\.793%; aspect-ratio: 78 / 58' "K2: landscape figure carries the mat color, the photo's dominant color and the mat proportions"
-assert_contains "$ALBUM_A" 'figure style="--placeholder: #ffffff; --placeholder-photo: #[0-9a-f]{6}; --mat-x: 13\.793%; --mat-y: 10\.256%; aspect-ratio: 58 / 78' "K2: portrait figure has the mat proportions swapped"
-assert_contains "$CSS" '\.gallery-item>figure\{[^}]*background:linear-gradient\(var\(--placeholder-photo\), ?var\(--placeholder-photo\)\) ?(50%|center)[^;}]*calc\(100% - 2 ?\* ?var\(--mat-x' "K2: gallery placeholder paints the photo color inside the mat"
+# K2/R4: the loading placeholder looks like the print: the mat around the photo's dominant color. The photo area is
+# its share of the bordered image (album-a thumbnails: 60x40 photo in 78x58, so 60/78 wide and 40/58 high)
+assert_contains "$ALBUM_A" 'figure style="--placeholder: #ffffff; --placeholder-photo: #[0-9a-f]{6}; --photo-w: 76\.923%; --photo-h: 68\.966%; aspect-ratio: 78 / 58' "K2: landscape figure carries the mat color, the photo color and the photo area"
+assert_contains "$ALBUM_A" 'figure style="--placeholder: #ffffff; --placeholder-photo: #[0-9a-f]{6}; --photo-w: 68\.966%; --photo-h: 76\.923%; aspect-ratio: 58 / 78' "K2: portrait figure has the photo area swapped"
+assert_contains "$CSS" '\.gallery-item>figure\{[^}]*background:linear-gradient\(var\(--placeholder-photo\), ?var\(--placeholder-photo\)\) ?(50%|center) ?/ ?var\(--photo-w' "K2: gallery placeholder paints the photo color inside the mat"
+assert_contains "$HOME_PAGE" '<figure class="card-slides-2" style="--placeholder: #ffffff; --placeholder-photo: #[0-9a-f]{6}; --photo-w: [0-9.]+%; --photo-h: [0-9.]+%">' "R4: album card placeholders look like the print"
+assert_contains "$HOME_PAGE" '<figure style="--ratio: [0-9]+ / [0-9]+; --placeholder: #ffffff; --placeholder-photo: #[0-9a-f]{6}; --photo-w: [0-9.]+%; --photo-h: [0-9.]+%">' "R4: featured album placeholder looks like the print"
+assert_contains "$CSS" '\.card>figure\{[^}]*background:var\(--card-placeholder, ?linear-gradient\(var\(--placeholder-photo\)' "R4: card placeholder looks like the print, sites can still override it"
+assert_contains "$CSS" '\.featured-card img\{[^}]*background:linear-gradient\(var\(--placeholder-photo\)' "R4: featured placeholder looks like the print"
 
 # C3: gallery defaults come from the theme's hugo.toml (merged into the site params), not from template fallbacks
 GALLERY_PARAMS="$(hugo config --format json --source "$THEME_DIR/tests/site" --themesDir "$WORK_DIR/themes" 2>/dev/null |
   python3 -c 'import json, sys; print(json.dumps(json.load(sys.stdin)["params"]["gallery"], sort_keys=True))')"
-for expected in '"bordersize": 8' '"fullsize": 1600' '"recentcount": 50' '"sortby": "Name"' '"sortorder": "asc"' '"boxspacing": 8' '"targetrowheight": 288' '"targetrowheighttolerance": 0.25'; do
+for expected in '"bordersize": 8' '"fullsize": 1600' '"recentcount": 50' '"sortby": "Name"' '"sortorder": "asc"' '"boxspacing": 8' '"targetrowheight": 288'; do
   [[ "$GALLERY_PARAMS" == *"$expected"* ]] || fail "C3: params.gallery must contain $expected (site value or theme default), got $GALLERY_PARAMS"
 done
 if grep -rnE 'Params\.gallery\.[A-Za-z]+\)? *\| *default|default [^ ]+ \.?[Ss]ite\.Params\.gallery' "$THEME_DIR/layouts"; then

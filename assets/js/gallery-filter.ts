@@ -2,7 +2,7 @@
 // is an icon with either the shared value (static info) or a select (at least two values);
 // orientation only alongside gear info.
 // Filters combine (AND), options show the remaining photo count and are disabled at 0,
-// the state lives in the query string. Hidden items are skipped by gallery.ts and the lightbox.
+// the state lives in the query string. Hidden items drop out of the rows (CSS) and the lightbox.
 import * as params from "@params";
 import { DIMENSIONS, availableOptions, filterBar, filtersFromQuery, filtersToQuery, matches, toItem, validFilterValue } from "./gallery-filter-core.ts";
 import type { Dimension, Filters, Item } from "./gallery-filter-core.ts";
@@ -58,7 +58,7 @@ function renderOptions(dimension: Dimension, select: HTMLSelectElement) {
   select.value = filters[dimension] || "";
 }
 
-function apply(gallery: HTMLElement, form: HTMLFormElement) {
+function apply(form: HTMLFormElement) {
   entries.forEach((entry) => {
     entry.element.hidden = !matches(entry, filters);
   });
@@ -67,14 +67,13 @@ function apply(gallery: HTMLElement, form: HTMLFormElement) {
   if (reset) reset.hidden = !DIMENSIONS.some((dimension) => filters[dimension]);
   const url = location.pathname + filtersToQuery(filters, location.search) + location.hash;
   history.replaceState(history.state, "", url);
-  gallery.dispatchEvent(new CustomEvent("gallery:filtered"));
 }
 
 /** Clears all filters, e.g. when a shared link points to a photo that is filtered out. */
 export function resetFilters() {
-  if (!gallery || !form || Object.keys(filters).length === 0) return;
+  if (!form || Object.keys(filters).length === 0) return;
   filters = {};
-  apply(gallery, form);
+  apply(form);
 }
 
 function iconFor(dimension: Dimension): SVGSVGElement {
@@ -119,7 +118,7 @@ function renderDropdown(dimension: Dimension, onChange: (value: string) => void)
   return label;
 }
 
-function init(gallery: HTMLElement, form: HTMLFormElement) {
+function init(form: HTMLFormElement) {
   const fields = filterBar(entries);
   if (fields.length === 0) return;
 
@@ -131,7 +130,7 @@ function init(gallery: HTMLElement, form: HTMLFormElement) {
         : renderDropdown(dimension, (value) => {
             // Options can be altered in the browser; only values present in the gallery are accepted
             filters = { ...filters, [dimension]: validFilterValue(entries, dimension, value) };
-            apply(gallery, form);
+            apply(form);
           }),
     );
   });
@@ -153,7 +152,7 @@ function init(gallery: HTMLElement, form: HTMLFormElement) {
   // Only dropdown dimensions can be filtered; a query value for static gear is ignored
   const fromQuery = filtersFromQuery(location.search, entries);
   filters = Object.fromEntries(dropdowns.filter((dimension) => fromQuery[dimension]).map((dimension) => [dimension, fromQuery[dimension]]));
-  apply(gallery, form);
+  apply(form);
 }
 
-if (gallery && form) init(gallery, form);
+if (gallery && form) init(form);
