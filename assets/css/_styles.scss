@@ -606,20 +606,24 @@ section.gallery {
   }
 
   & figure > img {
-    transition:
-      filter 200ms,
-      opacity 300ms;
+    transition: filter 200ms;
     border-radius: var(--radius);
-
-    // Slideshow previews with another aspect ratio are letterboxed with --card-fit: contain
-    background-color: var(--surface-1);
     width: 100%;
     height: 100%;
     object-fit: var(--card-fit);
   }
 
-  &:hover img {
-    filter: brightness(1.08);
+  // Further slideshow previews may have another aspect ratio and are letterboxed with --card-fit: contain;
+  // the cover has the print's ratio and leaves the placeholder visible while it loads
+  & figure > .card-slide:not(:first-child) {
+    background-color: var(--surface-1);
+  }
+
+  // Only with a pointer that hovers: on touch screens a tap would briefly flash the photo
+  @media (hover: hover) {
+    &:hover img {
+      filter: brightness(1.08);
+    }
   }
 
   & > div {
@@ -723,21 +727,19 @@ section.gallery {
   cursor: zoom-in;
   min-width: 0;
 
-  // Only the photo area fades in, the mat is there from the start
   & > figure {
     @include print-placeholder;
   }
 
-  // Includes the fade-in transition from main.scss, which this more specific rule would override
   & > figure > img {
+    transition: filter 200ms;
     width: 100%;
-    transition:
-      filter 200ms,
-      opacity 300ms;
   }
 
-  &:hover img {
-    filter: brightness(1.08);
+  @media (hover: hover) {
+    &:hover img {
+      filter: brightness(1.08);
+    }
   }
 }
 
@@ -840,8 +842,10 @@ section.featured {
     height: auto;
   }
 
-  &:hover img {
-    filter: brightness(1.08);
+  @media (hover: hover) {
+    &:hover img {
+      filter: brightness(1.08);
+    }
   }
 
   figcaption {

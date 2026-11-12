@@ -369,7 +369,7 @@ The theme exposes these CSS variables:
 }
 ```
 
-While photos load, the placeholder looks like the print: with a border (`borderSize > 0`) the border color around the photo's dominant color, otherwise just the dominant color. Only the photo area fades in.
+While photos load, the placeholder looks like the print: with a border (`borderSize > 0`) the border color around the photo's dominant color, otherwise just the dominant color. Photos replace it as they arrive, without a fade.
 
 Gallery rows are laid out in CSS: every photo starts at `targetRowHeight` (default `288`) and a row holds as many photos as fit at that height, then grows until it is full, so all photos in a row share one height. The last row keeps the row height. `boxSpacing` (default `8`) is the space between photos. `targetRowHeightTolerance` is no longer used.
 

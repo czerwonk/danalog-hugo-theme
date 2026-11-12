@@ -142,7 +142,7 @@ assert_not_contains "$CSS" 'prefers-color-scheme:dark' "P1: no duplicated dark-m
 assert_contains "$CSS" 'html\.dark\{color-scheme:dark\}' "P1: defaultTheme = dark forces the dark scheme"
 assert_contains "$CSS" 'html\.light\{color-scheme:light\}' "P1: defaultTheme = light forces the light scheme"
 
-# P3: native lazy loading instead of lazysizes; fade-in only hides images when scripts run
+# P3: native lazy loading instead of lazysizes
 assert_contains "$ALBUM_A" '<img loading="lazy" decoding="async" width="78" height="58" src="/album-a/' "P3: gallery images load lazily via the browser"
 assert_contains "$HOME_PAGE" '<img class="card-slide" loading="lazy"' "P3: card slideshow images load lazily via the browser"
 for page in "$HOME_PAGE" "$ALBUM_A"; do
@@ -150,7 +150,12 @@ for page in "$HOME_PAGE" "$ALBUM_A"; do
 done
 assert_not_contains "$JS" 'lazySizes' "P3: lazysizes is not bundled"
 assert_not_contains "$CSS" 'lazyload' "P3: no lazysizes styles left"
-assert_contains "$CSS" '@media ?\(scripting:enabled\)' "P3: images are only hidden for the fade-in when scripts run"
+
+# N1: no fade-in: photos show as soon as they arrive, independent of scripts (each photo fading in on its own
+# was the main flicker on phones)
+assert_not_contains "$CSS" 'is-loaded|scripting' "N1: images are never hidden until a script reveals them"
+assert_not_contains "$JS" 'is-loaded' "N1: no fade-in script is bundled"
+assert_not_contains "$CSS" '(gallery-item|card|featured-card)[^{]*img\{[^}]*transition:[^;}]*opacity' "N1: photos do not fade (the lightbox UI has its own fades)"
 
 # P2: 2x thumbnails for high-density screens and a smaller lightbox image for small screens
 # album-d-001 is 1300x900: thumbnails 618/1236px wide incl. mat, lightbox 1318px and half size 810px
@@ -185,7 +190,8 @@ assert_contains "$CSS" 'hgroup\{[^}]*gap:1rem' "M4: smaller gap between banner a
 
 # M5: gallery photos react on hover like the album cards
 assert_contains "$CSS" '\.gallery-item\{[^}]*cursor:zoom-in' "M5: gallery photos show a zoom cursor"
-assert_contains "$CSS" '\.gallery-item:hover img\{filter:brightness\(1\.08\)\}' "M5: gallery photos brighten on hover"
+assert_contains "$CSS" '@media ?\(hover: ?hover\) ?\{ ?\.gallery-item:hover img\{filter:brightness\(1\.08\)\}' "M5: gallery photos brighten on hover, only with a pointer that hovers (a tap would flash them on touch screens)"
+assert_not_contains "$CSS" '\}\.(card|featured-card):hover img\{filter' "M5: cards brighten on hover only inside @media (hover: hover)"
 
 # Photo titles are passed to the lightbox via data-title; a title attribute would show a native tooltip on hover
 assert_not_contains "$ALBUM_A" '<a class="gallery-item"[^>]* title=' "gallery photos have no title attribute (native tooltip)"
