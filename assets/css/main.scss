@@ -11,7 +11,7 @@
   --pswp-bg: var(--surface-1-dark);
 }
 
-// Lazily loaded images fade in once loaded (assets/js/fade-in.js); they are only hidden
+// Lazily loaded images fade in once loaded (assets/js/fade-in.ts); they are only hidden
 // while scripts run, so without JS images show up without the fade
 @media (scripting: enabled) {
   img[loading="lazy"]:not(.is-loaded) {

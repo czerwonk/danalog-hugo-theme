@@ -251,7 +251,7 @@ for page in "$ALBUM_A" "$RECENT_PAGE" "$CAMERA_PAGE"; do
 done
 assert_contains "$CSS" '@media ?\(scripting: ?none\) ?\{ ?\.gallery-photos ?\{[^}]*flex-wrap: ?wrap' "J1: without scripts the photos wrap in rows"
 assert_contains "$CSS" '@media ?\(scripting: ?enabled\) ?\{ ?\.gallery-photos ?\{[^}]*visibility: ?hidden' "J1: with scripts the gallery is hidden until laid out"
-assert_contains "$JS" 'style\.visibility="visible"' "J1: gallery.js must override the CSS visibility once laid out"
+assert_contains "$JS" 'style\.visibility="visible"' "J1: gallery.ts must override the CSS visibility once laid out"
 
 # W1: galleries are limited by --gallery-max-width, sites can set none for edge to edge
 assert_contains "$CSS" '--gallery-max-width: ?1536px' "W1: --gallery-max-width defaults to 1536px"

@@ -2,30 +2,33 @@
 // is an icon with either the shared value (static info) or a select (at least two values);
 // orientation only alongside gear info.
 // Filters combine (AND), options show the remaining photo count and are disabled at 0,
-// the state lives in the query string. Hidden items are skipped by gallery.js and the lightbox.
+// the state lives in the query string. Hidden items are skipped by gallery.ts and the lightbox.
 import * as params from "@params";
-import { DIMENSIONS, availableOptions, filterBar, filtersFromQuery, filtersToQuery, matches, toItem, validFilterValue } from "./gallery-filter-core.js";
+import { DIMENSIONS, availableOptions, filterBar, filtersFromQuery, filtersToQuery, matches, toItem, validFilterValue } from "./gallery-filter-core.ts";
+import type { Dimension, Filters, Item } from "./gallery-filter-core.ts";
 
-const gallery = document.getElementById("gallery");
-const form = document.querySelector(".gallery-filter");
+type Entry = Item & { element: HTMLElement };
 
-const LABELS = {
+const LABELS: Record<Dimension, string> = {
   camera: params.filterCamera || "Camera",
   lens: params.filterLens || "Lens",
   film: params.filterFilm || "Film",
   orientation: params.filterOrientation || "Orientation",
 };
 
-const ORIENTATION_LABELS = {
+const ORIENTATION_LABELS: Record<string, string> = {
   landscape: params.orientationLandscape || "Landscape",
   portrait: params.orientationPortrait || "Portrait",
   square: params.orientationSquare || "Square",
 };
 
+const gallery = document.getElementById("gallery");
+const form = document.querySelector<HTMLFormElement>("form.gallery-filter");
+
 // Photo data comes from EXIF text; toItem() normalizes it. Values are only ever rendered via
 // textContent / new Option(), never as HTML.
-const entries = gallery
-  ? Array.from(gallery.querySelectorAll(".gallery-item")).map((element) => ({
+const entries: Entry[] = gallery
+  ? Array.from(gallery.querySelectorAll<HTMLElement>(".gallery-item")).map((element) => ({
       element,
       ...toItem({
         camera: element.dataset.captionCamera,
@@ -36,13 +39,12 @@ const entries = gallery
     }))
   : [];
 
-let filters = {};
-const selects = {};
+let filters: Filters = {};
+const selects = new Map<Dimension, HTMLSelectElement>();
 
-const optionLabel = (dimension, value) => (dimension === "orientation" ? ORIENTATION_LABELS[value] || value : value);
+const optionLabel = (dimension: Dimension, value: string) => (dimension === "orientation" ? ORIENTATION_LABELS[value] || value : value);
 
-function renderOptions(dimension) {
-  const select = selects[dimension];
+function renderOptions(dimension: Dimension, select: HTMLSelectElement) {
   const options = availableOptions(entries, filters, dimension);
   const all = new Option(params.filterAll || "All", "");
   select.replaceChildren(
@@ -56,12 +58,13 @@ function renderOptions(dimension) {
   select.value = filters[dimension] || "";
 }
 
-function apply() {
+function apply(gallery: HTMLElement, form: HTMLFormElement) {
   entries.forEach((entry) => {
     entry.element.hidden = !matches(entry, filters);
   });
-  Object.keys(selects).forEach(renderOptions);
-  form.querySelector(".gallery-filter-reset").hidden = !DIMENSIONS.some((dimension) => filters[dimension]);
+  selects.forEach((select, dimension) => renderOptions(dimension, select));
+  const reset = form.querySelector<HTMLButtonElement>(".gallery-filter-reset");
+  if (reset) reset.hidden = !DIMENSIONS.some((dimension) => filters[dimension]);
   const url = location.pathname + filtersToQuery(filters, location.search) + location.hash;
   history.replaceState(history.state, "", url);
   gallery.dispatchEvent(new CustomEvent("gallery:filtered"));
@@ -69,12 +72,12 @@ function apply() {
 
 /** Clears all filters, e.g. when a shared link points to a photo that is filtered out. */
 export function resetFilters() {
-  if (!form || Object.keys(filters).length === 0) return;
+  if (!gallery || !form || Object.keys(filters).length === 0) return;
   filters = {};
-  apply();
+  apply(gallery, form);
 }
 
-function iconFor(dimension) {
+function iconFor(dimension: Dimension): SVGSVGElement {
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   svg.setAttribute("class", "icon");
   svg.setAttribute("width", "16");
@@ -87,7 +90,7 @@ function iconFor(dimension) {
 }
 
 // Gear shared by all photos (e.g. one camera): icon + value instead of a dropdown
-function renderStatic(dimension, value) {
+function renderStatic(dimension: Dimension, value: string): HTMLElement {
   const item = document.createElement("p");
   item.className = "gallery-filter-static";
   // Full value in the tooltip: long values are cut off on narrow screens
@@ -98,11 +101,11 @@ function renderStatic(dimension, value) {
   const text = document.createElement("span");
   text.textContent = value;
   item.append(iconFor(dimension), label, text);
-  form.append(item);
+  return item;
 }
 
 // Icon + select; the dimension name is only for screen readers and the tooltip, like for static info
-function renderDropdown(dimension) {
+function renderDropdown(dimension: Dimension, onChange: (value: string) => void): HTMLElement {
   const label = document.createElement("label");
   label.title = LABELS[dimension];
   const caption = document.createElement("span");
@@ -110,21 +113,28 @@ function renderDropdown(dimension) {
   caption.textContent = LABELS[dimension];
   const select = document.createElement("select");
   select.name = dimension;
-  select.addEventListener("change", () => {
-    // Options can be altered in the browser; only values present in the gallery are accepted
-    filters = { ...filters, [dimension]: validFilterValue(entries, dimension, select.value) };
-    apply();
-  });
-  selects[dimension] = select;
+  select.addEventListener("change", () => onChange(select.value));
+  selects.set(dimension, select);
   label.append(iconFor(dimension), caption, select);
-  form.append(label);
+  return label;
 }
 
-function init() {
+function init(gallery: HTMLElement, form: HTMLFormElement) {
   const fields = filterBar(entries);
   if (fields.length === 0) return;
 
-  fields.forEach(({ dimension, type, value }) => (type === "static" ? renderStatic(dimension, value) : renderDropdown(dimension)));
+  fields.forEach((field) => {
+    const { dimension } = field;
+    form.append(
+      field.type === "static"
+        ? renderStatic(dimension, field.value)
+        : renderDropdown(dimension, (value) => {
+            // Options can be altered in the browser; only values present in the gallery are accepted
+            filters = { ...filters, [dimension]: validFilterValue(entries, dimension, value) };
+            apply(gallery, form);
+          }),
+    );
+  });
   form.hidden = false;
   const dropdowns = fields.filter(({ type }) => type === "dropdown").map(({ dimension }) => dimension);
   if (dropdowns.length === 0) return;
@@ -143,7 +153,7 @@ function init() {
   // Only dropdown dimensions can be filtered; a query value for static gear is ignored
   const fromQuery = filtersFromQuery(location.search, entries);
   filters = Object.fromEntries(dropdowns.filter((dimension) => fromQuery[dimension]).map((dimension) => [dimension, fromQuery[dimension]]));
-  apply();
+  apply(gallery, form);
 }
 
-if (gallery && form) init();
+if (gallery && form) init(gallery, form);

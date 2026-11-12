@@ -1,0 +1,18 @@
+{
+  // Type checking only (npm run typecheck): Hugo's js.Build (esbuild) and Node strip the types without checking them
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "types": ["node"],
+    "strict": true,
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    // Node runs the tests by stripping types, which only works for syntax that can simply be erased
+    "erasableSyntaxOnly": true,
+    "verbatimModuleSyntax": true,
+    "skipLibCheck": true
+  },
+  "include": ["assets/js/**/*.ts", "tests/js/**/*.ts"]
+}

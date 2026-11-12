@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { buildCaption, buildCaptionText } from "../../assets/js/caption.js";
+import { buildCaption, buildCaptionText } from "../../assets/js/caption.ts";
 
 test("X1: each EXIF value is rendered with its icon", () => {
   const html = buildCaption({ title: "", camera: "Nikon F3", film: "Kodak Portra 400", lens: "Nikkor 50mm f/1.4" });

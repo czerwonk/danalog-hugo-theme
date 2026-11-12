@@ -330,7 +330,7 @@ section.galleries {
   }
 }
 
-// Filter bar above a gallery, filled by assets/js/gallery-filter.js: one line of fields in the
+// Filter bar above a gallery, filled by assets/js/gallery-filter.ts: one line of fields in the
 // order camera, lens, film, orientation; each is an icon with the shared value or a select.
 .gallery-filter {
   display: flex;
@@ -675,7 +675,7 @@ section.gallery {
 }
 
 // Without scripts the photos wrap in rows of equal height. With scripts the gallery stays
-// hidden until assets/js/gallery.js has laid it out (justified layout, inline styles).
+// hidden until assets/js/gallery.ts has laid it out (justified layout, inline styles).
 @media (scripting: none) {
   .gallery-photos {
     display: flex;

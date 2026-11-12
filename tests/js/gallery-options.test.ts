@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { layoutOptions } from "../../assets/js/gallery-options.js";
+import { layoutOptions } from "../../assets/js/gallery-options.ts";
 
 test("B1: fractional row height tolerance from config is used", () => {
   const options = layoutOptions({ targetRowHeightTolerance: 0.4 });

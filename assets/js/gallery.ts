@@ -1,30 +1,30 @@
-import justifiedLayout from "./justified-layout.js";
-import { layoutOptions } from "./gallery-options.js";
+import justifiedLayout from "./justified-layout.ts";
+import { layoutOptions } from "./gallery-options.ts";
 import * as params from "@params";
 
 const gallery = document.getElementById("gallery");
 
 if (gallery) {
   let containerWidth = 0;
-  const items = Array.from(gallery.querySelectorAll(".gallery-item"));
+  const items = Array.from(gallery.querySelectorAll<HTMLElement>(".gallery-item")).filter((item) => item.querySelector("img"));
 
   const aspectRatios = new Map(
     items.map((item) => {
-      const img = item.querySelector("img");
+      const img = item.querySelector("img")!;
       img.style.width = "100%";
       img.style.height = "auto";
-      return [item, parseFloat(img.getAttribute("width")) / parseFloat(img.getAttribute("height"))];
+      return [item, parseFloat(img.getAttribute("width") ?? "") / parseFloat(img.getAttribute("height") ?? "")];
     }),
   );
 
   // Lays out the visible items; hidden ones (gallery filter) are skipped
-  function updateGallery({ force = false } = {}) {
+  const updateGallery = ({ force = false } = {}) => {
     if (!force && containerWidth === gallery.getBoundingClientRect().width) return;
     containerWidth = gallery.getBoundingClientRect().width;
 
     const visible = items.filter((item) => !item.hidden);
     const layout = justifiedLayout(
-      visible.map((item) => aspectRatios.get(item)),
+      visible.map((item) => aspectRatios.get(item)!),
       {
         rowWidth: containerWidth,
         ...layoutOptions(params),
@@ -32,7 +32,7 @@ if (gallery) {
     );
 
     visible.forEach((item, i) => {
-      const { width, height, top, left } = layout.boxes[i];
+      const { width, height, top, left } = layout.boxes[i]!;
       item.style.position = "absolute";
       item.style.width = width + "px";
       item.style.height = height + "px";
@@ -47,7 +47,7 @@ if (gallery) {
     // overflow: hidden would also clip focus outlines
     gallery.style.visibility = "visible";
     gallery.style.overflow = "visible";
-  }
+  };
 
   window.addEventListener("resize", () => updateGallery());
   window.addEventListener("orientationchange", () => updateGallery());

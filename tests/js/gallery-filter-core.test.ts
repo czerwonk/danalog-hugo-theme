@@ -1,8 +1,12 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { slugify, matches, filterBar, availableOptions, filtersFromQuery, filtersToQuery, toItem, validFilterValue } from "../../assets/js/gallery-filter-core.js";
+import { slugify, matches, filterBar, availableOptions, filtersFromQuery, filtersToQuery, toItem, validFilterValue } from "../../assets/js/gallery-filter-core.ts";
+import type { Item } from "../../assets/js/gallery-filter-core.ts";
 
-const items = [
+// Photo data with unknown dimensions left empty, as toItem() produces it
+const item = (values: Partial<Item>): Item => ({ camera: "", lens: "", film: "", orientation: "", ...values });
+
+const items: Item[] = [
   { camera: "Leica M2", lens: "Summicron 50mm f/2", film: "Kodak Portra 400", orientation: "landscape" },
   { camera: "Leica M2", lens: "Summicron 50mm f/2", film: "Ilford HP5", orientation: "portrait" },
   { camera: "Nikon F3", lens: "", film: "Kodak Portra 400", orientation: "landscape" },
@@ -46,11 +50,8 @@ test("filter bar: varying dimensions become dropdowns, shared gear is shown as s
     ],
     "orientation is accompanied by the shared camera and film",
   );
-  assert.deepEqual(filterBar([{ orientation: "landscape" }, { orientation: "portrait" }]), [], "without any gear info, orientation never stands alone");
-  const allLandscape = [
-    { camera: "Leica M2", film: "HP5+", orientation: "landscape" },
-    { camera: "Leica M2", film: "Portra 400", orientation: "landscape" },
-  ];
+  assert.deepEqual(filterBar([item({ orientation: "landscape" }), item({ orientation: "portrait" })]), [], "without any gear info, orientation never stands alone");
+  const allLandscape = [item({ camera: "Leica M2", film: "HP5+", orientation: "landscape" }), item({ camera: "Leica M2", film: "Portra 400", orientation: "landscape" })];
   assert.deepEqual(
     filterBar(allLandscape).map(({ dimension, type }) => `${dimension}:${type}`),
     ["camera:static", "film:dropdown"],
@@ -98,7 +99,7 @@ test("options count photos matching the other active filters", () => {
 });
 
 test("orientation options keep a natural order", () => {
-  const options = availableOptions([...items, { orientation: "square" }], {}, "orientation").map((o) => o.value);
+  const options = availableOptions([...items, item({ orientation: "square" })], {}, "orientation").map((o) => o.value);
   assert.deepEqual(options, ["landscape", "portrait", "square"], "landscape, portrait, square");
 });
 
@@ -116,7 +117,7 @@ test("validation: photo data is normalized", () => {
 });
 
 test("validation: query values are normalized and bounded", () => {
-  assert.deepEqual(filtersFromQuery("?film=HP5", [{ film: "HP5+" }, { film: "Ilford Delta" }]), { film: "HP5+" }, "case and punctuation are normalized before matching");
+  assert.deepEqual(filtersFromQuery("?film=HP5", [item({ film: "HP5+" }), item({ film: "Ilford Delta" })]), { film: "HP5+" }, "case and punctuation are normalized before matching");
   assert.deepEqual(filtersFromQuery("?film=Kodak%20Portra%20400", items), { film: "Kodak Portra 400" }, "unslugged values are accepted");
   assert.deepEqual(filtersFromQuery(`?film=${"a".repeat(500)}`, items), {}, "overlong values are ignored");
   assert.deepEqual(filtersFromQuery("?film=&camera=%00", items), {}, "empty and control values are ignored");

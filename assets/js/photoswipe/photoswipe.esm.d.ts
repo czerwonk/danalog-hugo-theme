@@ -1,0 +1,3 @@
+// Types for the vendored file, taken from the pinned npm package (see scripts/vendor.mjs)
+export { default } from "photoswipe";
+export type * from "photoswipe";

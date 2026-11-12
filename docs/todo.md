@@ -8,6 +8,11 @@ Nothing open.
 
 ## Done
 
+### TypeScript (2026-11-12)
+
+- [x] T1: theme scripts are TypeScript (`assets/js/*.ts`), compiled by Hugo's `js.Build` (esbuild), so sites still build with Hugo alone; `main.ts` is the entry point. `custom.js` stays JavaScript as the site hook. Types for the vendored PhotoSwipe files come from the pinned npm package via `.d.ts` files next to them; the dynamic caption plugin has a small hand-written declaration, `@params` is declared in `assets/js/types/params.d.ts` (keep in sync with `head.html`). Unit tests are `.test.ts` and run in Node directly (type stripping, Node >= 22.18). `tsc` (strict, `noEmit`) runs first in `tests/run.sh`, so CI checks types too. New dev dependencies: `typescript` (type checker) and `@types/node` (types for the tests). `package.json` is `"type": "module"` (Node warned about the `.ts` tests), so `prettier.config.js` is now ESM.
+- [x] Strict mode found a real bug: the fullscreen button toggled `.hidden` on SVG `<path>` elements, which have no such property, so the icon never switched (both paths are identical, so nothing was visible). Now the attribute is toggled. Other changes are null checks on DOM lookups and a `registerButton()` helper for the three lightbox buttons. Checked in headless Chrome on the example site: layout, filter bar, filtering with query string, reset, lightbox with caption, download, copy and fullscreen buttons, deep link to a filtered-out photo, menu; no console errors.
+
 ### Gallery width (2026-11-11)
 
 - [x] Galleries were the only content without a maximum width (album list, featured album: 1280px). New CSS variable `--gallery-max-width`, default 1536px; `none` for edge to edge. Compared on danalog.pics (Emma) at 1920 and 2560px with full width, 1536 and 1280: the justified layout keeps photos about the same size and only changes the number per row (1920: 6/5/4, 2560: 7/5/4). 1536 keeps a few photos per row without a wide empty margin on large screens. Build check W1; the phone edge margin check now allows further properties in the rule.
@@ -156,6 +161,7 @@ Nothing open.
 - Vendored files stay in `assets/` instead of being resolved from `node_modules` at build time: sites (git submodule) build with Hugo alone. `package.json` exists for Dependabot and tooling only. `justified-layout.ts` is a modified fork and maintained as theme code.
 - Direction is analog/darkroom rather than generic editorial, matching the main consumer (danalog.pics): dark default, film-strip banner, monospace type, matted prints.
 - No bundled web fonts and no icon library: fonts come from the site via CSS variables, icons are drawn in-house as SVG files that sites can override.
+- TypeScript instead of JSDoc types (`checkJs`): better readability; Hugo and Node strip the types without a build step, `tsc` only checks. `erasableSyntaxOnly` keeps to syntax Node can strip (no enums, namespaces, parameter properties). Imports use `.ts` extensions (needed by Node, `allowImportingTsExtensions` for `tsc`).
 - No WebP/AVIF conversion in the theme: danalog.pics needs JPEG derivatives for other platforms.
 
 ## Recurring issues

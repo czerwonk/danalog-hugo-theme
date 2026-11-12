@@ -1,20 +1,34 @@
-// Pure filter logic for the gallery filter (DOM handling lives in gallery-filter.js).
-// An item is {camera, lens, film, orientation}; filters map a dimension to a selected value ("" = any).
+// Pure filter logic for the gallery filter (DOM handling lives in gallery-filter.ts).
 
-export const DIMENSIONS = ["camera", "lens", "film", "orientation"];
+export const DIMENSIONS = ["camera", "lens", "film", "orientation"] as const;
+
+export type Dimension = (typeof DIMENSIONS)[number];
+
+/** Photo data per dimension; "" if unknown. */
+export type Item = Record<Dimension, string>;
+
+/** Selected value per dimension; missing or "" means any. */
+export type Filters = Partial<Record<Dimension, string>>;
+
+export type Field = { dimension: Dimension; type: "dropdown" } | { dimension: Dimension; type: "static"; value: string };
+
+export interface Option {
+  value: string;
+  count: number;
+}
 
 const ORIENTATION_ORDER = ["landscape", "portrait", "square"];
 
 // Query values longer than this are ignored; real camera, lens and film names are far shorter
 const MAX_QUERY_VALUE_LENGTH = 200;
 
-const clean = (value) => (typeof value === "string" ? value.trim() : "");
+const clean = (value: unknown): string => (typeof value === "string" ? value.trim() : "");
 
 /**
  * Normalizes raw photo data (from data-* attributes, i.e. EXIF text): strings are trimmed,
  * anything else becomes empty, and orientation must be one the theme renders.
  */
-export function toItem(raw) {
+export function toItem(raw: Partial<Record<Dimension, unknown>>): Item {
   const orientation = clean(raw.orientation);
   return {
     camera: clean(raw.camera),
@@ -24,8 +38,7 @@ export function toItem(raw) {
   };
 }
 
-/** @param {string} value */
-export const slugify = (value) =>
+export const slugify = (value: string): string =>
   value
     .normalize("NFKD")
     .replace(/\p{M}/gu, "") // drop accents split off by NFKD
@@ -34,12 +47,12 @@ export const slugify = (value) =>
     .replace(/^-|-$/g, "");
 
 /** True if the item has the selected value in every dimension with an active filter. */
-export const matches = (item, filters) => DIMENSIONS.every((dimension) => !filters[dimension] || item[dimension] === filters[dimension]);
+export const matches = (item: Item, filters: Filters): boolean => DIMENSIONS.every((dimension) => !filters[dimension] || item[dimension] === filters[dimension]);
 
-const distinctValues = (items, dimension) => [...new Set(items.map((item) => item[dimension]).filter(Boolean))];
+const distinctValues = (items: Item[], dimension: Dimension): string[] => [...new Set(items.map((item) => item[dimension]).filter(Boolean))];
 
 // Gear dimensions can be shown as static info (with an icon) when all photos share one value
-const GEAR = ["camera", "lens", "film"];
+const GEAR: readonly Dimension[] = ["camera", "lens", "film"];
 
 /**
  * Fields of the filter bar in the fixed order camera, lens, film, orientation:
@@ -48,8 +61,8 @@ const GEAR = ["camera", "lens", "film"];
  *   { dimension, type: "dropdown" }       dimensions with at least two values
  * Without any gear info the bar is empty, so orientation never stands alone.
  */
-export function filterBar(items) {
-  const fields = DIMENSIONS.flatMap((dimension) => {
+export function filterBar(items: Item[]): Field[] {
+  const fields = DIMENSIONS.flatMap((dimension): Field[] => {
     const values = distinctValues(items, dimension);
     if (values.length >= 2) return [{ dimension, type: "dropdown" }];
     if (values.length === 1 && GEAR.includes(dimension)) return [{ dimension, type: "static", value: values[0] }];
@@ -59,14 +72,14 @@ export function filterBar(items) {
   return hasGear ? fields : [];
 }
 
-const sortValues = (dimension, values) => (dimension === "orientation" ? ORIENTATION_ORDER.filter((value) => values.includes(value)) : [...values].sort((a, b) => a.localeCompare(b)));
+const sortValues = (dimension: Dimension, values: string[]): string[] => (dimension === "orientation" ? ORIENTATION_ORDER.filter((value) => values.includes(value)) : [...values].sort((a, b) => a.localeCompare(b)));
 
 /**
  * Options for one dimension with the number of photos each would leave,
  * given the other active filters (the dimension's own filter is ignored).
  */
-export function availableOptions(items, filters, dimension) {
-  const others = { ...filters, [dimension]: "" };
+export function availableOptions(items: Item[], filters: Filters, dimension: Dimension): Option[] {
+  const others: Filters = { ...filters, [dimension]: "" };
   const candidates = items.filter((item) => matches(item, others));
   return sortValues(dimension, distinctValues(items, dimension)).map((value) => ({
     value,
@@ -74,9 +87,11 @@ export function availableOptions(items, filters, dimension) {
   }));
 }
 
+const isDimension = (value: string): value is Dimension => (DIMENSIONS as readonly string[]).includes(value);
+
 /** Returns the value if it occurs in the gallery for a known dimension, otherwise "" (= all). */
-export function validFilterValue(items, dimension, value) {
-  if (!DIMENSIONS.includes(dimension) || typeof value !== "string" || value === "") return "";
+export function validFilterValue(items: Item[], dimension: string, value: unknown): string {
+  if (!isDimension(dimension) || typeof value !== "string" || value === "") return "";
   return distinctValues(items, dimension).includes(value) ? value : "";
 }
 
@@ -84,9 +99,9 @@ export function validFilterValue(items, dimension, value) {
  * Reads filters from a query string. Only known dimensions are read, each value is normalized
  * to a slug and must match a value present in the gallery; anything else is ignored.
  */
-export function filtersFromQuery(search, items) {
+export function filtersFromQuery(search: string, items: Item[]): Filters {
   const params = new URLSearchParams(search);
-  const filters = {};
+  const filters: Filters = {};
   for (const dimension of DIMENSIONS) {
     const raw = params.get(dimension);
     if (!raw || raw.length > MAX_QUERY_VALUE_LENGTH) continue;
@@ -99,7 +114,7 @@ export function filtersFromQuery(search, items) {
 }
 
 /** Writes active filters as slugs into the query string, keeping unrelated parameters. */
-export function filtersToQuery(filters, search) {
+export function filtersToQuery(filters: Filters, search: string): string {
   const params = new URLSearchParams(search);
   for (const dimension of DIMENSIONS) {
     if (filters[dimension]) {

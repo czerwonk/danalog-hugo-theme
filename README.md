@@ -401,7 +401,9 @@ You can add additional JavaScript in `assets/js/custom.js`.
 
 ## Development
 
-`npm test` (or `tests/run.sh`) runs the JavaScript unit tests and builds the fixture site in `tests/site` to check the generated HTML and CSS. Requires Hugo, Dart Sass and Node.js.
+The theme's scripts are written in TypeScript (`assets/js/*.ts`). Hugo compiles them with `js.Build`, so sites still need neither Node.js nor a separate build step. `assets/js/custom.js` stays plain JavaScript.
+
+`npm test` (or `tests/run.sh`) type-checks the scripts (`tsc`, see `tsconfig.json`), runs the unit tests and builds the fixture site in `tests/site` to check the generated HTML and CSS. Requires Hugo, Dart Sass and Node.js >= 22.18 (runs the TypeScript tests directly), plus `npm install` for the type checker.
 
 Third-party libraries (PhotoSwipe and its dynamic caption plugin) are vendored into `assets/`, so sites build without Node.js. Their versions are pinned in `package.json` (`dependencies`), which Dependabot monitors. After changing a version, run `npm install && npm run vendor` and commit the updated files; CI (`npm run vendor -- --check`) fails while they differ.
 

@@ -1,21 +1,22 @@
 const menuToggle = document.getElementById("menu-toggle");
-if (menuToggle) {
+const menu = document.getElementById("menu");
+if (menuToggle && menu) {
   menuToggle.addEventListener("click", (event) => {
     event.preventDefault();
-    const target = document.getElementById("menu");
-    menuToggle.ariaExpanded = target.classList.contains("hidden");
-    target.classList.toggle("hidden");
+    menuToggle.ariaExpanded = String(menu.classList.contains("hidden"));
+    menu.classList.toggle("hidden");
   });
 }
 
-const groups = Array.from(document.querySelectorAll(".site-nav-group"));
+const groups = Array.from(document.querySelectorAll<HTMLButtonElement>(".site-nav-group"));
 
-const setOpen = (button, open) => {
+const setOpen = (button: HTMLButtonElement, open: boolean) => {
   button.setAttribute("aria-expanded", String(open));
-  document.getElementById(button.getAttribute("aria-controls")).hidden = !open;
+  const panel = document.getElementById(button.getAttribute("aria-controls") ?? "");
+  if (panel) panel.hidden = !open;
 };
 
-const closeAll = (except) => groups.filter((button) => button !== except).forEach((button) => setOpen(button, false));
+const closeAll = (except?: HTMLButtonElement) => groups.filter((button) => button !== except).forEach((button) => setOpen(button, false));
 
 groups.forEach((button) => {
   button.addEventListener("click", () => {
@@ -35,6 +36,6 @@ if (groups.length > 0) {
   });
 
   document.addEventListener("click", (event) => {
-    if (!event.target.closest(".site-nav")) closeAll();
+    if (!(event.target instanceof Element) || !event.target.closest(".site-nav")) closeAll();
   });
 }
