@@ -4,6 +4,8 @@
   or "" if the original is too small to provide one (Hugo does not upscale)
   srcset   value for the img srcset attribute
   color    loading placeholder (see placeholder-color.html)
+  photoColor  the photo's dominant color, painted inside the mat while loading
+  matX, matY  mat width as a share of the thumbnail's width and height ("8.000%"), "0%" without a mat
 */}}
 {{ $base := .Filter (slice images.AutoOrient (images.Process "fit 600x600")) }}
 {{ $large := .Filter (slice images.AutoOrient (images.Process "fit 1200x1200")) }}
@@ -15,4 +17,12 @@
   {{ $image2x = partial "apply-border.html" (dict "image" $large "scale" 2) }}
   {{ $srcset = printf "%s, %s 2x" $srcset $image2x.RelPermalink }}
 {{ end }}
-{{ return dict "image" $image "image2x" $image2x "srcset" $srcset "color" $color }}
+{{ $photoColor := index $base.Colors 0 | default "transparent" }}
+{{ $matX := "0%" }}
+{{ $matY := "0%" }}
+{{ $borderSize := site.Params.gallery.borderSize | int }}
+{{ if gt $borderSize 0 }}
+  {{ $matX = printf "%.3f%%" (mul 100 (div (float $borderSize) $image.Width)) }}
+  {{ $matY = printf "%.3f%%" (mul 100 (div (float $borderSize) $image.Height)) }}
+{{ end }}
+{{ return dict "image" $image "image2x" $image2x "srcset" $srcset "color" $color "photoColor" $photoColor "matX" $matX "matY" $matY }}

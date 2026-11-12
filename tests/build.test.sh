@@ -196,7 +196,7 @@ assert_contains "$ALBUM_A" '<a class="gallery-item"[^>]* data-title="Harbour &lt
 assert_contains "$HOME_PAGE" '<a class="featured-card" href="/album-c/">' "N3: featured block links to the album"
 sed -n '/<section class="featured">/,/<\/section>/p' "$HOME_PAGE" | grep -q '<img' || fail "N3: featured image must be an img element"
 assert_not_contains "$HOME_PAGE" 'background-image: url' "N3: featured image must not be a CSS background"
-assert_not_contains "$CSS" 'linear-gradient' "N3: no gradient overlay"
+assert_not_contains "$CSS" '\.featured[^{]*\{[^}]*linear-gradient' "N3: no gradient overlay"
 
 # S1 (H1): with publishResources: false the original (incl. EXIF/GPS) is never published, not even via the
 # equipment or recent pages; albums without the option still publish and link their originals
@@ -256,6 +256,15 @@ assert_contains "$JS" 'style\.visibility="visible"' "J1: gallery.ts must overrid
 # W1: galleries are limited by --gallery-max-width, sites can set none for edge to edge
 assert_contains "$CSS" '--gallery-max-width: ?1536px' "W1: --gallery-max-width defaults to 1536px"
 assert_contains "$CSS" 'section\.gallery ?\{[^}]*max-width: ?var\(--gallery-max-width\)' "W1: gallery sections use --gallery-max-width"
+
+# K1: while scripts lay out the gallery, it reserves a screen height so the footer does not jump on slow connections
+assert_contains "$CSS" '@media ?\(scripting: ?enabled\) ?\{ ?\.gallery-photos ?\{[^}]*height: ?100svh' "K1: the hidden gallery reserves a screen height until laid out"
+
+# K2: the loading placeholder looks like the print: the mat around the photo's dominant color
+# (album-a thumbnails: 60x40 photo + 1px stroke + 8px mat = 78x58, so the mat is 8/78 wide and 8/58 high; swapped for the portrait)
+assert_contains "$ALBUM_A" 'figure style="--placeholder: #ffffff; --placeholder-photo: #[0-9a-f]{6}; --mat-x: 10\.256%; --mat-y: 13\.793%; aspect-ratio: 78 / 58' "K2: landscape figure carries the mat color, the photo's dominant color and the mat proportions"
+assert_contains "$ALBUM_A" 'figure style="--placeholder: #ffffff; --placeholder-photo: #[0-9a-f]{6}; --mat-x: 13\.793%; --mat-y: 10\.256%; aspect-ratio: 58 / 78' "K2: portrait figure has the mat proportions swapped"
+assert_contains "$CSS" '\.gallery-item>figure\{[^}]*background:linear-gradient\(var\(--placeholder-photo\), ?var\(--placeholder-photo\)\) ?(50%|center)[^;}]*calc\(100% - 2 ?\* ?var\(--mat-x' "K2: gallery placeholder paints the photo color inside the mat"
 
 # C3: gallery defaults come from the theme's hugo.toml (merged into the site params), not from template fallbacks
 GALLERY_PARAMS="$(hugo config --format json --source "$THEME_DIR/tests/site" --themesDir "$WORK_DIR/themes" 2>/dev/null |

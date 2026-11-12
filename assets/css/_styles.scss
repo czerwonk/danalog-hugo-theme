@@ -700,10 +700,12 @@ section.gallery {
   }
 }
 
+// It reserves a screen height meanwhile, so the footer does not jump when the script arrives late
+// (slow mobile connections); the inline height set by the layout replaces it.
 @media (scripting: enabled) {
   .gallery-photos {
     visibility: hidden;
-    height: 1px;
+    height: 100svh;
     overflow: hidden;
   }
 }
@@ -712,8 +714,12 @@ section.gallery {
 .gallery-item {
   cursor: zoom-in;
 
+  // While loading, the placeholder looks like the print: the mat (--placeholder) around the photo's
+  // dominant color, so only the photo area fades in instead of a bright mat-colored box
   & > figure {
-    background-color: var(--placeholder);
+    background:
+      linear-gradient(var(--placeholder-photo), var(--placeholder-photo)) center / calc(100% - 2 * var(--mat-x)) calc(100% - 2 * var(--mat-y)) no-repeat,
+      var(--placeholder);
   }
 
   // Includes the fade-in transition from main.scss, which this more specific rule would override
