@@ -4,7 +4,7 @@ Modernization: keep the minimalism, lean into an analog / darkroom / contact she
 
 ## Open
 
-- [ ] (medium) F1: the filter bar is empty until the script fills it, so on slow connections it appears late and pushes the gallery down (about 150px on phones with four fields). Options: render the fields in the template (the field logic would then exist twice, or move to the template entirely), or reserve the space.
+Nothing open.
 
 ## Done
 
@@ -176,6 +176,7 @@ Modernization: keep the minimalism, lean into an analog / darkroom / contact she
 - No bundled web fonts and no icon library: fonts come from the site via CSS variables, icons are drawn in-house as SVG files that sites can override.
 - TypeScript instead of JSDoc types (`checkJs`): better readability; Hugo and Node strip the types without a build step, `tsc` only checks. `erasableSyntaxOnly` keeps to syntax Node can strip (no enums, namespaces, parameter properties). Imports use `.ts` extensions (needed by Node, `allowImportingTsExtensions` for `tsc`).
 - Gallery rows in CSS rather than a JavaScript justified layout: the gallery must not wait for scripts (flicker on phones). With danalog.pics' uniform 3:2 photos the greedy CSS rows match the Flickr algorithm on desktop; the remaining difference (no upper row height limit, portraits alone on phones) was accepted after a simulation on real albums.
+- F1 (filter bar appears with the script and pushes the gallery down on slow connections) is accepted: checked on a phone after the CSS rows, not noticeable in practice. Rendering the fields in the template would duplicate the filter logic.
 - No WebP/AVIF conversion in the theme: danalog.pics needs JPEG derivatives for other platforms.
 
 ## Recurring issues
