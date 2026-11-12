@@ -704,10 +704,12 @@ section.gallery {
   align-items: flex-start;
   gap: var(--gallery-spacing);
 
-  // Takes the free space of the last row, which keeps the row height instead of growing;
-  // the negative margin cancels its gap, so it never wraps into a row of its own
+  // Filler that takes the free space of an unfilled last row, which keeps the row height instead of
+  // growing. It needs room for a landscape (3:2) at row height; a nearly full last row has none, so
+  // the filler wraps into a line of its own and the last row is stretched like a full row (the empty
+  // line then adds one row gap below the gallery). The negative margin cancels the gap beside it.
   &::after {
-    flex-grow: 1000000000;
+    flex: 1000000000 0 calc(1.5 * var(--gallery-row-height));
     margin-left: calc(-1 * var(--gallery-spacing));
     content: "";
   }

@@ -253,7 +253,7 @@ assert_contains "$ALBUM_A" '<a class="gallery-item"[^>]* style="--ar: 1\.3448; a
 assert_contains "$ALBUM_A" '<a class="gallery-item"[^>]* style="--ar: 0\.7436; aspect-ratio: 58 / 78"' "R1: portrait photo carries its aspect ratio"
 assert_contains "$CSS" '\.gallery-photos\{display:flex;flex-wrap:wrap;[^}]*gap:var\(--gallery-spacing\)' "R1: photos wrap into rows with the configured spacing"
 assert_contains "$CSS" '\.gallery-item\{[^}]*flex:calc\(var\(--ar\) ?\* ?100\) ?1 calc\(var\(--ar\) ?\* ?var\(--gallery-row-height\)\)' "R1: photos start at the row height and grow by their aspect ratio (scaled, so a lone portrait still fills the row)"
-assert_contains "$CSS" '\.gallery-photos::?after\{[^}]*flex-grow:(1e9|[0-9]{9,})' "R1: a filler keeps the last row at the row height"
+assert_contains "$CSS" '\.gallery-photos::?after\{[^}]*flex:(1e9|[0-9]{9,}) 0 calc\(1\.5 ?\* ?var\(--gallery-row-height\)\)' "R1: a filler keeps an unfilled last row at the row height; a nearly full last row (no room for a landscape) is stretched like a full row"
 assert_contains "$CSS" '--gallery-spacing:8px;--gallery-row-height:288px' "R1: spacing and row height come from params.gallery (theme defaults)"
 assert_not_contains "$CSS" 'scripting:enabled\)\{\.gallery-photos' "R1: the gallery is not hidden while scripts load"
 assert_not_contains "$JS" 'gallery:filtered|containerHeight' "R1: no layout script is bundled"
