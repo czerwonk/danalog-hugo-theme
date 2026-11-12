@@ -8,6 +8,10 @@ Modernization: keep the minimalism, lean into an analog / darkroom / contact she
 
 ## Done
 
+### Unused code (2026-11-12)
+
+- [x] Audit of CSS classes, ids and custom properties against templates and scripts, plus partials, i18n keys, icons and TS exports; nearly everything is used. Removed: the dead `.card > img` selector half (images always sit in the figure), the `home`/`toHomepage` i18n keys in all languages (unused since the 404 simplification), `body > main { height: 100% }` (no effect with a min-height body; checked in Chrome on five pages at 390 and 1440px, identical layout), `:-moz-focusring` (replaced by the theme's `:focus-visible`), and the commented gallery width example in the example site's `custom.css` (now the theme default). Kept on purpose: `--surface-2` (hook for sites), element rules in `.prose`/normalize for Markdown content, the unstyled `banner`/`wordmark` classes (hooks for sites).
+
 ### Gallery loading on phones (2026-11-12)
 
 - [x] Opening a gallery on a phone flickered several times (reproduced in Chrome with phone emulation, 3x density and a slow connection; desktop thumbnails are small and load almost together). K1: the gallery was hidden at 1px height until the script laid it out, so the footer showed right under the description and jumped away when the script arrived; the hidden gallery now reserves `100svh` (the layout's inline height replaces it). K2: with a mat the placeholder was the mat color, so each photo appeared as a bright white box that faded to the photo; the placeholder now looks like the print, the mat around the photo's dominant color (`thumbnail.html` returns `photoColor`, `matX`, `matY`; a CSS gradient paints the photo area). Only the photo area fades in. Build checks K1/K2; N3 now only forbids gradients on the featured block.
